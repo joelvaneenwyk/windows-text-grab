@@ -1,7 +1,8 @@
 name: "Build Text Grab"
 on:
   push:
-    branches: [dev]
+    branches: [main, dev, develop, feature/**, dependabot/**]
+  workflow_call:
 
 env:
   PROJECT_PATH: "Text-Grab/Text-Grab.csproj"
