@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Media;
 using Text_Grab.Models;
 using ZXing;
 using ZXing.Common;

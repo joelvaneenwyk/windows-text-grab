@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text.Json;
 using System.Windows.Input;
 using Text_Grab.Models;
-using Text_Grab.Properties;
 
 namespace Text_Grab.Utilities;
 

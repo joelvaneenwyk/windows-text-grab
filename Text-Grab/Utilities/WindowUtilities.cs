@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Text_Grab.Properties;
 using Text_Grab.Views;
 // using Screen = System.Windows.Forms.Screen;
 using WpfScreenHelper;

@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 using Text_Grab.Models;
-using Text_Grab.Properties;
 using Text_Grab.Services;
 using Text_Grab.Views;
 

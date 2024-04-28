@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Windows.Controls;
-using Text_Grab.Controls;
-using Text_Grab.UndoRedoOperations;
+﻿using Text_Grab.Controls;
 
 namespace Text_Grab.UndoRedoOperations;
 
