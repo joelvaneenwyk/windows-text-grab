@@ -13,7 +13,7 @@ public class ShortcutKeySet : IEquatable<ShortcutKeySet>
     public HashSet<KeyModifiers> Modifiers { get; set; } = new();
     public Key NonModifierKey { get; set; } = Key.None;
 
-    public bool IsEnabled { get; set; } = false;
+    public bool IsEnabled { get; set; }
 
     public string Name { get; set; } = "EmptyName";
 

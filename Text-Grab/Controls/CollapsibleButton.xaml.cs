@@ -20,7 +20,7 @@ public partial class CollapsibleButton : System.Windows.Controls.Button, INotify
         DependencyProperty.Register("ButtonText", typeof(string), typeof(CollapsibleButton), new PropertyMetadata("ButtonText"));
 
 
-    private bool isSymbol = false;
+    private bool isSymbol;
 
     #endregion Fields
 
@@ -69,7 +69,7 @@ public partial class CollapsibleButton : System.Windows.Controls.Button, INotify
 
     #region Methods
 
-    private void ChangeButtonLayout_Click(object? sender = null, System.Windows.RoutedEventArgs? e = null)
+    private void ChangeButtonLayout_Click(object? sender = null, RoutedEventArgs? e = null)
     {
         if (sender is not null)
             isSymbol = !isSymbol;

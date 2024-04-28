@@ -28,9 +28,9 @@ public partial class WordBorder : UserControl, INotifyPropertyChanged
     private int contextMenuBaseSize;
     private SolidColorBrush contrastingForeground = new SolidColorBrush(Colors.White);
     private DispatcherTimer debounceTimer = new();
-    private double left = 0;
+    private double left;
     private SolidColorBrush matchingBackground = new SolidColorBrush(Colors.Black);
-    private double top = 0;
+    private double top;
 
     #endregion Fields
 
@@ -82,10 +82,10 @@ public partial class WordBorder : UserControl, INotifyPropertyChanged
     #region Properties
 
     public double Bottom => Top + Height;
-    public bool IsBarcode { get; set; } = false;
+    public bool IsBarcode { get; set; }
     public bool IsEditing => EditWordTextBox.IsFocused;
     public bool IsFromEditWindow { get; set; } = false;
-    public bool IsSelected { get; set; } = false;
+    public bool IsSelected { get; set; }
     public double Left
     {
         get { return left; }
@@ -96,7 +96,7 @@ public partial class WordBorder : UserControl, INotifyPropertyChanged
         }
     }
 
-    public int LineNumber { get; set; } = 0;
+    public int LineNumber { get; set; }
     public SolidColorBrush MatchingBackground
     {
         get { return matchingBackground; }
@@ -120,8 +120,8 @@ public partial class WordBorder : UserControl, INotifyPropertyChanged
     }
 
     public GrabFrame? OwnerGrabFrame { get; set; }
-    public int ResultColumnID { get; set; } = 0;
-    public int ResultRowID { get; set; } = 0;
+    public int ResultColumnID { get; set; }
+    public int ResultRowID { get; set; }
     public double Right => Left + Width;
     public double Top
     {
@@ -195,8 +195,8 @@ public partial class WordBorder : UserControl, INotifyPropertyChanged
         EditWordTextBox.TextWrapping = TextWrapping.Wrap;
         EditWordTextBox.TextAlignment = TextAlignment.Center;
 
-        EditWordTextBox.Width = this.Width - 2;
-        EditWordTextBox.Height = this.Height - 2;
+        EditWordTextBox.Width = Width - 2;
+        EditWordTextBox.Height = Height - 2;
         EditWordTextBox.FontSize = 14;
 
         if (Uri.TryCreate(Word, UriKind.Absolute, out var uri))
@@ -380,9 +380,9 @@ public partial class WordBorder : UserControl, INotifyPropertyChanged
     }
     private void WordBorderControl_Unloaded(object sender, RoutedEventArgs e)
     {
-        this.MouseDoubleClick -= WordBorderControl_MouseDoubleClick;
-        this.MouseDown -= WordBorderControl_MouseDown;
-        this.Unloaded -= WordBorderControl_Unloaded;
+        MouseDoubleClick -= WordBorderControl_MouseDoubleClick;
+        MouseDown -= WordBorderControl_MouseDown;
+        Unloaded -= WordBorderControl_Unloaded;
     }
     #endregion Methods
 }

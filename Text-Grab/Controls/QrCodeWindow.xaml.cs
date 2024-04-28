@@ -83,7 +83,7 @@ namespace Text_Grab.Controls
             Clipboard.SetData(DataFormats.Bitmap, QrBitmap);
         }
 
-        private void ErrorCorrectionComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void ErrorCorrectionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (sender is not ComboBox comboBox 
                 || comboBox.SelectedItem is not ComboBoxItem selectedItem
@@ -112,7 +112,7 @@ namespace Text_Grab.Controls
             }
         }
 
-        private void QrCodeTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        private void QrCodeTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (!IsLoaded)
                 return;

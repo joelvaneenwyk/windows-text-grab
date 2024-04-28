@@ -92,7 +92,7 @@ public class HistoryInfo : IEquatable<HistoryInfo>
         if (other is null)
             return false;
 
-        if (other.ID == this.ID)
+        if (other.ID == ID)
             return true;
 
         return false;

@@ -27,7 +27,7 @@ public partial class DangerSettings : Page
 
         DefaultSettings.Reset();
         Singleton<HistoryService>.Instance.DeleteHistory();
-        App.Current.Shutdown();
+        Application.Current.Shutdown();
     }
 
     private void ClearHistoryButton_Click(object sender, RoutedEventArgs e)

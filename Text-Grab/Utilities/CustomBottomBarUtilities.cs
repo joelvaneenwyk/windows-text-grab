@@ -89,11 +89,11 @@ public class CustomBottomBarUtilities
                 button.Background = solidColorBrush;
             }
 
-            if (GetMethodInfoForName(buttonItem.ClickEvent, methods) is MethodInfo method
+            if (GetMethodInfoForName(buttonItem.ClickEvent, methods) is { } method
                 && method.CreateDelegate(typeof(RoutedEventHandler), editTextWindow) is RoutedEventHandler routedEventHandler)
                 button.Click += routedEventHandler;
             else
-                if (GetCommandBinding(buttonItem.Command, routedCommands) is RoutedCommand routedCommand)
+                if (GetCommandBinding(buttonItem.Command, routedCommands) is { } routedCommand)
                 button.Command = routedCommand;
 
             bottomBarButtons.Add(button);

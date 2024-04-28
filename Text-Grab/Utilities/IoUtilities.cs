@@ -58,7 +58,7 @@ public class IoUtilities
 
             stringBuilder.Append(s);
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
             System.Windows.Forms.MessageBox.Show($"Failed to open file. {ex.Message}");
         }

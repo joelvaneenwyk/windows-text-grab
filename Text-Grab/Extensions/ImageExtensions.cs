@@ -22,8 +22,8 @@ internal static class ImageExtensions
     internal static RotateFlipType GetRotateFlipType(this Image img)
     {
         if (!img.PropertyIdList.Contains(exifOrientationID)
-            || img.GetPropertyItem(exifOrientationID) is not PropertyItem prop
-            || prop.Value is not byte[] propValue)
+            || img.GetPropertyItem(exifOrientationID) is not { } prop
+            || prop.Value is not { } propValue)
             return RotateFlipType.RotateNoneFlipNone;
 
         int val = BitConverter.ToUInt16(propValue, 0);

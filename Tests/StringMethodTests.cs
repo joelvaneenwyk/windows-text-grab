@@ -50,13 +50,13 @@ to throw off any easy check";
         int length = firstWord.Length;
         int previewLength = 6;
 
-        int cursorPosition = multiLineInput.IndexOf(firstWord);
+        int cursorPosition = multiLineInput.IndexOf(firstWord, StringComparison.Ordinal);
 
-        string PreviewLeft = StringMethods.GetCharactersToLeftOfNewLine(ref multiLineInput, cursorPosition, previewLength);
-        string PreviewRight = StringMethods.GetCharactersToRightOfNewLine(ref multiLineInput, cursorPosition + length, previewLength);
+        string previewLeft = StringMethods.GetCharactersToLeftOfNewLine(ref multiLineInput, cursorPosition, previewLength);
+        string previewRight = StringMethods.GetCharactersToRightOfNewLine(ref multiLineInput, cursorPosition + length, previewLength);
 
-        Assert.Equal(expectedLeftPreview, PreviewLeft);
-        Assert.Equal(expectedRightPreview, PreviewRight);
+        Assert.Equal(expectedLeftPreview, previewLeft);
+        Assert.Equal(expectedRightPreview, previewRight);
     }
 
     [Theory]

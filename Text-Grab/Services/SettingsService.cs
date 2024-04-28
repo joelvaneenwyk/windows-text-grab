@@ -41,7 +41,7 @@ internal class SettingsService : IDisposable
 
     private void ClassicSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName is not string propertyName)
+        if (e.PropertyName is not { } propertyName)
             return;
 
         SaveSettingInContainer(propertyName, ClassicSettings[propertyName]);

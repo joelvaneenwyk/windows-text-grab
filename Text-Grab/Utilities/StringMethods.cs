@@ -73,7 +73,7 @@ public static class StringMethods
 
     public static IEnumerable<int> AllIndexesOf(this string str, string searchstring)
     {
-        int minIndex = str.IndexOf(searchstring);
+        int minIndex = str.IndexOf(searchstring, StringComparison.Ordinal);
         while (minIndex != -1)
         {
             yield return minIndex;
@@ -481,7 +481,7 @@ public static class StringMethods
             for (int j = 0; j < chunkLists.Count; j++)
             {
                 int matchingRun = 1;
-                while ((j + matchingRun) < chunkLists.Count
+                while (j + matchingRun < chunkLists.Count
                     && chunkLists[j] == chunkLists[j + matchingRun])
                 {
                     matchingRun++;
@@ -557,7 +557,7 @@ public static class StringMethods
 
             for (int i = 0; i < numberOfColumns; i++)
             {
-                int lineNumberToAppend = j + (i * numberOfRows);
+                int lineNumberToAppend = j + i * numberOfRows;
 
                 if (lineNumberToAppend - 1 > splitInputString.Length)
                     break;
@@ -574,7 +574,7 @@ public static class StringMethods
 
     public static string RemoveDuplicateLines(this string stringToDeduplicate)
     {
-        string[] splitString = stringToDeduplicate.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.TrimEntries);
+        string[] splitString = stringToDeduplicate.Split(new string[] { Environment.NewLine }, StringSplitOptions.TrimEntries);
         List<string> uniqueLines = new();
 
         foreach (string originalLine in splitString)
@@ -592,7 +592,7 @@ public static class StringMethods
 
     public static string RemoveFromEachLine(this string stringToEdit, int numberOfChars, SpotInLine spotInLine)
     {
-        string[] splitString = stringToEdit.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.None);
+        string[] splitString = stringToEdit.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
 
         StringBuilder sb = new();
         foreach (string line in splitString)
@@ -622,7 +622,7 @@ public static class StringMethods
 
     public static string AddCharsToEachLine(this string stringToEdit, string stringToAdd, SpotInLine spotInLine)
     {
-        string[] splitString = stringToEdit.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.None);
+        string[] splitString = stringToEdit.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
 
         if (splitString.Length > 1)
             if (splitString.LastOrDefault() == "")
@@ -649,7 +649,7 @@ public static class StringMethods
 
     public static string LimitCharactersPerLine(this string stringToEdit, int characterLimit, SpotInLine spotInLine)
     {
-        string[] splitString = stringToEdit.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.None);
+        string[] splitString = stringToEdit.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
         StringBuilder returnStringBuilder = new();
         foreach (string line in splitString)
         {
@@ -663,7 +663,7 @@ public static class StringMethods
             if (spotInLine== SpotInLine.Beginning)
                 returnStringBuilder.AppendLine(line.Substring(0, lineLimit));
             else
-                returnStringBuilder.AppendLine(line.Substring(line.Length - (lineLimit), lineLimit));
+                returnStringBuilder.AppendLine(line.Substring(line.Length - lineLimit, lineLimit));
         }
 
         return returnStringBuilder.ToString().Trim();

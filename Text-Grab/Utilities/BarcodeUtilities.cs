@@ -17,10 +17,10 @@ public static class BarcodeUtilities
         BarcodeReader barcodeReader = new()
         {
             AutoRotate = true,
-            Options = new ZXing.Common.DecodingOptions { TryHarder = true }
+            Options = new DecodingOptions { TryHarder = true }
         };
 
-        ZXing.Result result = barcodeReader.Decode(bitmap);
+        Result result = barcodeReader.Decode(bitmap);
 
         string resultString = string.Empty;
         if (result is not null)
@@ -42,7 +42,7 @@ public static class BarcodeUtilities
 
         BarcodeWriter barcodeWriter = new()
         {
-            Format = ZXing.BarcodeFormat.QR_CODE,
+            Format = BarcodeFormat.QR_CODE,
             Renderer = bitmapRenderer,
         };
 
@@ -52,7 +52,7 @@ public static class BarcodeUtilities
             Height = 500,
             Margin = 5,
         };
-        encodingOptions.Hints.Add(ZXing.EncodeHintType.ERROR_CORRECTION, correctionLevel);
+        encodingOptions.Hints.Add(EncodeHintType.ERROR_CORRECTION, correctionLevel);
         barcodeWriter.Options = encodingOptions;
 
         Bitmap bitmap = barcodeWriter.Write(text);
@@ -64,7 +64,7 @@ public static class BarcodeUtilities
     {
         BarcodeWriterSvg barcodeWriter = new()
         {
-            Format = ZXing.BarcodeFormat.QR_CODE,
+            Format = BarcodeFormat.QR_CODE,
             Renderer = new SvgRenderer()
         };
 
@@ -74,7 +74,7 @@ public static class BarcodeUtilities
             Height = 500,
             Margin = 5,
         };
-        encodingOptions.Hints.Add(ZXing.EncodeHintType.ERROR_CORRECTION, correctionLevel);
+        encodingOptions.Hints.Add(EncodeHintType.ERROR_CORRECTION, correctionLevel);
         barcodeWriter.Options = encodingOptions;
         
         SvgImage svg = barcodeWriter.Write(text);

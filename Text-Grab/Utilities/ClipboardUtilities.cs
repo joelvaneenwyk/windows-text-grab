@@ -20,7 +20,7 @@ public class ClipboardUtilities
         {
             dataPackageView = Windows.ApplicationModel.DataTransfer.Clipboard.GetContent();
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
             return (false, ex.Message);
         }
@@ -36,7 +36,7 @@ public class ClipboardUtilities
             {
                 clipboardText = await dataPackageView.GetTextAsync();
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return (false, $"error with dataPackageView.GetTextAsync(). Exception Message: {ex.Message}");
             }

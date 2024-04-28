@@ -139,14 +139,14 @@ public partial class FirstRunWindow : FluentWindow
     }
     private void RadioButton_Checked(object sender, RoutedEventArgs e)
     {
-        if (this.IsLoaded != true)
+        if (IsLoaded != true)
             return;
 
-        if (GrabFrameRDBTN.IsChecked is bool gfOn && gfOn)
+        if (GrabFrameRDBTN.IsChecked is { } gfOn && gfOn)
             DefaultSettings.DefaultLaunch = "GrabFrame";
-        else if (FullScreenRDBTN.IsChecked is bool fsgOn && fsgOn)
+        else if (FullScreenRDBTN.IsChecked is { } fsgOn && fsgOn)
             DefaultSettings.DefaultLaunch = "Fullscreen";
-        else if (QuickLookupRDBTN.IsChecked is bool qslOn && qslOn)
+        else if (QuickLookupRDBTN.IsChecked is { } qslOn && qslOn)
             DefaultSettings.DefaultLaunch = "QuickLookup";
         else
             DefaultSettings.DefaultLaunch = "EditText";
@@ -157,7 +157,7 @@ public partial class FirstRunWindow : FluentWindow
     {
         WindowUtilities.OpenOrActivateWindow<SettingsWindow>();
 
-        this.Close();
+        Close();
     }
 
     private async void StartupCheckbox_Checked(object sender, RoutedEventArgs e)

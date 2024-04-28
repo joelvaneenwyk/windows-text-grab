@@ -124,7 +124,7 @@ public class RegistryMonitor : IDisposable {
     private string? _registrySubName;
     private readonly object _threadLock = new();
     private Thread? _thread;
-    private bool _disposed = false;
+    private bool _disposed;
     private readonly ManualResetEvent _eventTerminate = new(false);
 
     private RegChangeNotifyFilter _regFilter = RegChangeNotifyFilter.Key | RegChangeNotifyFilter.Attribute |
@@ -271,7 +271,7 @@ public class RegistryMonitor : IDisposable {
             throw new ObjectDisposedException(null, "This instance is already disposed");
 
         lock (_threadLock) {
-            if (_thread is Thread thread) {
+            if (_thread is { } thread) {
                 _eventTerminate.Set();
                 thread.Join();
             }

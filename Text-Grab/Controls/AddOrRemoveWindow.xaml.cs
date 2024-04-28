@@ -114,10 +114,10 @@ public partial class AddOrRemoveWindow : Wpf.Ui.Controls.FluentWindow
         if (sender is not TextBox addTextTextBox)
             return;
 
-        if (AddRadioButton.IsChecked is true && addTextTextBox.Text is String textFromBox)
+        if (AddRadioButton.IsChecked is true && addTextTextBox.Text is { } textFromBox)
             TextToAdd = textFromBox;
 
-        if (LengthTextBox.Text is String textFromLengthBox)
+        if (LengthTextBox.Text is { } textFromLengthBox)
         {
             bool success = Int32.TryParse(textFromLengthBox, out int lengthString);
 
@@ -156,7 +156,7 @@ public partial class AddOrRemoveWindow : Wpf.Ui.Controls.FluentWindow
                 TextToAddTextBox.Clear();
             }
             else
-                this.Close();
+                Close();
         }
     }
 

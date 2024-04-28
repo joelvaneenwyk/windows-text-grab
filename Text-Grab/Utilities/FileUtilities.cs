@@ -39,7 +39,7 @@ public class FileUtilities
         Dictionary<string, string> imageFilters = new Dictionary<string, string>();
         foreach (ImageCodecInfo codec in codecs)
         {
-            if (codec.FilenameExtension is not string extension)
+            if (codec.FilenameExtension is not { } extension)
                 continue;
 
             imageExtensions = $"{imageExtensions}{separator}{extension.ToLower()}";
@@ -62,7 +62,7 @@ public class FileUtilities
 
     public static string GetPathToLocalFile(string imageRelativePath)
     {
-        Uri codeBaseUrl = new(System.AppDomain.CurrentDomain.BaseDirectory);
+        Uri codeBaseUrl = new(AppDomain.CurrentDomain.BaseDirectory);
         string codeBasePath = Uri.UnescapeDataString(codeBaseUrl.AbsolutePath);
         string? dirPath = Path.GetDirectoryName(codeBasePath);
 
@@ -175,7 +175,7 @@ public class FileUtilities
 
     private static string GetFolderPathUnpackaged(string filename, FileStorageKind storageKind)
     {
-        string? exePath = Path.GetDirectoryName(System.AppContext.BaseDirectory);
+        string? exePath = Path.GetDirectoryName(AppContext.BaseDirectory);
         string historyDirectory = $"{exePath}\\history";
 
         switch (storageKind)

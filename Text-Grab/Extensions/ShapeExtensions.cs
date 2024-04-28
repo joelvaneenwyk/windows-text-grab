@@ -77,8 +77,8 @@ public static class ShapeExtensions
 
     public static System.Windows.Point CenterPoint(this Rect rect)
     {
-        double x = rect.Left + (rect.Width / 2);
-        double y = rect.Top + (rect.Height / 2);
+        double x = rect.Left + rect.Width / 2;
+        double y = rect.Top + rect.Height / 2;
         return new(x, y);
     }
 }

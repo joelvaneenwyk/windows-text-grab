@@ -24,16 +24,16 @@ public partial class FullscreenGrab : Window
 {
     #region Fields
 
-    private System.Windows.Point clickedPoint = new System.Windows.Point();
+    private System.Windows.Point clickedPoint;
     private TextBox? destinationTextBox;
     private DpiScale? dpiScale;
-    private bool isComboBoxReady = false;
-    private bool isSelecting = false;
-    private bool isShiftDown = false;
+    private bool isComboBoxReady;
+    private bool isSelecting;
+    private bool isShiftDown;
     private Border selectBorder = new Border();
     private double selectLeft;
     private double selectTop;
-    private System.Windows.Point shiftPoint = new System.Windows.Point();
+    private System.Windows.Point shiftPoint;
     private double xShiftDelta;
     private double yShiftDelta;
     private HistoryInfo? historyInfo;
@@ -265,8 +265,8 @@ public partial class FullscreenGrab : Window
         dpi = VisualTreeHelper.GetDpi(this);
         int firstScreenBPP = System.Windows.Forms.Screen.AllScreens[0].BitsPerPixel;
 
-        posLeft = Canvas.GetLeft(selectBorder) + (absPosPoint.X / dpi.PixelsPerDip);
-        posTop = Canvas.GetTop(selectBorder) + (absPosPoint.Y / dpi.PixelsPerDip);
+        posLeft = Canvas.GetLeft(selectBorder) + absPosPoint.X / dpi.PixelsPerDip;
+        posTop = Canvas.GetTop(selectBorder) + absPosPoint.Y / dpi.PixelsPerDip;
     }
 
     private void LanguagesComboBox_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -414,8 +414,8 @@ public partial class FullscreenGrab : Window
         }
 
         isShiftDown = true;
-        xShiftDelta = (movingPoint.X - shiftPoint.X);
-        yShiftDelta = (movingPoint.Y - shiftPoint.Y);
+        xShiftDelta = movingPoint.X - shiftPoint.X;
+        yShiftDelta = movingPoint.Y - shiftPoint.Y;
 
         double leftValue = selectLeft + xShiftDelta;
         double topValue = selectTop + yShiftDelta;
@@ -427,8 +427,8 @@ public partial class FullscreenGrab : Window
             double currentScreenTop = currentScreen.Bounds.Top; // Should always be 0
             double currentScreenBottom = currentScreen.Bounds.Bottom / dpiScale.Value.DpiScaleY;
 
-            leftValue = Math.Clamp(leftValue, currentScreenLeft, (currentScreenRight - selectBorder.Width));
-            topValue = Math.Clamp(topValue, currentScreenTop, (currentScreenBottom - selectBorder.Height));
+            leftValue = Math.Clamp(leftValue, currentScreenLeft, currentScreenRight - selectBorder.Width);
+            topValue = Math.Clamp(topValue, currentScreenTop, currentScreenBottom - selectBorder.Height);
         }
 
         clippingGeometry.Rect = new Rect(
@@ -454,8 +454,8 @@ public partial class FullscreenGrab : Window
             Top = posTop,
         };
 
-        grabFrame.Left -= (2 / dpi.PixelsPerDip);
-        grabFrame.Top -= (48 / dpi.PixelsPerDip);
+        grabFrame.Left -= 2 / dpi.PixelsPerDip;
+        grabFrame.Top -= 48 / dpi.PixelsPerDip;
 
         if (destinationTextBox is not null)
             grabFrame.DestinationTextBox = destinationTextBox;
@@ -606,7 +606,7 @@ public partial class FullscreenGrab : Window
         if (LanguagesComboBox.SelectedItem is TessLang tessLang)
             tessTag = tessLang.LanguageTag;
 
-        bool isSmallClick = (regionScaled.Width < 3 || regionScaled.Height < 3);
+        bool isSmallClick = regionScaled.Width < 3 || regionScaled.Height < 3;
 
         bool isSingleLine = SingleLineMenuItem is null ? false : SingleLineMenuItem.IsChecked;
         bool isTable = TableMenuItem is null ? false : TableMenuItem.IsChecked;
@@ -706,9 +706,9 @@ public partial class FullscreenGrab : Window
     private async void Window_Loaded(object sender, RoutedEventArgs e)
     {
         WindowState = WindowState.Maximized;
-        FullWindow.Rect = new System.Windows.Rect(0, 0, Width, Height);
-        this.KeyDown += FullscreenGrab_KeyDown;
-        this.KeyUp += FullscreenGrab_KeyUp;
+        FullWindow.Rect = new Rect(0, 0, Width, Height);
+        KeyDown += FullscreenGrab_KeyDown;
+        KeyUp += FullscreenGrab_KeyUp;
 
         SetImageToBackground();
 
@@ -744,8 +744,8 @@ public partial class FullscreenGrab : Window
         dpiScale = null;
         textFromOCR = null;
 
-        this.Loaded -= Window_Loaded;
-        this.Unloaded -= Window_Unloaded;
+        Loaded -= Window_Loaded;
+        Unloaded -= Window_Unloaded;
 
         RegionClickCanvas.MouseDown -= RegionClickCanvas_MouseDown;
         RegionClickCanvas.MouseMove -= RegionClickCanvas_MouseMove;
@@ -767,8 +767,8 @@ public partial class FullscreenGrab : Window
         SettingsButton.Click -= SettingsMenuItem_Click;
         CancelButton.Click -= CancelMenuItem_Click;
 
-        this.KeyDown -= FullscreenGrab_KeyDown;
-        this.KeyUp -= FullscreenGrab_KeyUp;
+        KeyDown -= FullscreenGrab_KeyDown;
+        KeyUp -= FullscreenGrab_KeyUp;
     }
 
     private void StandardModeToggleButton_Click(object sender, RoutedEventArgs e)

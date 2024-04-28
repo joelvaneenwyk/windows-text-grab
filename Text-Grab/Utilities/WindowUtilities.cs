@@ -103,8 +103,8 @@ public static class WindowUtilities
 
             Point screenCenterPoint = screen.GetCenterPoint();
 
-            fullScreenGrab.Left = screenCenterPoint.X - (sideLength / 2);
-            fullScreenGrab.Top = screenCenterPoint.Y - (sideLength / 2);
+            fullScreenGrab.Left = screenCenterPoint.X - sideLength / 2;
+            fullScreenGrab.Top = screenCenterPoint.Y - sideLength / 2;
 
             fullScreenGrab.Show();
             fullScreenGrab.Activate();
@@ -115,12 +115,12 @@ public static class WindowUtilities
 
     public static Point GetCenterPoint(this Screen screen)
     {
-        double x = screen.WpfBounds.Left + (screen.WpfBounds.Width / 2);
-        double y = screen.WpfBounds.Top + (screen.WpfBounds.Height / 2);
+        double x = screen.WpfBounds.Left + screen.WpfBounds.Width / 2;
+        double y = screen.WpfBounds.Top + screen.WpfBounds.Height / 2;
         return new(x, y);
     }
 
-    public static System.Windows.Point GetWindowCenter(this Window window)
+    public static Point GetWindowCenter(this Window window)
     {
         double x = window.Width / 2;
         double y = window.Height / 2;
@@ -129,11 +129,11 @@ public static class WindowUtilities
 
     public static void CenterOverThisWindow(this Window newWindow, Window bottomWindow)
     {
-        System.Windows.Point newWindowCenter = newWindow.GetWindowCenter();
-        System.Windows.Point bottomWindowCenter = bottomWindow.GetWindowCenter();
+        Point newWindowCenter = newWindow.GetWindowCenter();
+        Point bottomWindowCenter = bottomWindow.GetWindowCenter();
 
-        double newWindowTop = (bottomWindow.Top + bottomWindowCenter.Y) - newWindowCenter.Y;
-        double newWindowLeft = (bottomWindow.Left + bottomWindowCenter.X) - newWindowCenter.X;
+        double newWindowTop = bottomWindow.Top + bottomWindowCenter.Y - newWindowCenter.Y;
+        double newWindowLeft = bottomWindow.Left + bottomWindowCenter.X - newWindowCenter.X;
 
         newWindow.Top = newWindowTop;
         newWindow.Left = newWindowLeft;
@@ -268,7 +268,7 @@ public static class WindowUtilities
 
         if (AppUtilities.TextGrabSettings.RunInTheBackground)
         {
-            if (App.Current is App app)
+            if (Application.Current is App app)
             {
                 if (app.NumberOfRunningInstances > 1
                     && app.TextGrabIcon == null

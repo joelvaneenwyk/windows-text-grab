@@ -26,7 +26,7 @@ public static partial class HotKeyManager
     public static int RegisterHotKey(Keys key, KeyModifiers modifiers)
     {
         _windowReadyEvent?.WaitOne();
-        int id = System.Threading.Interlocked.Increment(ref _id);
+        int id = Interlocked.Increment(ref _id);
         _wnd?.Invoke(new RegisterHotKeyDelegate(RegisterHotKeyInternal), _hwnd, id, (uint)modifiers, (uint)key);
         return id;
     }
@@ -51,9 +51,9 @@ public static partial class HotKeyManager
 
     private static void OnHotKeyPressed(HotKeyEventArgs e)
     {
-        if (HotKeyManager.HotKeyPressed != null)
+        if (HotKeyPressed != null)
         {
-            HotKeyManager.HotKeyPressed(null, e);
+            HotKeyPressed(null, e);
         }
     }
 
@@ -76,7 +76,7 @@ public static partial class HotKeyManager
         public MessageWindow()
         {
             _wnd = this;
-            _hwnd = this.Handle;
+            _hwnd = Handle;
             _windowReadyEvent?.Set();
         }
 
@@ -85,7 +85,7 @@ public static partial class HotKeyManager
             if (m.Msg == WM_HOTKEY)
             {
                 HotKeyEventArgs e = new HotKeyEventArgs(m.LParam);
-                HotKeyManager.OnHotKeyPressed(e);
+                OnHotKeyPressed(e);
             }
 
             base.WndProc(ref m);
@@ -108,7 +108,7 @@ public static partial class HotKeyManager
     [return: MarshalAs(UnmanagedType.Bool)]
     private static partial bool UnregisterHotKey(IntPtr hWnd, int id);
 
-    private static int _id = 0;
+    private static int _id;
 }
 
 
@@ -119,8 +119,8 @@ public class HotKeyEventArgs : EventArgs
 
     public HotKeyEventArgs(Keys key, KeyModifiers modifiers)
     {
-        this.Key = key;
-        this.Modifiers = modifiers;
+        Key = key;
+        Modifiers = modifiers;
     }
 
     public HotKeyEventArgs(IntPtr hotKeyParam)

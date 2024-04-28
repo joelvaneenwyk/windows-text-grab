@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Threading.Tasks;
+using System.Windows;
 using Windows.ApplicationModel;
 
 namespace Text_Grab.Utilities;
@@ -24,7 +25,7 @@ internal class ImplementAppOptions
         }
         else
         {
-            App app = (App)App.Current;
+            App app = (App)Application.Current;
             if (app.TextGrabIcon != null)
             {
                 app.TextGrabIcon.Dispose();
@@ -62,7 +63,7 @@ internal class ImplementAppOptions
         else
         {
             string path = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
-            string? BaseDir = System.IO.Path.GetDirectoryName(System.AppContext.BaseDirectory);
+            string? BaseDir = System.IO.Path.GetDirectoryName(AppContext.BaseDirectory);
             RegistryKey? key = Registry.CurrentUser.OpenSubKey(path, true);
             if (key is not null
                 && BaseDir is not null)

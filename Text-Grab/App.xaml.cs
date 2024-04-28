@@ -23,7 +23,7 @@ namespace Text_Grab;
 /// <summary>
 /// Interaction logic for App.xaml
 /// </summary>
-public partial class App : System.Windows.Application
+public partial class App
 {
     #region Fields
 
@@ -33,8 +33,8 @@ public partial class App : System.Windows.Application
 
     #region Properties
 
-    public List<int> HotKeyIds { get; set; } = new();
-    public int NumberOfRunningInstances { get; set; } = 0;
+    public List<int> HotKeyIds { get; set; } = [];
+    public int NumberOfRunningInstances { get; private set; }
     public NotifyIcon? TextGrabIcon { get; set; }
     #endregion Properties
 
@@ -109,7 +109,7 @@ public partial class App : System.Windows.Application
 
     public static void WatchTheme()
     {
-        if (Registry.CurrentUser.OpenSubKey(SystemThemeUtility.themeKeyPath) is not RegistryKey key)
+        if (Registry.CurrentUser.OpenSubKey(SystemThemeUtility.themeKeyPath) is not { } key)
             return;
 
         RegistryMonitor monitor = new(key);

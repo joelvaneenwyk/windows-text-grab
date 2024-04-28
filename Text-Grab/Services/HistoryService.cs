@@ -68,7 +68,7 @@ public class HistoryService
 
     public HistoryInfo? GetLastFullScreenGrabInfo()
     {
-        return HistoryWithImage.Where(h => h.SourceMode == TextGrabMode.Fullscreen).LastOrDefault();
+        return HistoryWithImage.LastOrDefault(h => h.SourceMode == TextGrabMode.Fullscreen);
     }
 
     public bool HasAnyFullscreenHistory()
@@ -80,7 +80,7 @@ public class HistoryService
     {
         HistoryInfo? lastHistoryItem = HistoryWithImage.LastOrDefault();
 
-        if (lastHistoryItem is not HistoryInfo historyInfo)
+        if (lastHistoryItem is not { } historyInfo)
             return false;
 
         GrabFrame grabFrame = new(historyInfo);
@@ -94,7 +94,7 @@ public class HistoryService
     {
         HistoryInfo? lastHistoryItem = HistoryTextOnly.LastOrDefault();
 
-        if (lastHistoryItem is not HistoryInfo historyInfo)
+        if (lastHistoryItem is not { } historyInfo)
             return string.Empty;
 
         return historyInfo.TextContent;
@@ -256,7 +256,7 @@ public class HistoryService
 
         var tempHistory = JsonSerializer.Deserialize<List<HistoryInfo>>(rawText);
 
-        if (tempHistory is List<HistoryInfo> jsonList && jsonList.Count > 0)
+        if (tempHistory is { } jsonList && jsonList.Count > 0)
             return tempHistory;
 
         return new List<HistoryInfo>();

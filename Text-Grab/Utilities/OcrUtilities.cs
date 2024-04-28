@@ -61,7 +61,7 @@ public static class OcrUtilities
                 if (DefaultSettings.CorrectErrors)
                     wordString = wordString.TryFixNumberLetterErrors();
 
-                if (isFirstWord || (!isThisWordSpaceJoining && !isPrevWordSpaceJoining))
+                if (isFirstWord || !isThisWordSpaceJoining && !isPrevWordSpaceJoining)
                     _ = text.Append(wordString);
                 else
                     _ = text.Append(' ').Append(wordString);
@@ -305,7 +305,7 @@ public static class OcrUtilities
 
         double scale = await GetIdealScaleFactorForOcrAsync(bitmap, language);
         Bitmap scaledBitmap = ImageMethods.ScaleBitmapUniform(bitmap, scale);
-        OcrResult ocrResult = await OcrUtilities.GetOcrResultFromImageAsync(scaledBitmap, language);
+        OcrResult ocrResult = await GetOcrResultFromImageAsync(scaledBitmap, language);
         OcrOutput paragraphsOutput = GetTextFromOcrResult(language, scaledBitmap, ocrResult);
         outputs.Add(paragraphsOutput);
 
@@ -384,7 +384,7 @@ public static class OcrUtilities
 
     private static async Task<string> GetTextFromClickedWordAsync(Point singlePoint, Bitmap bitmap, Language language)
     {
-        return GetTextFromClickedWord(singlePoint, await OcrUtilities.GetOcrResultFromImageAsync(bitmap, language));
+        return GetTextFromClickedWord(singlePoint, await GetOcrResultFromImageAsync(bitmap, language));
     }
 
     private static string GetTextFromClickedWord(Point singlePoint, OcrResult ocrResult)
@@ -401,14 +401,14 @@ public static class OcrUtilities
 
     public async static Task<double> GetIdealScaleFactorForOcrAsync(SoftwareBitmap bitmap, Language selectedLanguage)
     {
-        OcrResult ocrResult = await OcrUtilities.GetOcrResultFromImageAsync(bitmap, selectedLanguage);
+        OcrResult ocrResult = await GetOcrResultFromImageAsync(bitmap, selectedLanguage);
 
         return GetIdealScaleFactorForOcrResult(ocrResult, bitmap.PixelHeight, bitmap.PixelWidth);
     }
 
     public async static Task<double> GetIdealScaleFactorForOcrAsync(Bitmap bitmap, Language selectedLanguage)
     {
-        OcrResult ocrResult = await OcrUtilities.GetOcrResultFromImageAsync(bitmap, selectedLanguage);
+        OcrResult ocrResult = await GetOcrResultFromImageAsync(bitmap, selectedLanguage);
 
         return GetIdealScaleFactorForOcrResult(ocrResult, bitmap.Height, bitmap.Width);
     }

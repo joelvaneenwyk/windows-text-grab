@@ -19,7 +19,7 @@ public partial class ShortcutControl : UserControl
     private readonly Brush BadBrush = new SolidColorBrush(Colors.Red);
     private readonly Brush GoodBrush = new SolidColorBrush(Colors.Transparent);
 
-    private bool HasErrorWithKeySet { get; set; } = false;
+    private bool HasErrorWithKeySet { get; set; }
     public bool HasConflictingError { get; set; } = false;
 
     public bool IsShortcutEnabled
@@ -40,11 +40,11 @@ public partial class ShortcutControl : UserControl
     public static readonly DependencyProperty ShortcutNameProperty =
         DependencyProperty.Register("ShortcutName", typeof(string), typeof(ShortcutControl), new PropertyMetadata("shortcutName"));
 
-    bool isRecording = false;
+    bool isRecording;
 
     string previousSequence = string.Empty;
-    public bool HasModifier { get; set; } = false;
-    public bool HasLetter { get; set; } = false;
+    public bool HasModifier { get; set; }
+    public bool HasLetter { get; set; }
 
     private ShortcutKeySet _keySet = new();
 

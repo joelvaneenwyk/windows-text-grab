@@ -40,7 +40,7 @@ public class WindowResizer
     /// <summary>
     /// The last calculated available screen size
     /// </summary>
-    private Rect mScreenSize = new Rect();
+    private Rect mScreenSize;
 
     /// <summary>
     /// How close to the edge the window has to be to be detected as at the edge of the screen
@@ -139,10 +139,10 @@ public class WindowResizer
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void Window_SourceInitialized(object? sender, System.EventArgs e)
+    private void Window_SourceInitialized(object? sender, EventArgs e)
     {
         // Get the handle of this window
-        var handle = (new WindowInteropHelper(mWindow)).Handle;
+        var handle = new WindowInteropHelper(mWindow).Handle;
         var handleSource = HwndSource.FromHwnd(handle);
 
         // If not found, end
@@ -183,10 +183,10 @@ public class WindowResizer
         var windowBottomRight = mTransformToDevice.Transform(new Point(right, bottom));
 
         // Check for edges docked
-        var edgedTop = windowTopLeft.Y <= (mScreenSize.Top + mEdgeTolerance);
-        var edgedLeft = windowTopLeft.X <= (mScreenSize.Left + mEdgeTolerance);
-        var edgedBottom = windowBottomRight.Y >= (mScreenSize.Bottom - mEdgeTolerance);
-        var edgedRight = windowBottomRight.X >= (mScreenSize.Right - mEdgeTolerance);
+        var edgedTop = windowTopLeft.Y <= mScreenSize.Top + mEdgeTolerance;
+        var edgedLeft = windowTopLeft.X <= mScreenSize.Left + mEdgeTolerance;
+        var edgedBottom = windowBottomRight.Y >= mScreenSize.Bottom - mEdgeTolerance;
+        var edgedRight = windowBottomRight.X >= mScreenSize.Right - mEdgeTolerance;
 
         // Get docked position
         var dock = WindowDockPosition.Undocked;
@@ -244,7 +244,7 @@ public class WindowResizer
     /// </summary>
     /// <param name="hwnd"></param>
     /// <param name="lParam"></param>
-    private void WmGetMinMaxInfo(System.IntPtr hwnd, System.IntPtr lParam)
+    private void WmGetMinMaxInfo(IntPtr hwnd, IntPtr lParam)
     {
         if (mWindow is null)
             return;
@@ -324,10 +324,10 @@ public struct Rectangle
 
     public Rectangle(int left, int top, int right, int bottom)
     {
-        this.Left = left;
-        this.Top = top;
-        this.Right = right;
-        this.Bottom = bottom;
+        Left = left;
+        Top = top;
+        Right = right;
+        Bottom = bottom;
     }
 }
 
@@ -358,8 +358,8 @@ public struct POINT
     /// </summary>
     public POINT(int x, int y)
     {
-        this.X = x;
-        this.Y = y;
+        X = x;
+        Y = y;
     }
 }
 

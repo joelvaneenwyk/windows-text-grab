@@ -108,7 +108,7 @@ public static class TesseractHelper
 
     public static async Task<OcrOutput> GetOcrOutputFromBitmap(Bitmap bmp, Windows.Globalization.Language language, string tessTag = "")
     {
-        bmp.Save(TesseractHelper.TempImagePath(), ImageFormat.Png);
+        bmp.Save(TempImagePath(), ImageFormat.Png);
         if (string.IsNullOrWhiteSpace(tessTag))
             tessTag = language.LanguageTag;
 
@@ -117,7 +117,7 @@ public static class TesseractHelper
             Engine = OcrEngineKind.Tesseract,
             Kind = OcrOutputKind.Paragraph,
             SourceBitmap = bmp,
-            RawOutput = await TesseractHelper.GetTextFromImagePathAsync(TempImagePath(), tessTag)
+            RawOutput = await GetTextFromImagePathAsync(TempImagePath(), tessTag)
         };
         ocrOutput.CleanOutput();
 
@@ -174,7 +174,7 @@ public static class TesseractHelper
 
     public static string TempImagePath()
     {
-        string? exePath = Path.GetDirectoryName(System.AppContext.BaseDirectory);
+        string? exePath = Path.GetDirectoryName(AppContext.BaseDirectory);
         if (exePath is null)
         {
             string rawPath = @"%LOCALAPPDATA%\Text_Grab";

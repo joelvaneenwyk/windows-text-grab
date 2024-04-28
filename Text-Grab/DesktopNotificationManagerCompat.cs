@@ -85,9 +85,9 @@ public class DesktopNotificationManagerCompat
 
         _aumid = aumid;
 
-        if (Process.GetCurrentProcess().MainModule is ProcessModule processModule)
+        if (Process.GetCurrentProcess().MainModule is { } processModule)
         {
-            if (processModule.FileName is String exePath)
+            if (processModule.FileName is { } exePath)
                 RegisterComServer<T>(exePath);
 
             _registeredAumidAndComServer = true;
@@ -415,7 +415,7 @@ public sealed class DesktopNotificationHistoryCompat
 /// <summary>
 /// Apps must implement this activator to handle notification activation.
 /// </summary>
-public abstract class NotificationActivator : NotificationActivator.INotificationActivationCallback
+public abstract class NotificationActivator : INotificationActivationCallback
 {
     public void Activate(string appUserModelId, string invokedArgs, NOTIFICATION_USER_INPUT_DATA[] data, uint dataCount)
     {
@@ -465,9 +465,9 @@ public abstract class NotificationActivator : NotificationActivator.INotificatio
 /// </summary>
 public class NotificationUserInput : IReadOnlyDictionary<string, string>
 {
-    private NotificationActivator.NOTIFICATION_USER_INPUT_DATA[] _data;
+    private NOTIFICATION_USER_INPUT_DATA[] _data;
 
-    internal NotificationUserInput(NotificationActivator.NOTIFICATION_USER_INPUT_DATA[] data)
+    internal NotificationUserInput(NOTIFICATION_USER_INPUT_DATA[] data)
     {
         _data = data;
     }

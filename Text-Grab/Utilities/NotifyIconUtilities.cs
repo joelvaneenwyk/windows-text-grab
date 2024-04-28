@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Text_Grab.Models;
 using Text_Grab.Services;
 using Text_Grab.Views;
+using Application = System.Windows.Application;
 
 namespace Text_Grab.Utilities;
 
@@ -12,7 +13,7 @@ public static class NotifyIconUtilities
 {
     public static void SetupNotifyIcon()
     {
-        App app = (App)App.Current;
+        App app = (App)Application.Current;
         if (app.TextGrabIcon is not null
             || app.NumberOfRunningInstances > 1)
         {
@@ -76,7 +77,7 @@ public static class NotifyIconUtilities
         IEnumerable<ShortcutKeySet> shortcuts = ShortcutKeysUtilities.GetShortcutKeySetsFromSettings();
 
         foreach (ShortcutKeySet keySet in shortcuts)
-            if (keySet.IsEnabled && HotKeyManager.RegisterHotKey(keySet) is int id)
+            if (keySet.IsEnabled && HotKeyManager.RegisterHotKey(keySet) is { } id)
                 app.HotKeyIds.Add(id);
 
         HotKeyManager.HotKeyPressed -= new EventHandler<HotKeyEventArgs>(HotKeyManager_HotKeyPressed);
@@ -93,7 +94,7 @@ public static class NotifyIconUtilities
 
     private static void trayIcon_Disposed(object? sender, EventArgs e)
     {
-        App app = (App)App.Current;
+        App app = (App)Application.Current;
 
         UnregisterHotkeys(app);
     }

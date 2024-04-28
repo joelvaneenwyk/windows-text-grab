@@ -91,8 +91,8 @@ public static class ImageMethods
 
         Point absPosPoint = passedWindow.GetAbsolutePosition();
 
-        int thisCorrectedLeft = (int)(absPosPoint.X);
-        int thisCorrectedTop = (int)(absPosPoint.Y);
+        int thisCorrectedLeft = (int)absPosPoint.X;
+        int thisCorrectedTop = (int)absPosPoint.Y;
 
         if (passedWindow is GrabFrame grabFrame)
         {
@@ -103,8 +103,8 @@ public static class ImageMethods
             int bottomBarHeight = 42;
             thisCorrectedLeft = (int)((absPosPoint.X + borderThickness) * dpi.DpiScaleX);
             thisCorrectedTop = (int)((absPosPoint.Y + (titleBarHeight + borderThickness)) * dpi.DpiScaleY);
-            windowWidth -= (int)((2 * borderThickness) * dpi.DpiScaleX);
-            windowHeight -= (int)((titleBarHeight + bottomBarHeight + (2 * borderThickness)) * dpi.DpiScaleY);
+            windowWidth -= (int)(2 * borderThickness * dpi.DpiScaleX);
+            windowHeight -= (int)((titleBarHeight + bottomBarHeight + 2 * borderThickness) * dpi.DpiScaleY);
         }
 
         Bitmap bmp = new(windowWidth, windowHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb);

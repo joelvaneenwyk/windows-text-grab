@@ -25,6 +25,7 @@ using Windows.Globalization;
 using Windows.Media.Ocr;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using ButtonBase = System.Windows.Controls.Primitives.ButtonBase;
 
 namespace Text_Grab;
 
@@ -49,7 +50,7 @@ public partial class EditTextWindow : Wpf.Ui.Controls.FluentWindow
     public static RoutedCommand ToggleCaseCmd = new();
     public static RoutedCommand UnstackCmd = new();
     public static RoutedCommand UnstackGroupCmd = new();
-    public bool LaunchedFromNotification = false;
+    public bool LaunchedFromNotification;
     CancellationTokenSource? cancellationTokenForDirOCR;
     private string historyId = string.Empty;
     private int numberOfContextMenuItems;
@@ -94,10 +95,10 @@ public partial class EditTextWindow : Wpf.Ui.Controls.FluentWindow
 
         if (historyInfo.PositionRect != Rect.Empty)
         {
-            this.Left = historyInfo.PositionRect.X;
-            this.Top = historyInfo.PositionRect.Y;
-            this.Width = historyInfo.PositionRect.Width;
-            this.Height = historyInfo.PositionRect.Height;
+            Left = historyInfo.PositionRect.X;
+            Top = historyInfo.PositionRect.Y;
+            Width = historyInfo.PositionRect.Width;
+            Height = historyInfo.PositionRect.Height;
         }
     }
 
@@ -108,7 +109,7 @@ public partial class EditTextWindow : Wpf.Ui.Controls.FluentWindow
     public CurrentCase CaseStatusOfToggle { get; set; } = CurrentCase.Unknown;
 
     public bool WrapText { get; set; } = false;
-    private bool _IsAccessingClipboard { get; set; } = false;
+    private bool _IsAccessingClipboard { get; set; }
 
     #endregion Properties
 
@@ -167,7 +168,7 @@ public partial class EditTextWindow : Wpf.Ui.Controls.FluentWindow
         {
             files = Directory.GetFiles(folderPath, "*.*", searchOption);
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
             PassedTextControl.AppendText($"Failed to read directory: {ex.Message}{Environment.NewLine}");
         }
@@ -350,10 +351,10 @@ public partial class EditTextWindow : Wpf.Ui.Controls.FluentWindow
         StringBuilder listOfNames = new();
         listOfNames.Append(chosenFolderPath).Append(Environment.NewLine).Append(Environment.NewLine);
         foreach (string folder in folders)
-            listOfNames.Append($"{folder.AsSpan(1 + chosenFolderPath.Length, (folder.Length - 1) - chosenFolderPath.Length)}{Environment.NewLine}");
+            listOfNames.Append($"{folder.AsSpan(1 + chosenFolderPath.Length, folder.Length - 1 - chosenFolderPath.Length)}{Environment.NewLine}");
 
         foreach (string file in files)
-            listOfNames.Append($"{file.AsSpan(1 + chosenFolderPath.Length, (file.Length - 1) - chosenFolderPath.Length)}{Environment.NewLine}");
+            listOfNames.Append($"{file.AsSpan(1 + chosenFolderPath.Length, file.Length - 1 - chosenFolderPath.Length)}{Environment.NewLine}");
         return listOfNames.ToString();
     }
 
@@ -370,7 +371,7 @@ public partial class EditTextWindow : Wpf.Ui.Controls.FluentWindow
             {
                 returnString.AppendLine(ocrText);
 
-                if (options.WriteTxtFiles && Path.GetDirectoryName(path) is string dir)
+                if (options.WriteTxtFiles && Path.GetDirectoryName(path) is { } dir)
                 {
                     using StreamWriter outputFile = new(Path.Combine(dir, $"{Path.GetFileNameWithoutExtension(path)}.txt"));
                     outputFile.WriteLine(ocrText);
@@ -619,7 +620,7 @@ public partial class EditTextWindow : Wpf.Ui.Controls.FluentWindow
         {
             dataPackageView = Windows.ApplicationModel.DataTransfer.Clipboard.GetContent();
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
             Debug.WriteLine($"error with Windows.ApplicationModel.DataTransfer.Clipboard.GetContent(). Exception Message: {ex.Message}");
         }
@@ -633,7 +634,7 @@ public partial class EditTextWindow : Wpf.Ui.Controls.FluentWindow
                 text += Environment.NewLine;
                 System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => { AddCopiedTextToTextBox(text); }));
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 Debug.WriteLine($"error with dataPackageView.GetTextAsync(). Exception Message: {ex.Message}");
             }
@@ -656,14 +657,14 @@ public partial class EditTextWindow : Wpf.Ui.Controls.FluentWindow
     {
         string clipboardText = PassedTextControl.Text;
         try { System.Windows.Clipboard.SetDataObject(clipboardText, true); } catch { }
-        this.Close();
+        Close();
     }
 
     private async void CopyClosePasteBTN_Click(object sender, RoutedEventArgs e)
     {
         string clipboardText = PassedTextControl.Text;
         try { System.Windows.Clipboard.SetDataObject(clipboardText, true); } catch { }
-        this.Close();
+        Close();
         await WindowUtilities.TryInsertString(clipboardText);
     }
 
@@ -735,10 +736,10 @@ public partial class EditTextWindow : Wpf.Ui.Controls.FluentWindow
 
         e.Handled = true;
 
-        if (correspondingButton.Command is ICommand buttonCommand)
+        if (correspondingButton.Command is { } buttonCommand)
             buttonCommand.Execute(null);
         else
-            correspondingButton.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));
+            correspondingButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
     }
 
     private void ETWindow_DragOver(object sender, System.Windows.DragEventArgs e)
@@ -805,7 +806,7 @@ public partial class EditTextWindow : Wpf.Ui.Controls.FluentWindow
     private void FontMenuItem_Click(object sender, RoutedEventArgs e)
     {
         using FontDialog fd = new();
-        System.Drawing.Font currentFont = new(PassedTextControl.FontFamily.ToString(), (float)((PassedTextControl.FontSize * 72.0) / 96.0));
+        System.Drawing.Font currentFont = new(PassedTextControl.FontFamily.ToString(), (float)(PassedTextControl.FontSize * 72.0 / 96.0));
         fd.Font = currentFont;
         DialogResult result = fd.ShowDialog();
         if (result != System.Windows.Forms.DialogResult.OK)
@@ -814,7 +815,7 @@ public partial class EditTextWindow : Wpf.Ui.Controls.FluentWindow
         Debug.WriteLine(fd.Font);
 
         DefaultSettings.FontFamilySetting = fd.Font.Name;
-        DefaultSettings.FontSizeSetting = (fd.Font.Size * 96.0 / 72.0);
+        DefaultSettings.FontSizeSetting = fd.Font.Size * 96.0 / 72.0;
         DefaultSettings.IsFontBold = fd.Font.Bold;
         DefaultSettings.IsFontItalic = fd.Font.Italic;
         DefaultSettings.IsFontUnderline = fd.Font.Underline;
@@ -888,7 +889,7 @@ public partial class EditTextWindow : Wpf.Ui.Controls.FluentWindow
 
     private void InsertSelectionOnEveryLine(object? sender = null, ExecutedRoutedEventArgs? e = null)
     {
-        string[] splitString = PassedTextControl.Text.Split(new string[] { System.Environment.NewLine }, StringSplitOptions.None);
+        string[] splitString = PassedTextControl.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
         string selectionText = PassedTextControl.SelectedText;
         int initialSelectionStart = PassedTextControl.SelectionStart;
         int selectionPositionInLine = PassedTextControl.SelectionStart;
@@ -911,7 +912,7 @@ public partial class EditTextWindow : Wpf.Ui.Controls.FluentWindow
         foreach (string line in splitString)
         {
             if (line.Length >= selectionPositionInLine
-                && line.Length >= (selectionPositionInLine + selectionLength))
+                && line.Length >= selectionPositionInLine + selectionLength)
             {
                 if (line.Substring(selectionPositionInLine, selectionLength) != selectionText)
                     sb.Append(line.Insert(selectionPositionInLine, selectionText));
@@ -923,7 +924,7 @@ public partial class EditTextWindow : Wpf.Ui.Controls.FluentWindow
                 if (line.Length > selectionPositionInLine)
                     sb.Append(line.Insert(selectionPositionInLine, selectionText));
                 else
-                    sb.Append(line).Append(selectionText.PadLeft((selectionPositionInLine + selectionLength) - line.Length));
+                    sb.Append(line).Append(selectionText.PadLeft(selectionPositionInLine + selectionLength - line.Length));
             }
             sb.Append(Environment.NewLine);
         }
@@ -1354,7 +1355,7 @@ public partial class EditTextWindow : Wpf.Ui.Controls.FluentWindow
         PassedTextControl.ContextMenu = null;
 
 
-        ContextMenu? baseContextMenu = this.FindResource("ContextMenuResource") as ContextMenu;
+        ContextMenu? baseContextMenu = FindResource("ContextMenuResource") as ContextMenu;
 
         while (baseContextMenu is not null
             && baseContextMenu.Items.Count > numberOfContextMenuItems)
@@ -1387,7 +1388,7 @@ public partial class EditTextWindow : Wpf.Ui.Controls.FluentWindow
     {
         if (DefaultSettings.EditWindowStartFullscreen && prevWindowState is not null)
         {
-            this.WindowState = prevWindowState.Value;
+            WindowState = prevWindowState.Value;
             prevWindowState = null;
         }
 
@@ -1403,7 +1404,7 @@ public partial class EditTextWindow : Wpf.Ui.Controls.FluentWindow
         {
             dataPackageView = Windows.ApplicationModel.DataTransfer.Clipboard.GetContent();
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
             Debug.WriteLine($"error with Windows.ApplicationModel.DataTransfer.Clipboard.GetContent(). Exception Message: {ex.Message}");
         }
@@ -1421,7 +1422,7 @@ public partial class EditTextWindow : Wpf.Ui.Controls.FluentWindow
                 string textFromClipboard = await dataPackageView.GetTextAsync();
                 System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => { AddCopiedTextToTextBox(textFromClipboard); }));
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 Debug.WriteLine($"error with dataPackageView.GetTextAsync(). Exception Message: {ex.Message}");
             }
@@ -1437,7 +1438,7 @@ public partial class EditTextWindow : Wpf.Ui.Controls.FluentWindow
 
                 System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => { AddCopiedTextToTextBox(text); }));
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 Debug.WriteLine($"error with dataPackageView.GetBitmapAsync(). Exception Message: {ex.Message}");
             }
@@ -1462,7 +1463,7 @@ public partial class EditTextWindow : Wpf.Ui.Controls.FluentWindow
                     System.Windows.Application.Current.Dispatcher.Invoke(new Action(() => { AddCopiedTextToTextBox(text); }));
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 Debug.WriteLine($"error with dataPackageView.GetStorageItemsAsync(). Exception Message: {ex.Message}");
             }
@@ -1593,7 +1594,7 @@ public partial class EditTextWindow : Wpf.Ui.Controls.FluentWindow
         {
             WindowUtilities.LaunchFullScreenGrab(PassedTextControl);
             LaunchFullscreenOnLoad.IsChecked = true;
-            prevWindowState = this.WindowState;
+            prevWindowState = WindowState;
             WindowState = WindowState.Minimized;
         }
 
@@ -2039,7 +2040,7 @@ public partial class EditTextWindow : Wpf.Ui.Controls.FluentWindow
 
     private void Window_Closed(object? sender, EventArgs e)
     {
-        string windowSizeAndPosition = $"{this.Left},{this.Top},{this.Width},{this.Height}";
+        string windowSizeAndPosition = $"{Left},{Top},{Width},{Height}";
         DefaultSettings.EditTextWindowSizeAndPosition = windowSizeAndPosition;
         DefaultSettings.Save();
 
@@ -2079,7 +2080,7 @@ public partial class EditTextWindow : Wpf.Ui.Controls.FluentWindow
     {
         SetupRoutedCommands();
 
-        PassedTextControl.ContextMenu = this.FindResource("ContextMenuResource") as ContextMenu;
+        PassedTextControl.ContextMenu = FindResource("ContextMenuResource") as ContextMenu;
         if (PassedTextControl.ContextMenu != null)
             numberOfContextMenuItems = PassedTextControl.ContextMenu.Items.Count;
 

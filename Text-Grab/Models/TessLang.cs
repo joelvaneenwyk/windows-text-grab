@@ -38,7 +38,7 @@ public class TessLang : ILanguage
 
     public string AbbreviatedName => _tessLangTag;
 
-    public bool IsVertical { get; set; } = false;
+    public bool IsVertical { get; set; }
 
     public string CurrentInputMethodLanguageTag => string.Empty;
 

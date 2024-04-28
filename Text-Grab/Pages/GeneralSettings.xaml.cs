@@ -22,7 +22,7 @@ public partial class GeneralSettings : Page
     private readonly Brush BadBrush = new SolidColorBrush(Colors.Red);
     private readonly Brush GoodBrush = new SolidColorBrush(Colors.Transparent);
     private double InsertDelaySeconds = 1.5;
-    private bool settingsSet = false;
+    private bool settingsSet;
 
     #endregion Fields
 
@@ -36,7 +36,7 @@ public partial class GeneralSettings : Page
 
     private void OpenExeFolderButton_Click(object sender, RoutedEventArgs args)
     {
-        if (Path.GetDirectoryName(AppContext.BaseDirectory) is not string exePath)
+        if (Path.GetDirectoryName(AppContext.BaseDirectory) is not { } exePath)
             return;
 
         Uri source = new(exePath, UriKind.Absolute);

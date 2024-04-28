@@ -83,7 +83,7 @@ public partial class BottomBarSettings : FluentWindow
 
     private void CloseBTN_Click(object sender, RoutedEventArgs e)
     {
-        this.Close();
+        Close();
     }
 
     private void MoveDownButton_Click(object sender, RoutedEventArgs e)
@@ -125,7 +125,7 @@ public partial class BottomBarSettings : FluentWindow
         if (Owner is EditTextWindow etw)
             etw.SetBottomBarButtons();
 
-        this.Close();
+        Close();
     }
 
     #endregion Methods
