@@ -21,6 +21,8 @@
 		<SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
 		<AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<NoWarn>1701;1702;NU1603;NU1701;NU1603;NU1702</NoWarn>
+		<WarningLevel>9999</WarningLevel>
 	</PropertyGroup>
 
 	<ItemGroup>
