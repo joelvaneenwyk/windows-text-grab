@@ -1,10 +1,25 @@
-$BuildPath = "$PSScriptRoot\bld\x64"
-$BuildPathSC = "$PSScriptRoot\bld\x64\Text-Grab-Self-Contained"
+#!/usr/bin/env pwsh
+<#
+.SYNOPSIS
+	Build Text-Grab
+.DESCRIPTION
+	...
+.NOTES
+	...
+.LINK
+	...
+.EXAMPLE
+	./build-x64.ps1 -Verbose
+#>
+
+
+$BuildPath = "$PSScriptRoot/bld/x64"
+$BuildPathSC = "$PSScriptRoot/bld/x64/Text-Grab-Self-Contained"
 $Version = Get-Date -Format 'yyyy-MM-dd' # 2020-11-1
 $VersionDot = $Version -replace '-', '.'
 $Project = 'Text-Grab'
-$Archive = "$BuildPath\$Project-$Version.zip"
-$ArchiveSC = "$BuildPath\$Project-Self-Contained-$Version.zip"
+$Archive = "$BuildPath/$Project-$Version.zip"
+$ArchiveSC = "$BuildPath/$Project-Self-Contained-$Version.zip"
 
 # Clean up
 if (Test-Path -Path $BuildPath) {
@@ -12,7 +27,7 @@ if (Test-Path -Path $BuildPath) {
 }
 
 # Dotnet restore and build
-dotnet publish "$PSScriptRoot\$Project\$Project.csproj" `
+dotnet publish "$PSScriptRoot/$Project/$Project.csproj" `
 	--runtime win-x64 `
 	--self-contained false `
 	-c Release `
@@ -25,10 +40,10 @@ dotnet publish "$PSScriptRoot\$Project\$Project.csproj" `
 	--nologo
 
 # Archive Build
-Compress-Archive -Path "$BuildPath\$Project.exe" -DestinationPath $Archive
+Compress-Archive -Path "$BuildPath/$Project.exe" -DestinationPath $Archive
 
 # Dotnet restore and build
-dotnet publish "$PSScriptRoot\$Project\$Project.csproj" `
+dotnet publish "$PSScriptRoot/$Project/$Project.csproj" `
 	--runtime win-x64 `
 	--self-contained true `
 	-c Release `
