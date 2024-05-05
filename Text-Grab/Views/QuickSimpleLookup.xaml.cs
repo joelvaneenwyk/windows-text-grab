@@ -14,18 +14,21 @@ using System.Windows.Media;
 using Text_Grab.Models;
 using Text_Grab.Properties;
 using Text_Grab.Utilities;
+using Wpf.Ui.Controls;
+using MessageBox = System.Windows.Forms.MessageBox;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace Text_Grab.Views;
 
 /// <summary>
 /// Interaction logic for QuickSimpleLookup.xaml
 /// </summary>
-public partial class QuickSimpleLookup : Wpf.Ui.Controls.FluentWindow
+public partial class QuickSimpleLookup : FluentWindow
 {
     #region Fields
 
     public TextBox? DestinationTextBox;
-    private string cacheFilename = "QuickSimpleLookupCache.csv";
+    private readonly string cacheFilename = "QuickSimpleLookupCache.csv";
     private bool isPuttingValueIn;
     private LookupItem? lastSelection;
     private int rowCount;
@@ -540,8 +543,6 @@ public partial class QuickSimpleLookup : Wpf.Ui.Controls.FluentWindow
             case Key.Home:
                 GoToBeginningOfMainDataGrid();
                 break;
-            default:
-                break;
         }
     }
 
@@ -729,7 +730,7 @@ public partial class QuickSimpleLookup : Wpf.Ui.Controls.FluentWindow
         }
         catch (Exception ex)
         {
-            System.Windows.Forms.MessageBox.Show($"Failed to save csv file. {ex.Message}");
+            MessageBox.Show($"Failed to save csv file. {ex.Message}");
         }
     }
     #endregion Methods

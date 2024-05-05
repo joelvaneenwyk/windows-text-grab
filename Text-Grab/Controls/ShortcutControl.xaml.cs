@@ -40,9 +40,9 @@ public partial class ShortcutControl : UserControl
     public static readonly DependencyProperty ShortcutNameProperty =
         DependencyProperty.Register("ShortcutName", typeof(string), typeof(ShortcutControl), new PropertyMetadata("shortcutName"));
 
-    bool isRecording;
+    private bool isRecording;
 
-    string previousSequence = string.Empty;
+    private string previousSequence = string.Empty;
     public bool HasModifier { get; set; }
     public bool HasLetter { get; set; }
 

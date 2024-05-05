@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Navigation;
 using Text_Grab.Properties;
 using Text_Grab.Utilities;
 using Text_Grab.Views;
@@ -94,7 +95,7 @@ public partial class FirstRunWindow : FluentWindow
         NotificationsCheckBox.IsChecked = DefaultSettings.ShowToast;
     }
 
-    private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+    private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
     {
         Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
         e.Handled = true;
@@ -129,8 +130,6 @@ public partial class FirstRunWindow : FluentWindow
                     break;
                 case TextGrabMode.QuickLookup:
                     WindowUtilities.OpenOrActivateWindow<QuickSimpleLookup>();
-                    break;
-                default:
                     break;
             }
         }

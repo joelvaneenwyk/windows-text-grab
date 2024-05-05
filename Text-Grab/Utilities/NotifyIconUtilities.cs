@@ -22,7 +22,7 @@ public static class NotifyIconUtilities
 
         NotifyIcon icon = new();
         icon.Text = "Text Grab";
-        icon.Icon = new Icon(System.Windows.Application.GetResourceStream(new Uri("/TealSelect.ico", UriKind.Relative)).Stream);
+        icon.Icon = new Icon(Application.GetResourceStream(new Uri("/TealSelect.ico", UriKind.Relative)).Stream);
         icon.Visible = true;
 
         ContextMenuStrip? contextMenu = new();
@@ -43,10 +43,10 @@ public static class NotifyIconUtilities
         editTextWindowItem.Click += (s, e) => { EditTextWindow etw = new(); etw.Show(); };
 
         ToolStripMenuItem? exitItem = new("&Close");
-        exitItem.Click += (s, e) => { System.Windows.Application.Current.Shutdown(); };
+        exitItem.Click += (s, e) => { Application.Current.Shutdown(); };
 
         contextMenu.Items.AddRange(
-            new ToolStripMenuItem[] {
+            new[] {
                 fullScreenGrabItem,
                 previousGrabRegion,
                 grabFrameItem,
@@ -80,13 +80,13 @@ public static class NotifyIconUtilities
             if (keySet.IsEnabled && HotKeyManager.RegisterHotKey(keySet) is { } id)
                 app.HotKeyIds.Add(id);
 
-        HotKeyManager.HotKeyPressed -= new EventHandler<HotKeyEventArgs>(HotKeyManager_HotKeyPressed);
-        HotKeyManager.HotKeyPressed += new EventHandler<HotKeyEventArgs>(HotKeyManager_HotKeyPressed);
+        HotKeyManager.HotKeyPressed -= HotKeyManager_HotKeyPressed;
+        HotKeyManager.HotKeyPressed += HotKeyManager_HotKeyPressed;
     }
 
     public static void UnregisterHotkeys(App app)
     {
-        HotKeyManager.HotKeyPressed -= new EventHandler<HotKeyEventArgs>(HotKeyManager_HotKeyPressed);
+        HotKeyManager.HotKeyPressed -= HotKeyManager_HotKeyPressed;
 
         foreach (int hotKeyId in app.HotKeyIds)
             HotKeyManager.UnregisterHotKey(hotKeyId);
@@ -99,7 +99,7 @@ public static class NotifyIconUtilities
         UnregisterHotkeys(app);
     }
 
-    static void HotKeyManager_HotKeyPressed(object? sender, HotKeyEventArgs e)
+    private static void HotKeyManager_HotKeyPressed(object? sender, HotKeyEventArgs e)
     {
         if (!AppUtilities.TextGrabSettings.GlobalHotkeysEnabled)
             return;
@@ -118,55 +118,53 @@ public static class NotifyIconUtilities
             case ShortcutKeyActions.Settings:
                 break;
             case ShortcutKeyActions.Fullscreen:
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     WindowUtilities.LaunchFullScreenGrab();
-                }));
+                });
                 break;
             case ShortcutKeyActions.GrabFrame:
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     GrabFrame gf = new();
                     gf.Show();
-                }));
+                });
                 break;
             case ShortcutKeyActions.Lookup:
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     QuickSimpleLookup qsl = new();
                     qsl.Show();
-                }));
+                });
                 break;
             case ShortcutKeyActions.EditWindow:
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     EditTextWindow etw = new();
                     etw.Show();
                     etw.Activate();
-                }));
+                });
                 break;
             case ShortcutKeyActions.PreviousRegionGrab:
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     OcrUtilities.GetCopyTextFromPreviousRegion();
-                }));
+                });
                 break;
             case ShortcutKeyActions.PreviousEditWindow:
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     EditTextWindow etw = new();
                     etw.OpenMostRecentTextHistoryItem();
                     etw.Show();
                     etw.Activate();
-                }));
+                });
                 break;
             case ShortcutKeyActions.PreviousGrabFrame:
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     Singleton<HistoryService>.Instance.GetLastHistoryAsGrabFrame();
-                }));
-                break;
-            default:
+                });
                 break;
         }
     }

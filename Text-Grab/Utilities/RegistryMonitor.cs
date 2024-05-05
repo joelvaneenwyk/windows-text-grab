@@ -255,7 +255,7 @@ public class RegistryMonitor : IDisposable {
         lock (_threadLock) {
             if (!IsMonitoring) {
                 _eventTerminate.Reset();
-                _thread = new Thread(new ThreadStart(MonitorThread)) {
+                _thread = new Thread(MonitorThread) {
                     IsBackground = true
                 };
                 _thread.Start();
@@ -302,7 +302,7 @@ public class RegistryMonitor : IDisposable {
 
         try {
             AutoResetEvent _eventNotify = new(false);
-            WaitHandle[] waitHandles = new WaitHandle[] { _eventNotify, _eventTerminate };
+            WaitHandle[] waitHandles = { _eventNotify, _eventTerminate };
             while (!_eventTerminate.WaitOne(0, true)) {
                 result = RegNotifyChangeKeyValue(registryKey,
                                     true,

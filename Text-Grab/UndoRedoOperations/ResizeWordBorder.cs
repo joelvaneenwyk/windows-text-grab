@@ -13,7 +13,7 @@ internal class ResizeWordBorder : Operation, IUndoRedoOperation
         NewSize = newSize;
     }
 
-    private WordBorder WordBorder;
+    private readonly WordBorder WordBorder;
 
     private Rect OldSize;
     private Rect NewSize;

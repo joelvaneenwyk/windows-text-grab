@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Navigation;
 using Text_Grab.Properties;
 using Text_Grab.Utilities;
 using Windows.ApplicationModel;
 using Wpf.Ui.Controls;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace Text_Grab.Pages;
 
@@ -40,7 +43,7 @@ public partial class GeneralSettings : Page
             return;
 
         Uri source = new(exePath, UriKind.Absolute);
-        System.Windows.Navigation.RequestNavigateEventArgs e = new(source, exePath);
+        RequestNavigateEventArgs e = new(source, exePath);
         Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
         e.Handled = true;
     }
@@ -126,7 +129,7 @@ public partial class GeneralSettings : Page
         NeverUseClipboardChkBx.IsChecked = DefaultSettings.NeverAutoUseClipboard;
         TryInsertCheckbox.IsChecked = DefaultSettings.TryInsert;
         InsertDelaySeconds = DefaultSettings.InsertDelay;
-        SecondsTextBox.Text = InsertDelaySeconds.ToString("##.#", System.Globalization.CultureInfo.InvariantCulture);
+        SecondsTextBox.Text = InsertDelaySeconds.ToString("##.#", CultureInfo.InvariantCulture);
 
         settingsSet = true;
     }
@@ -136,7 +139,7 @@ public partial class GeneralSettings : Page
         if (!settingsSet)
             return;
 
-        if (sender is System.Windows.Controls.TextBox numberInputBox)
+        if (sender is TextBox numberInputBox)
         {
             bool wasAbleToConvert = double.TryParse(numberInputBox.Text, out double parsedText);
             if (wasAbleToConvert && parsedText > 0 && parsedText < 10)

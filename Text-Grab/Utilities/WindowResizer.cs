@@ -35,7 +35,7 @@ public class WindowResizer
     /// <summary>
     /// The window to handle the resizing for
     /// </summary>
-    private Window? mWindow;
+    private readonly Window? mWindow;
 
     /// <summary>
     /// The last calculated available screen size
@@ -45,7 +45,7 @@ public class WindowResizer
     /// <summary>
     /// How close to the edge the window has to be to be detected as at the edge of the screen
     /// </summary>
-    private int mEdgeTolerance = 2;
+    private readonly int mEdgeTolerance = 2;
 
     /// <summary>
     /// The transform matrix used to convert WPF sizes to screen pixels
@@ -68,13 +68,13 @@ public class WindowResizer
 
     [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
-    static extern bool GetCursorPos(out POINT lpPoint);
+    private static extern bool GetCursorPos(out POINT lpPoint);
 
     [DllImport("user32.dll")]
-    static extern bool GetMonitorInfo(IntPtr hMonitor, MONITORINFO lpmi);
+    private static extern bool GetMonitorInfo(IntPtr hMonitor, MONITORINFO lpmi);
 
     [DllImport("user32.dll", SetLastError = true)]
-    static extern IntPtr MonitorFromPoint(POINT pt, MonitorOptions dwFlags);
+    private static extern IntPtr MonitorFromPoint(POINT pt, MonitorOptions dwFlags);
 
     #endregion
 
@@ -83,7 +83,7 @@ public class WindowResizer
     /// <summary>
     /// Called when the window dock position changes
     /// </summary>
-    public event Action<WindowDockPosition> WindowDockChanged = (dock) => { };
+    public event Action<WindowDockPosition> WindowDockChanged = dock => { };
 
     #endregion
 
@@ -233,7 +233,7 @@ public class WindowResizer
                 break;
         }
 
-        return (IntPtr)0;
+        return 0;
     }
 
     #endregion
@@ -299,7 +299,7 @@ public class WindowResizer
 
 #region Dll Helper Structures
 
-enum MonitorOptions : uint
+internal enum MonitorOptions : uint
 {
     MONITOR_DEFAULTTONULL = 0x00000000,
     MONITOR_DEFAULTTOPRIMARY = 0x00000001,
@@ -339,7 +339,7 @@ public struct MINMAXINFO
     public POINT ptMaxPosition;
     public POINT ptMinTrackSize;
     public POINT ptMaxTrackSize;
-};
+}
 
 [StructLayout(LayoutKind.Sequential)]
 public struct POINT

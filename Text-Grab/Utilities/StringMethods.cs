@@ -333,13 +333,13 @@ public static class StringMethods
 
         if (!isAllLower && isAllUpper)
             return CurrentCase.Upper;
-        else if (!isAllUpper && isAllLower)
+        if (!isAllUpper && isAllLower)
             return CurrentCase.Lower;
 
         return CurrentCase.Camel;
     }
 
-    public enum CharType { Letter, Number, Space, Special, Other };
+    public enum CharType { Letter, Number, Space, Special, Other }
 
     public class CharRun
     {
@@ -505,7 +505,7 @@ public static class StringMethods
         return possibleShortenedPatterns.First();
     }
 
-    static IEnumerable<string> Split(string str, int chunkSize)
+    private static IEnumerable<string> Split(string str, int chunkSize)
     {
         return Enumerable.Range(0, str.Length / chunkSize)
             .Select(i => str.Substring(i * chunkSize, chunkSize));
@@ -517,7 +517,7 @@ public static class StringMethods
 
         stringToUnstack = Regex.Replace(stringToUnstack, @"(\r\n|\n|\r)", Environment.NewLine);
 
-        string[] splitString = stringToUnstack.Split(new string[] { Environment.NewLine }, StringSplitOptions.TrimEntries);
+        string[] splitString = stringToUnstack.Split(new[] { Environment.NewLine }, StringSplitOptions.TrimEntries);
 
         int columnIterator = 0;
 
@@ -546,7 +546,7 @@ public static class StringMethods
 
         stringGroupedToUnstack = Regex.Replace(stringGroupedToUnstack, @"(\r\n|\n|\r)", Environment.NewLine);
 
-        string[] splitInputString = stringGroupedToUnstack.Split(new string[] { Environment.NewLine }, StringSplitOptions.TrimEntries);
+        string[] splitInputString = stringGroupedToUnstack.Split(new[] { Environment.NewLine }, StringSplitOptions.TrimEntries);
 
         int numberOfColumns = splitInputString.Length / numberOfRows;
 
@@ -574,7 +574,7 @@ public static class StringMethods
 
     public static string RemoveDuplicateLines(this string stringToDeduplicate)
     {
-        string[] splitString = stringToDeduplicate.Split(new string[] { Environment.NewLine }, StringSplitOptions.TrimEntries);
+        string[] splitString = stringToDeduplicate.Split(new[] { Environment.NewLine }, StringSplitOptions.TrimEntries);
         List<string> uniqueLines = new();
 
         foreach (string originalLine in splitString)
@@ -592,7 +592,7 @@ public static class StringMethods
 
     public static string RemoveFromEachLine(this string stringToEdit, int numberOfChars, SpotInLine spotInLine)
     {
-        string[] splitString = stringToEdit.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+        string[] splitString = stringToEdit.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
         StringBuilder sb = new();
         foreach (string line in splitString)
@@ -612,8 +612,6 @@ public static class StringMethods
                 case SpotInLine.End:
                     sb.AppendLine(line.Substring(0, lineLength - numberOfChars));
                     break;
-                default:
-                    break;
             }
         }
 
@@ -622,7 +620,7 @@ public static class StringMethods
 
     public static string AddCharsToEachLine(this string stringToEdit, string stringToAdd, SpotInLine spotInLine)
     {
-        string[] splitString = stringToEdit.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+        string[] splitString = stringToEdit.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
         if (splitString.Length > 1)
             if (splitString.LastOrDefault() == "")
@@ -639,8 +637,6 @@ public static class StringMethods
                 case SpotInLine.End:
                     sb.AppendLine(line + stringToAdd);
                     break;
-                default:
-                    break;
             }
         }
 
@@ -649,7 +645,7 @@ public static class StringMethods
 
     public static string LimitCharactersPerLine(this string stringToEdit, int characterLimit, SpotInLine spotInLine)
     {
-        string[] splitString = stringToEdit.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+        string[] splitString = stringToEdit.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
         StringBuilder returnStringBuilder = new();
         foreach (string line in splitString)
         {

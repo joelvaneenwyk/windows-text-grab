@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Windows;
+using Point = System.Windows.Point;
 
 namespace Text_Grab;
 
@@ -75,7 +76,7 @@ public static class ShapeExtensions
         return true;
     }
 
-    public static System.Windows.Point CenterPoint(this Rect rect)
+    public static Point CenterPoint(this Rect rect)
     {
         double x = rect.Left + rect.Width / 2;
         double y = rect.Top + rect.Height / 2;

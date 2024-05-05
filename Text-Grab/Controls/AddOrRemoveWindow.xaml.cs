@@ -2,13 +2,15 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Wpf.Ui.Controls;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace Text_Grab.Controls;
 
 /// <summary>
 /// Interaction logic for AddOrRemoveWindow.xaml
 /// </summary>
-public partial class AddOrRemoveWindow : Wpf.Ui.Controls.FluentWindow
+public partial class AddOrRemoveWindow : FluentWindow
 {
     #region Fields
 

@@ -27,7 +27,7 @@ public partial class WordBorder : UserControl, INotifyPropertyChanged
     public static RoutedCommand MergeWordsCommand = new();
     private int contextMenuBaseSize;
     private SolidColorBrush contrastingForeground = new SolidColorBrush(Colors.White);
-    private DispatcherTimer debounceTimer = new();
+    private readonly DispatcherTimer debounceTimer = new();
     private double left;
     private SolidColorBrush matchingBackground = new SolidColorBrush(Colors.Black);
     private double top;

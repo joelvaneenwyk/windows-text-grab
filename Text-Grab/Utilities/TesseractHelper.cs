@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Text_Grab.Interfaces;
 using Text_Grab.Models;
 using Text_Grab.Properties;
+using Windows.Globalization;
 
 namespace Text_Grab.Utilities;
 
@@ -106,7 +107,7 @@ public static class TesseractHelper
         return result.StandardOutput;
     }
 
-    public static async Task<OcrOutput> GetOcrOutputFromBitmap(Bitmap bmp, Windows.Globalization.Language language, string tessTag = "")
+    public static async Task<OcrOutput> GetOcrOutputFromBitmap(Bitmap bmp, Language language, string tessTag = "")
     {
         bmp.Save(TempImagePath(), ImageFormat.Png);
         if (string.IsNullOrWhiteSpace(tessTag))
@@ -168,8 +169,8 @@ public static class TesseractHelper
 
             return returningResult;
         }
-        else
-            return string.Empty;
+
+        return string.Empty;
     }
 
     public static string TempImagePath()

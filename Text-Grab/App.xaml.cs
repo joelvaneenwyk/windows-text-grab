@@ -17,6 +17,7 @@ using Text_Grab.Utilities;
 using Text_Grab.Views;
 using Wpf.Ui;
 using Wpf.Ui.Appearance;
+using Application = System.Windows.Forms.Application;
 
 namespace Text_Grab;
 
@@ -27,7 +28,7 @@ public partial class App
 {
     #region Fields
 
-    readonly static Settings _defaultSettings = AppUtilities.TextGrabSettings;
+    private readonly static Settings _defaultSettings = AppUtilities.TextGrabSettings;
 
     #endregion Fields
 
@@ -69,7 +70,7 @@ public partial class App
     }
     public static void SetTheme(object? sender = null, EventArgs? e = null)
     {
-        bool gotTheme = Enum.TryParse(_defaultSettings.AppTheme.ToString(), true, out AppTheme currentAppTheme);
+        bool gotTheme = Enum.TryParse(_defaultSettings.AppTheme, true, out AppTheme currentAppTheme);
 
         if (!gotTheme)
             return;
@@ -113,7 +114,7 @@ public partial class App
             return;
 
         RegistryMonitor monitor = new(key);
-        monitor.RegChanged += new EventHandler(SetTheme);
+        monitor.RegChanged += SetTheme;
         monitor.Start();
     }
 
@@ -148,7 +149,8 @@ public partial class App
             Debug.WriteLine("Launched from toast");
             return true;
         }
-        else if (currentArgument == "Settings")
+
+        if (currentArgument == "Settings")
         {
             SettingsWindow sw = new();
             sw.Show();
@@ -188,8 +190,6 @@ public partial class App
             case TextGrabMode.QuickLookup:
                 QuickSimpleLookup qsl = new();
                 qsl.Show();
-                break;
-            default:
                 break;
         }
     }
@@ -232,8 +232,11 @@ public partial class App
         Singleton<HistoryService>.Instance.WriteHistory();
     }
 
-    async void appStartup(object sender, StartupEventArgs e)
+    private async void appStartup(object sender, StartupEventArgs e)
     {
+        Application.SetHighDpiMode(HighDpiMode.SystemAware);
+        Application.EnableVisualStyles();
+
         NumberOfRunningInstances = Process.GetProcessesByName("Text-Grab").Length;
         Current.DispatcherUnhandledException += CurrentDispatcherUnhandledException;
 
@@ -242,10 +245,7 @@ public partial class App
 
         await Singleton<HistoryService>.Instance.LoadHistories();
 
-        ToastNotificationManagerCompat.OnActivated += toastArgs =>
-        {
-            LaunchFromToast(toastArgs);
-        };
+        ToastNotificationManagerCompat.OnActivated += LaunchFromToast;
 
         handledArgument = HandleNotifyIcon();
 

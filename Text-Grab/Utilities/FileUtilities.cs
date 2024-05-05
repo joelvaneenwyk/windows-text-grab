@@ -186,11 +186,9 @@ public class FileUtilities
                 return $"{exePath!}";
             case FileStorageKind.WithHistory:
                 return $"{historyDirectory}";
-            default:
-                break;
         }
 
-        return $"c:\\";
+        return "c:\\";
     }
 
     private static async Task<StorageFolder> GetStorageFolderPackaged(string fileName, FileStorageKind storageKind)
@@ -207,8 +205,6 @@ public class FileUtilities
                 ApplicationData currentAppData = ApplicationData.Current;
                 StorageFolder storageFolder = await currentAppData.LocalFolder.CreateFolderAsync("history", CreationCollisionOption.OpenIfExists);
                 return storageFolder;
-            default:
-                break;
         }
 
         return ApplicationData.Current.LocalCacheFolder;

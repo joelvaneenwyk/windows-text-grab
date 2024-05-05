@@ -14,11 +14,11 @@ internal class RemoveWordBorder : Operation, IUndoRedoOperation
         WordBorders = wordBorders;
     }
 
-    private List<WordBorder> RemovingWordBorders;
+    private readonly List<WordBorder> RemovingWordBorders;
     
-    private Canvas Canvas;
+    private readonly Canvas Canvas;
 
-    private ICollection<WordBorder> WordBorders;
+    private readonly ICollection<WordBorder> WordBorders;
 
     public UndoRedoOperation GetUndoRedoOperation() => UndoRedoOperation.AddWordBorder;
 

@@ -6,6 +6,7 @@ using ZXing.QrCode.Internal;
 using ZXing.Rendering;
 using ZXing.Windows.Compatibility;
 using static ZXing.Rendering.SvgRenderer;
+using Color = System.Drawing.Color;
 
 namespace Text_Grab.Utilities;
 
@@ -26,7 +27,7 @@ public static class BarcodeUtilities
         if (result is not null)
             resultString = result.Text;
 
-        return new OcrOutput ()
+        return new OcrOutput
         {
             Kind = OcrOutputKind.Barcode,
             RawOutput = resultString,
@@ -37,8 +38,8 @@ public static class BarcodeUtilities
     public static Bitmap GetQrCodeForText(string text, ErrorCorrectionLevel correctionLevel)
     {
         BitmapRenderer bitmapRenderer = new();
-        bitmapRenderer.Foreground = System.Drawing.Color.Black;
-        bitmapRenderer.Background = System.Drawing.Color.White;
+        bitmapRenderer.Foreground = Color.Black;
+        bitmapRenderer.Background = Color.White;
 
         BarcodeWriter barcodeWriter = new()
         {

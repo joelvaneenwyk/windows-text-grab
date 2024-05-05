@@ -3,10 +3,11 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using Text_Grab.Models;
 using Wpf.Ui.Controls;
+using Button = System.Windows.Controls.Button;
 
 namespace Text_Grab.Controls;
 
-public partial class CollapsibleButton : System.Windows.Controls.Button, INotifyPropertyChanged
+public partial class CollapsibleButton : Button, INotifyPropertyChanged
 {
     #region Fields
 
@@ -79,7 +80,7 @@ public partial class CollapsibleButton : System.Windows.Controls.Button, INotify
             // change to a normal button
             if (FindResource("TealColor") is Style tealButtonStyle)
                 Style = tealButtonStyle;
-            ButtonTextBlock.Visibility = Visibility.Visible; ;
+            ButtonTextBlock.Visibility = Visibility.Visible;
         }
         else
         {

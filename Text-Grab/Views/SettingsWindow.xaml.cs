@@ -2,13 +2,14 @@
 using System.Windows;
 using Text_Grab.Pages;
 using Text_Grab.Utilities;
+using Wpf.Ui.Controls;
 
 namespace Text_Grab;
 
 /// <summary>
 /// Interaction logic for Settings.xaml
 /// </summary>
-public partial class SettingsWindow : Wpf.Ui.Controls.FluentWindow
+public partial class SettingsWindow : FluentWindow
 {
     #region Constructors
 

@@ -57,7 +57,7 @@ public static class StringBuilderExtensions
 
     public static void ReverseWordsForRightToLeft(this StringBuilder text)
     {
-        string[] textListLines = text.ToString().Split(new char[] { '\n', '\r' });
+        string[] textListLines = text.ToString().Split('\n', '\r');
         Regex regexSpaceJoiningWord = new(@"(^[\p{L}-[\p{Lo}]]|\p{Nd}$)|.{2,}");
 
         _ = text.Clear();

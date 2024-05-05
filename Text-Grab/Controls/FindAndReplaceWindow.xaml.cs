@@ -25,7 +25,7 @@ public partial class FindAndReplaceWindow : FluentWindow
     public static RoutedCommand ReplaceAllCmd = new();
     public static RoutedCommand ReplaceOneCmd = new();
     public static RoutedCommand TextSearchCmd = new();
-    DispatcherTimer ChangeFindTextTimer = new();
+    private readonly DispatcherTimer ChangeFindTextTimer = new();
     private MatchCollection? Matches;
     private string stringFromWindow = "";
     private EditTextWindow? textEditWindow;
@@ -93,7 +93,7 @@ public partial class FindAndReplaceWindow : FluentWindow
         }
         catch (Exception ex)
         {
-            MatchesText.Text = "Error searching: " + ex.GetType().ToString();
+            MatchesText.Text = "Error searching: " + ex.GetType();
             return;
         }
 

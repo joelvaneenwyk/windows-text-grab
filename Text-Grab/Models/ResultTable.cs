@@ -9,6 +9,7 @@ using System.Windows.Media;
 using Text_Grab.Controls;
 using Text_Grab.Utilities;
 using Windows.Media.Ocr;
+using Color = System.Windows.Media.Color;
 using Rect = System.Windows.Rect;
 
 namespace Text_Grab.Models;
@@ -582,9 +583,9 @@ public class ResultTable
     private void DrawTable()
     {
         // Draw the lines and bounds of the table
-        SolidColorBrush tableColor = new(System.Windows.Media.Color.FromArgb(255, 40, 118, 126));
+        SolidColorBrush tableColor = new(Color.FromArgb(255, 40, 118, 126));
 
-        TableLines = new Canvas()
+        TableLines = new Canvas
         {
             Tag = "TableLines"
         };
@@ -643,7 +644,7 @@ public class ResultTable
                 ResultColumnID = originalWB.ResultColumnID,
             };
             smallerBorders.Add(newWB);
-        };
+        }
 
         ResultTable resultTable = new(ref smallerBorders, dpiScale);
         StringBuilder stringBuilder = new();

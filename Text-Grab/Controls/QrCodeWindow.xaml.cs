@@ -1,11 +1,13 @@
 ﻿using Humanizer;
 using Microsoft.Win32;
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
 using Text_Grab.Models;
 using Text_Grab.Utilities;
@@ -26,7 +28,7 @@ namespace Text_Grab.Controls
         private IntPtr hBitmap;
         private string qrCodeFileName = string.Empty;
         private string tempPath = string.Empty;
-        private DispatcherTimer textDebounceTimer = new();
+        private readonly DispatcherTimer textDebounceTimer = new();
         private ErrorCorrectionLevel errorCorrectionLevel = ErrorCorrectionLevel.L;
         #endregion Fields
 
@@ -58,7 +60,7 @@ namespace Text_Grab.Controls
 
         #region Methods
 
-        private void CodeImage_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void CodeImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (QrBitmap is null)
                 return;
@@ -102,7 +104,7 @@ namespace Text_Grab.Controls
             SetQrCodeToText();
         }
 
-        private void FluentWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void FluentWindow_Closing(object sender, CancelEventArgs e)
         {
             NativeMethods.DeleteObject(hBitmap);
             if (File.Exists(tempPath))

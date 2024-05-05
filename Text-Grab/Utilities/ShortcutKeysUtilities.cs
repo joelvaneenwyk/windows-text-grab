@@ -96,7 +96,7 @@ internal class ShortcutKeysUtilities
             ShortcutKeySet newKeySet = new()
             {
                 NonModifierKey = parsedKey,
-                Modifiers = new HashSet<KeyModifiers>() { KeyModifiers.Shift, KeyModifiers.Windows },
+                Modifiers = new HashSet<KeyModifiers> { KeyModifiers.Shift, KeyModifiers.Windows },
                 IsEnabled = true,
                 Name = name,
                 Action = action

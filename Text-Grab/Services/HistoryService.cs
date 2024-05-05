@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using Text_Grab.Models;
@@ -25,7 +24,7 @@ public class HistoryService
     private static readonly int maxHistoryWithImages = 10;
     private List<HistoryInfo> HistoryTextOnly = new();
     private List<HistoryInfo> HistoryWithImage = new();
-    private DispatcherTimer saveTimer = new();
+    private readonly DispatcherTimer saveTimer = new();
     private readonly Settings DefaultSettings = AppUtilities.TextGrabSettings;
     #endregion Fields
 
@@ -138,7 +137,7 @@ public class HistoryService
                 continue;
 
             MenuItem menuItem = new();
-            menuItem.Click += (object sender, RoutedEventArgs args) =>
+            menuItem.Click += (sender, args) =>
             {
                 GrabFrame grabFrame = new(history);
                 try { grabFrame.Show(); }

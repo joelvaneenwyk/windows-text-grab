@@ -13,11 +13,11 @@ internal class ChangeWord : Operation, IUndoRedoOperation
         
     }
 
-    private WordBorder WordBorder;
+    private readonly WordBorder WordBorder;
 
-    private string OldWord;
+    private readonly string OldWord;
 
-    private string NewWord;
+    private readonly string NewWord;
 
     public UndoRedoOperation GetUndoRedoOperation() => UndoRedoOperation.AddWordBorder;
 

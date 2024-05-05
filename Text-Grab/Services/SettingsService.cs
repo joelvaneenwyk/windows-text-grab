@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using Text_Grab.Properties;
 using Text_Grab.Utilities;
 using Windows.Storage;
 
@@ -12,7 +13,7 @@ internal class SettingsService : IDisposable
     private readonly ApplicationDataContainer? _localSettings;
     // relevant discussion https://github.com/microsoft/WindowsAppSDK/discussions/1478
 
-    public Properties.Settings ClassicSettings = Properties.Settings.Default;
+    public Settings ClassicSettings = Settings.Default;
 
     public SettingsService()
     {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿// using Screen = System.Windows.Forms.Screen;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,7 +7,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Text_Grab.Views;
-// using Screen = System.Windows.Forms.Screen;
 using WpfScreenHelper;
 using static OSInterop;
 
@@ -62,8 +62,6 @@ public static class WindowUtilities
                 passedWindow.Top = storedSize.Y;
                 passedWindow.Width = storedSize.Width;
                 passedWindow.Height = storedSize.Height;
-
-                return;
             }
         }
     }

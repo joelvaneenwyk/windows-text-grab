@@ -136,8 +136,6 @@ public partial class KeysSettings : Page
                 case ShortcutKeyActions.PreviousGrabFrame:
                     LgfShortcutControl.KeySet = keySet;
                     break;
-                default:
-                    break;
             }
         }
 

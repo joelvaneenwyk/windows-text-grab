@@ -19,8 +19,7 @@ public static partial class HotKeyManager
     {
         if (Enum.TryParse(keySet.NonModifierKey.ToString(), out Keys winFormsKeys))
             return RegisterHotKey(winFormsKeys, keySet.Modifiers.Aggregate((x, y) => x | y));
-        else
-            return null;
+        return null;
     }
 
     public static int RegisterHotKey(Keys key, KeyModifiers modifiers)
@@ -36,8 +35,9 @@ public static partial class HotKeyManager
         _wnd?.Invoke(new UnRegisterHotKeyDelegate(UnRegisterHotKeyInternal), _hwnd, id);
     }
 
-    delegate void RegisterHotKeyDelegate(IntPtr hwnd, int id, uint modifiers, uint key);
-    delegate void UnRegisterHotKeyDelegate(IntPtr hwnd, int id);
+    private delegate void RegisterHotKeyDelegate(IntPtr hwnd, int id, uint modifiers, uint key);
+
+    private delegate void UnRegisterHotKeyDelegate(IntPtr hwnd, int id);
 
     private static void RegisterHotKeyInternal(IntPtr hwnd, int id, uint modifiers, uint key)
     {
@@ -59,7 +59,7 @@ public static partial class HotKeyManager
 
     private static volatile MessageWindow? _wnd;
     private static volatile IntPtr _hwnd;
-    private static ManualResetEvent? _windowReadyEvent = new ManualResetEvent(false);
+    private static readonly ManualResetEvent? _windowReadyEvent = new ManualResetEvent(false);
     static HotKeyManager()
     {
         Thread messageLoop = new Thread(delegate ()

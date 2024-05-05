@@ -12,11 +12,6 @@ public class HistoryInfo : IEquatable<HistoryInfo>
 {
     #region Constructors
 
-    public HistoryInfo()
-    {
-
-    }
-
     #endregion Constructors
 
     #region Properties

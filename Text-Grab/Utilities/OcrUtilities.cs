@@ -204,7 +204,7 @@ public static class OcrUtilities
         };
         Singleton<HistoryService>.Instance.SaveToHistory(newPrevRegionHistory);
 
-        OutputUtilities.HandleTextFromOcr(grabbedText, false, lastFsg.IsTable, null);
+        OutputUtilities.HandleTextFromOcr(grabbedText, false, lastFsg.IsTable);
     }
 
     public async static Task GetTextFromPreviousFullscreenRegion(TextBox? destinationTextBox = null)

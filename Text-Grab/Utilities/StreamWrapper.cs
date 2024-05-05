@@ -150,8 +150,7 @@ public class WrappingStream : Stream
 
         if (m_streamBase is not null)
             return m_streamBase.Read(buffer, offset, count);
-        else
-            return 0;
+        return 0;
     }
 
     /// <summary>
@@ -163,8 +162,7 @@ public class WrappingStream : Stream
 
         if (m_streamBase is not null)
             return m_streamBase.ReadByte();
-        else
-            return 0;
+        return 0;
     }
 
     /// <summary>
@@ -179,8 +177,7 @@ public class WrappingStream : Stream
 
         if (m_streamBase is not null)
             return m_streamBase.Seek(offset, origin);
-        else
-            return 0;
+        return 0;
     }
 
     /// <summary>
@@ -247,5 +244,6 @@ public class WrappingStream : Stream
         if (m_streamBase == null)
             throw new ObjectDisposedException(GetType().Name);
     }
-    Stream? m_streamBase;
+
+    private Stream? m_streamBase;
 }

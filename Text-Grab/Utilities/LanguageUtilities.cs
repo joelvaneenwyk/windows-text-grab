@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using Windows.Globalization;
 using Windows.Media.Ocr;
@@ -36,7 +37,7 @@ public static class LanguageUtilities
 
         if (possibleOCRLanguages.Count == 0)
         {
-            System.Windows.MessageBox.Show("No possible OCR languages are installed.", "Text Grab");
+            MessageBox.Show("No possible OCR languages are installed.", "Text Grab");
             throw new Exception("No possible OCR languages are installed");
         }
 

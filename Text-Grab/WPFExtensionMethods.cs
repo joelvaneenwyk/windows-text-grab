@@ -1,10 +1,9 @@
 using System;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
-using System.Runtime.InteropServices;
 
-
-static class WPFExtensionMethods
+internal static class WPFExtensionMethods
 {
     public static Point GetAbsolutePosition(this Window w)
     {

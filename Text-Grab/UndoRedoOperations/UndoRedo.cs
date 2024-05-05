@@ -2,7 +2,7 @@
 
 namespace Text_Grab.UndoRedoOperations;
 
-class UndoRedo
+internal class UndoRedo
 {
     public const int UndoRedoTransactionCapacity = 100;
 

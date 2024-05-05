@@ -12,7 +12,7 @@ public static class LanguageExtensions
     {
         if (selectedLanguage.LanguageTag.StartsWith("zh", StringComparison.InvariantCultureIgnoreCase))
             return false;
-        else if (selectedLanguage.LanguageTag.Equals("ja", StringComparison.InvariantCultureIgnoreCase))
+        if (selectedLanguage.LanguageTag.Equals("ja", StringComparison.InvariantCultureIgnoreCase))
             return false;
         return true;
     }
@@ -27,7 +27,7 @@ public static class LanguageExtensions
     public static bool IsLatinBased(this Language language)
     {
         // List of Latin-based languages
-        List<string> LatinLanguages = new List<string>()
+        List<string> LatinLanguages = new List<string>
         {
             "en",  // English
             "es",  // Spanish

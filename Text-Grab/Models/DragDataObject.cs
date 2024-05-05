@@ -2,8 +2,12 @@
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Windows;
 using DrawingImaging = System.Drawing.Imaging;
+using IDataObject = System.Runtime.InteropServices.ComTypes.IDataObject;
 using MediaImaging = System.Windows.Media.Imaging;
+using Point = System.Drawing.Point;
+using Size = System.Drawing.Size;
 
 namespace Text_Grab.Models;
 
@@ -84,7 +88,7 @@ public static class DragDataObject
         Bitmap bitmap = new Bitmap(source.PixelWidth, source.PixelHeight, DrawingImaging.PixelFormat.Format32bppArgb);
         DrawingImaging.BitmapData bitmapData = bitmap.LockBits(new Rectangle(Point.Empty, bitmap.Size), DrawingImaging.ImageLockMode.WriteOnly, DrawingImaging.PixelFormat.Format32bppArgb);
 
-        source.CopyPixels(System.Windows.Int32Rect.Empty, bitmapData.Scan0, bitmapData.Height * bitmapData.Stride, bitmapData.Stride);
+        source.CopyPixels(Int32Rect.Empty, bitmapData.Scan0, bitmapData.Height * bitmapData.Stride, bitmapData.Stride);
         bitmap.UnlockBits(bitmapData);
 
         return bitmap;

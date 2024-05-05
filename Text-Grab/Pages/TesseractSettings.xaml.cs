@@ -7,6 +7,7 @@ using System.Windows.Navigation;
 using Text_Grab.Properties;
 using Text_Grab.Utilities;
 using Wpf.Ui.Controls;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace Text_Grab.Pages;
 
@@ -29,7 +30,7 @@ public partial class TesseractSettings : Page
         if (!settingsSet)
             return;
 
-        if (sender is not System.Windows.Controls.TextBox pathTextbox || pathTextbox.Text is not { } pathText)
+        if (sender is not TextBox pathTextbox || pathTextbox.Text is not { } pathText)
             return;
 
         if (File.Exists(pathText))
