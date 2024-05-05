@@ -1,13 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-		<TargetFramework>net8.0-windows10.0.20348.0</TargetFramework>
+    <TargetFramework>net8.0-windows10.0.20348.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-		<SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
 
-		<Platforms>AnyCPU;x64;x86;ARM32;ARM64</Platforms>
+    <Platforms>AnyCPU;x64;x86;ARM32;ARM64</Platforms>
     <IsPackable>false</IsPackable>
+      <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,29 +22,29 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Text-Grab\Text-Grab.csproj" />
+    <ProjectReference Include="../Text-Grab/Text-Grab.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Images\FontTest.png">
+    <None Update="Images/FontTest.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Images\font_sample.png">
+    <None Update="Images/font_sample.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Images\QrCodeTestImage.png">
+    <None Update="Images/QrCodeTestImage.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Images\Table-Test-2.png">
+    <None Update="Images/Table-Test-2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Images\Table-Test.png">
+    <None Update="Images/Table-Test.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Images\toc.png">
+    <None Update="Images/toc.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="TextFiles\font_sample.hocr">
+    <None Update="TextFiles/font_sample.hocr">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
