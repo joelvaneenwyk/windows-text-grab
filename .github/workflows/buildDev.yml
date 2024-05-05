@@ -1,9 +1,9 @@
 name: "Build Text Grab"
 on:
   push:
-    branches: [main, dev, develop, feature/**, dependabot/**]
+    branches: [main, dev, develop, feature/**]
   pull_request:
-    branches: [main, dev, develop]
+    branches: [main, dev, develop, feature/**]
   workflow_call:
 
 env:
