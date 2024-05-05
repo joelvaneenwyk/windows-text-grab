@@ -6,6 +6,8 @@ namespace Tests;
 
 public class StringMethodTests
 {
+    private const char TAB = '\t';
+
     [Fact]
     public void MakeMultiLineStringSingleLine()
     {
@@ -42,7 +44,7 @@ to throw off any easy check";
 
     [Theory]
     [InlineData("Hello", "", " this ...")]
-    [InlineData("lots", "Hello this is ", " ...")]
+    [InlineData("lots", "Hello this is ", "...")]
     [InlineData("of", "...", " text ...")]
     [InlineData("several", "...h has ", " lines...")]
     public void ReturnPreviewsFromWord(string firstWord, string expectedLeftPreview, string expectedRightPreview)
@@ -204,7 +206,7 @@ brown dog";
     [Fact]
     public void TestUnstackGroups()
     {
-        string inputString = @"1
+        const string inputString = @"1
 2
 3
 4
@@ -220,15 +222,17 @@ mar
 apr
 may";
 
-        string acualString = inputString.UnstackGroups(5);
+        string actualString = inputString.UnstackGroups(5);
 
-        string expectedString = @"1 a   jan
-2   b   feb
-3   c   mar
-4   d   apr
-5   e   may";
+        string expectedString = $"""
+1{TAB}a{TAB}jan
+2{TAB}b{TAB}feb
+3{TAB}c{TAB}mar
+4{TAB}d{TAB}apr
+5{TAB}e{TAB}may
+""";
 
-        Assert.Equal(expectedString, acualString);
+        Assert.Equal(expectedString, actualString);
     }
 
     [Fact]
@@ -250,15 +254,16 @@ apr
 e
 may";
 
-        string acualString = inputString.UnstackStrings(3);
+        string actualString = inputString.UnstackStrings(3);
+        string expectedString = $"""
+1{TAB}a{TAB}jan
+2{TAB}b{TAB}feb
+3{TAB}c{TAB}mar
+4{TAB}d{TAB}apr
+5{TAB}e{TAB}may
+""".Trim().ReplaceLineEndings(Environment.NewLine);
 
-        string expectedString = @"1 a   jan
-2   b   feb
-3   c   mar
-4   d   apr
-5   e   may";
-
-        Assert.Equal(expectedString, acualString);
+        Assert.Equal(expectedString, actualString);
     }
 
     [Theory]
