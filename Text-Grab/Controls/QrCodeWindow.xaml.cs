@@ -149,7 +149,7 @@ namespace Text_Grab.Controls
         private void SetQrCodeToText(string textOfCode = "")
         {
             if (!string.IsNullOrEmpty(textOfCode))
-               TextOfCode = textOfCode;
+                TextOfCode = textOfCode;
 
             if (string.IsNullOrEmpty(TextOfCode))
                 return;

@@ -1204,7 +1204,7 @@ public partial class EditTextWindow : FluentWindow
         SelectLine();
         string lineText = PassedTextControl.SelectedText;
         bool lineEndsInNewLine = lineText.EndsWithNewline();
-        PassedTextControl.SelectedText = $"{ lineText}{(lineEndsInNewLine ? "" : Environment.NewLine)}{ lineText}";
+        PassedTextControl.SelectedText = $"{lineText}{(lineEndsInNewLine ? "" : Environment.NewLine)}{lineText}";
         int length = lineText.Length;
         if (!lineEndsInNewLine)
             length += Environment.NewLine.Length;

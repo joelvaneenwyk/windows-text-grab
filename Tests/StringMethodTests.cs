@@ -94,7 +94,7 @@ to throw off any easy check";
     }
 
     [Theory]
-    [InlineData("","")]
+    [InlineData("", "")]
     [InlineData("he11o there", "hello there")]
     [InlineData("my number is l23456789o", "my number is 1234567890")]
     public void TryFixNumOrLetters(string input, string expected)
@@ -222,11 +222,11 @@ may";
 
         string acualString = inputString.UnstackGroups(5);
 
-        string expectedString = @"1	a	jan
-2	b	feb
-3	c	mar
-4	d	apr
-5	e	may";
+        string expectedString = @"1 a   jan
+2   b   feb
+3   c   mar
+4   d   apr
+5   e   may";
 
         Assert.Equal(expectedString, acualString);
     }
@@ -252,11 +252,11 @@ may";
 
         string acualString = inputString.UnstackStrings(3);
 
-        string expectedString = @"1	a	jan
-2	b	feb
-3	c	mar
-4	d	apr
-5	e	may";
+        string expectedString = @"1 a   jan
+2   b   feb
+3   c   mar
+4   d   apr
+5   e   may";
 
         Assert.Equal(expectedString, acualString);
     }

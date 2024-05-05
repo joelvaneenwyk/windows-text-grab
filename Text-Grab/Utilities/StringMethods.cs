@@ -656,7 +656,7 @@ public static class StringMethods
                 continue;
             }
 
-            if (spotInLine== SpotInLine.Beginning)
+            if (spotInLine == SpotInLine.Beginning)
                 returnStringBuilder.AppendLine(line.Substring(0, lineLimit));
             else
                 returnStringBuilder.AppendLine(line.Substring(line.Length - lineLimit, lineLimit));

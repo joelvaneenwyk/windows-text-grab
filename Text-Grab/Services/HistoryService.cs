@@ -249,7 +249,7 @@ public class HistoryService
 
     private static async Task<List<HistoryInfo>> LoadHistory(string fileName)
     {
-        string rawText = await FileUtilities.GetTextFileAsync($"{fileName}.json",FileStorageKind.WithHistory);
+        string rawText = await FileUtilities.GetTextFileAsync($"{fileName}.json", FileStorageKind.WithHistory);
 
         if (string.IsNullOrWhiteSpace(rawText)) return new List<HistoryInfo>();
 

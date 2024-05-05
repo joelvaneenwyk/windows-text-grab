@@ -40,19 +40,19 @@ Rockwell Condensed
 Couier New";
 
     private const string tableTestPath = @".\Images\Table-Test.png";
-    private const string tableTestResult = @"Month	Int	Season
-January	1	Winter
-February	2	Winter
-March	3	Spring
-April	4	Spring
-May	5	Spring
-June	6	Summer
-July	7	Summer
-August	8	Summer
-September	9	Fall
-October	10	Fall
-November	11	Fall
-December	12	Winter";
+    private const string tableTestResult = @"Month  Int Season
+January 1   Winter
+February    2   Winter
+March   3   Spring
+April   4   Spring
+May 5   Spring
+June    6   Summer
+July    7   Summer
+August  8   Summer
+September   9   Fall
+October 10  Fall
+November    11  Fall
+December    12  Winter";
 
     [WpfFact]
     public async Task OcrFontSampleImage()
@@ -135,15 +135,15 @@ December	12	Winter";
     [WpfFact]
     public async Task AnalyzeTable2()
     {
-        string expectedResult = @"Test	Text
-12	The Quick Brown Fox
-13	Jumped over the
-14	Lazy
+        string expectedResult = @"Test  Text
+12  The Quick Brown Fox
+13  Jumped over the
+14  Lazy
 15
 20
 200
-300	Brown
-400	Dog";
+300 Brown
+400 Dog";
 
         string testImagePath = @".\Images\Table-Test-2.png";
         Uri uri = new(testImagePath, UriKind.Relative);
@@ -257,7 +257,7 @@ December	12	Winter";
         }
     }
 
-    [WpfFact(Skip ="fails GitHub actions")]
+    [WpfFact(Skip = "fails GitHub actions")]
     public async Task GetTesseractStrongLanguages()
     {
         List<ILanguage> expectedList = new()

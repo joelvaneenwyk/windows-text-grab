@@ -31,7 +31,7 @@ public static class WindowUtilities
             storedPositionString = AppUtilities.TextGrabSettings.EditTextWindowSizeAndPosition;
 
         if (passedWindow is GrabFrame)
-            storedPositionString =  AppUtilities.TextGrabSettings.GrabFrameWindowSizeAndPosition;
+            storedPositionString = AppUtilities.TextGrabSettings.GrabFrameWindowSizeAndPosition;
 
         List<string> storedPosition = new(storedPositionString.Split(','));
 

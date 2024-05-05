@@ -5,20 +5,20 @@ namespace Tests;
 public class ScreenLayoutTests
 {
     /*
-    DISPLAY1	X=0,Y=0,Width=3440,Height=1400
-    DISPLAY2	X=3440,Y=-1163,Width=2400,Height=3760
-    DISPLAY3	X=-1920,Y=387,Width=1920,Height=1030
+    DISPLAY1    X=0,Y=0,Width=3440,Height=1400
+    DISPLAY2    X=3440,Y=-1163,Width=2400,Height=3760
+    DISPLAY3    X=-1920,Y=387,Width=1920,Height=1030
     */
     private static Rect display1 = new(0, 0, 3440, 1400);
     private static Rect display2 = new(3440, -1163, 2400, 3760);
     private static Rect display3 = new(-1920, 387, 1920, 1030);
 
     /*
-    Param	Display 1	Display 6	Display 5
-    X	0	1920	3840
-    Y	0	-460	-468
-    Width	1920	1920	3840
-    Height	1152	1032	2040
+    Param   Display 1   Display 6   Display 5
+    X   0   1920    3840
+    Y   0   -460    -468
+    Width   1920    1920    3840
+    Height  1152    1032    2040
      */
     private static Rect display4 = new(0, 0, 1920, 1152);
     private static Rect display5 = new(3840, -468, 3840, 2040);

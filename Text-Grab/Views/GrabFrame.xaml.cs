@@ -983,10 +983,10 @@ public partial class GrabFrame : Window
                 UndoRedo.InsertUndoRedoOperation(UndoRedoOperation.AddWordBorder,
         new GrabFrameOperationArgs
         {
-                        WordBorder = wordBorderBox,
-                        WordBorders = wordBorders,
-                        GrabFrameCanvas = RectanglesCanvas
-                });
+            WordBorder = wordBorderBox,
+            WordBorders = wordBorders,
+            GrabFrameCanvas = RectanglesCanvas
+        });
             }
 
             lineNumber++;
@@ -1799,13 +1799,14 @@ public partial class GrabFrame : Window
 
         UndoRedo.StartTransaction();
 
-        UndoRedo.InsertUndoRedoOperation(UndoRedoOperation.RemoveWordBorder,
-new GrabFrameOperationArgs
-{
-            RemovingWordBorders = new(wordBorders),
-            WordBorders = wordBorders,
-            GrabFrameCanvas = RectanglesCanvas
-        });
+        UndoRedo.InsertUndoRedoOperation(
+            UndoRedoOperation.RemoveWordBorder,
+            new GrabFrameOperationArgs
+            {
+                RemovingWordBorders = [.. wordBorders],
+                WordBorders = wordBorders,
+                GrabFrameCanvas = RectanglesCanvas
+            });
 
         ResetGrabFrame();
 
