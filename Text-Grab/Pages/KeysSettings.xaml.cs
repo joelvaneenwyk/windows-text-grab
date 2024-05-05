@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,7 +15,7 @@ namespace Text_Grab.Pages;
 public partial class KeysSettings : Page
 {
     private readonly Settings DefaultSettings = AppUtilities.TextGrabSettings;
-    private bool settingsSet = false;
+    private bool settingsSet;
 
     public KeysSettings()
     {
@@ -74,7 +74,7 @@ public partial class KeysSettings : Page
                 if (shortcut == shortcut2)
                     continue;
 
-                if (keySet.AreKeysEqual(shortcut2.KeySet) && (shortcut.KeySet.IsEnabled && keySet.IsEnabled))
+                if (keySet.AreKeysEqual(shortcut2.KeySet) && shortcut.KeySet.IsEnabled && keySet.IsEnabled)
                 {
                     shortcut.HasConflictingError = true;
                     shortcut2.HasConflictingError = true;
@@ -94,11 +94,11 @@ public partial class KeysSettings : Page
             return false;
 
         return true;
-    }   
+    }
 
     private void Page_Loaded(object sender, RoutedEventArgs e)
     {
-        if (App.Current is App app)
+        if (Application.Current is App app)
             NotifyIconUtilities.UnregisterHotkeys(app);
         // registering of hotkeys is done when the settings window closes
 
@@ -135,8 +135,6 @@ public partial class KeysSettings : Page
                     break;
                 case ShortcutKeyActions.PreviousGrabFrame:
                     LgfShortcutControl.KeySet = keySet;
-                    break;
-                default:
                     break;
             }
         }

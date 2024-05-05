@@ -6,6 +6,8 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Windows.ApplicationModel.DataTransfer;
+using Clipboard = Windows.ApplicationModel.DataTransfer.Clipboard;
+using DataFormats = System.Windows.Forms.DataFormats;
 
 namespace Text_Grab.Utilities;
 
@@ -18,9 +20,9 @@ public class ClipboardUtilities
 
         try
         {
-            dataPackageView = Windows.ApplicationModel.DataTransfer.Clipboard.GetContent();
+            dataPackageView = Clipboard.GetContent();
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
             return (false, ex.Message);
         }
@@ -36,7 +38,7 @@ public class ClipboardUtilities
             {
                 clipboardText = await dataPackageView.GetTextAsync();
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 return (false, $"error with dataPackageView.GetTextAsync(). Exception Message: {ex.Message}");
             }
@@ -55,7 +57,7 @@ public class ClipboardUtilities
         {
             IDataObject clipboardData = System.Windows.Clipboard.GetDataObject();
             if (clipboardData is null
-                || !clipboardData.GetDataPresent(System.Windows.Forms.DataFormats.Bitmap))
+                || !clipboardData.GetDataPresent(DataFormats.Bitmap))
                 return (false, null);
 
             imageSource = System.Windows.Clipboard.GetImage();
@@ -73,7 +75,7 @@ public class ClipboardUtilities
 
     private static ImageSource? GetBase64ClipboardContentAsImageSource()
     {
-        string? trimmedData = null;
+        string? trimmedData;
 
         try { trimmedData = System.Windows.Clipboard.GetText().Trim(); } catch { return null; }
         trimmedData = CleanTeamsBase64Image(trimmedData);
@@ -127,24 +129,23 @@ public class ClipboardUtilities
         return sb.ToString();
     }
 
-    static string base64ImageExtension(ref string base64String)
+    private static string base64ImageExtension(ref string base64String)
     {
         // Copied this portion of the code from https://github.com/veler/DevToys
         if (base64String!.StartsWith("data:image/png;base64,", StringComparison.OrdinalIgnoreCase))
             return ".png";
-        else if (base64String!.StartsWith("data:image/jpeg;base64,", StringComparison.OrdinalIgnoreCase))
+        if (base64String!.StartsWith("data:image/jpeg;base64,", StringComparison.OrdinalIgnoreCase))
             return ".jpeg";
-        else if (base64String!.StartsWith("data:image/bmp;base64,", StringComparison.OrdinalIgnoreCase))
+        if (base64String!.StartsWith("data:image/bmp;base64,", StringComparison.OrdinalIgnoreCase))
             return ".bmp";
-        else if (base64String!.StartsWith("data:image/gif;base64,", StringComparison.OrdinalIgnoreCase))
+        if (base64String!.StartsWith("data:image/gif;base64,", StringComparison.OrdinalIgnoreCase))
             return ".gif";
-        else if (base64String!.StartsWith("data:image/x-icon;base64,", StringComparison.OrdinalIgnoreCase))
+        if (base64String!.StartsWith("data:image/x-icon;base64,", StringComparison.OrdinalIgnoreCase))
             return ".ico";
-        else if (base64String!.StartsWith("data:image/svg+xml;base64,", StringComparison.OrdinalIgnoreCase))
+        if (base64String!.StartsWith("data:image/svg+xml;base64,", StringComparison.OrdinalIgnoreCase))
             return ".svg";
-        else if (base64String!.StartsWith("data:image/webp;base64,", StringComparison.OrdinalIgnoreCase))
+        if (base64String!.StartsWith("data:image/webp;base64,", StringComparison.OrdinalIgnoreCase))
             return ".webp";
-        else
-            return string.Empty;
+        return string.Empty;
     }
 }

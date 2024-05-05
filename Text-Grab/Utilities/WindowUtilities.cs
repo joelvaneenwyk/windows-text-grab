@@ -1,13 +1,12 @@
-﻿using System;
+// using Screen = System.Windows.Forms.Screen;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Text_Grab.Properties;
 using Text_Grab.Views;
-// using Screen = System.Windows.Forms.Screen;
 using WpfScreenHelper;
 using static OSInterop;
 
@@ -32,7 +31,7 @@ public static class WindowUtilities
             storedPositionString = AppUtilities.TextGrabSettings.EditTextWindowSizeAndPosition;
 
         if (passedWindow is GrabFrame)
-            storedPositionString =  AppUtilities.TextGrabSettings.GrabFrameWindowSizeAndPosition;
+            storedPositionString = AppUtilities.TextGrabSettings.GrabFrameWindowSizeAndPosition;
 
         List<string> storedPosition = new(storedPositionString.Split(','));
 
@@ -63,8 +62,6 @@ public static class WindowUtilities
                 passedWindow.Top = storedSize.Y;
                 passedWindow.Width = storedSize.Width;
                 passedWindow.Height = storedSize.Height;
-
-                return;
             }
         }
     }
@@ -104,8 +101,8 @@ public static class WindowUtilities
 
             Point screenCenterPoint = screen.GetCenterPoint();
 
-            fullScreenGrab.Left = screenCenterPoint.X - (sideLength / 2);
-            fullScreenGrab.Top = screenCenterPoint.Y - (sideLength / 2);
+            fullScreenGrab.Left = screenCenterPoint.X - sideLength / 2;
+            fullScreenGrab.Top = screenCenterPoint.Y - sideLength / 2;
 
             fullScreenGrab.Show();
             fullScreenGrab.Activate();
@@ -116,12 +113,12 @@ public static class WindowUtilities
 
     public static Point GetCenterPoint(this Screen screen)
     {
-        double x = screen.WpfBounds.Left + (screen.WpfBounds.Width / 2);
-        double y = screen.WpfBounds.Top + (screen.WpfBounds.Height / 2);
+        double x = screen.WpfBounds.Left + screen.WpfBounds.Width / 2;
+        double y = screen.WpfBounds.Top + screen.WpfBounds.Height / 2;
         return new(x, y);
     }
 
-    public static System.Windows.Point GetWindowCenter(this Window window)
+    public static Point GetWindowCenter(this Window window)
     {
         double x = window.Width / 2;
         double y = window.Height / 2;
@@ -130,11 +127,11 @@ public static class WindowUtilities
 
     public static void CenterOverThisWindow(this Window newWindow, Window bottomWindow)
     {
-        System.Windows.Point newWindowCenter = newWindow.GetWindowCenter();
-        System.Windows.Point bottomWindowCenter = bottomWindow.GetWindowCenter();
+        Point newWindowCenter = newWindow.GetWindowCenter();
+        Point bottomWindowCenter = bottomWindow.GetWindowCenter();
 
-        double newWindowTop = (bottomWindow.Top + bottomWindowCenter.Y) - newWindowCenter.Y;
-        double newWindowLeft = (bottomWindow.Left + bottomWindowCenter.X) - newWindowCenter.X;
+        double newWindowTop = bottomWindow.Top + bottomWindowCenter.Y - newWindowCenter.Y;
+        double newWindowLeft = bottomWindow.Left + bottomWindowCenter.X - newWindowCenter.X;
 
         newWindow.Top = newWindowTop;
         newWindow.Left = newWindowLeft;
@@ -156,7 +153,7 @@ public static class WindowUtilities
 
                 if (fsg.DestinationTextBox is not null)
                 {
-                    // TODO 3.0 Find out how to re normalize an ETW when FSG had it minimized 
+                    // TODO 3.0 Find out how to re normalize an ETW when FSG had it minimized
                     isFromEditWindow = true;
                     // if (fsg.EditWindow.WindowState == WindowState.Minimized)
                     //     fsg.EditWindow.WindowState = WindowState.Normal;
@@ -269,7 +266,7 @@ public static class WindowUtilities
 
         if (AppUtilities.TextGrabSettings.RunInTheBackground)
         {
-            if (App.Current is App app)
+            if (Application.Current is App app)
             {
                 if (app.NumberOfRunningInstances > 1
                     && app.TextGrabIcon == null

@@ -1,4 +1,4 @@
-﻿using Humanizer;
+using Humanizer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using Text_Grab.Models;
@@ -25,7 +24,7 @@ public class HistoryService
     private static readonly int maxHistoryWithImages = 10;
     private List<HistoryInfo> HistoryTextOnly = new();
     private List<HistoryInfo> HistoryWithImage = new();
-    private DispatcherTimer saveTimer = new();
+    private readonly DispatcherTimer saveTimer = new();
     private readonly Settings DefaultSettings = AppUtilities.TextGrabSettings;
     #endregion Fields
 
@@ -68,7 +67,7 @@ public class HistoryService
 
     public HistoryInfo? GetLastFullScreenGrabInfo()
     {
-        return HistoryWithImage.Where(h => h.SourceMode == TextGrabMode.Fullscreen).LastOrDefault();
+        return HistoryWithImage.LastOrDefault(h => h.SourceMode == TextGrabMode.Fullscreen);
     }
 
     public bool HasAnyFullscreenHistory()
@@ -80,7 +79,7 @@ public class HistoryService
     {
         HistoryInfo? lastHistoryItem = HistoryWithImage.LastOrDefault();
 
-        if (lastHistoryItem is not HistoryInfo historyInfo)
+        if (lastHistoryItem is not { } historyInfo)
             return false;
 
         GrabFrame grabFrame = new(historyInfo);
@@ -94,7 +93,7 @@ public class HistoryService
     {
         HistoryInfo? lastHistoryItem = HistoryTextOnly.LastOrDefault();
 
-        if (lastHistoryItem is not HistoryInfo historyInfo)
+        if (lastHistoryItem is not { } historyInfo)
             return string.Empty;
 
         return historyInfo.TextContent;
@@ -138,7 +137,7 @@ public class HistoryService
                 continue;
 
             MenuItem menuItem = new();
-            menuItem.Click += (object sender, RoutedEventArgs args) =>
+            menuItem.Click += (sender, args) =>
             {
                 GrabFrame grabFrame = new(history);
                 try { grabFrame.Show(); }
@@ -250,13 +249,13 @@ public class HistoryService
 
     private static async Task<List<HistoryInfo>> LoadHistory(string fileName)
     {
-        string rawText = await FileUtilities.GetTextFileAsync($"{fileName}.json",FileStorageKind.WithHistory);
+        string rawText = await FileUtilities.GetTextFileAsync($"{fileName}.json", FileStorageKind.WithHistory);
 
         if (string.IsNullOrWhiteSpace(rawText)) return new List<HistoryInfo>();
 
         var tempHistory = JsonSerializer.Deserialize<List<HistoryInfo>>(rawText);
 
-        if (tempHistory is List<HistoryInfo> jsonList && jsonList.Count > 0)
+        if (tempHistory is { } jsonList && jsonList.Count > 0)
             return tempHistory;
 
         return new List<HistoryInfo>();

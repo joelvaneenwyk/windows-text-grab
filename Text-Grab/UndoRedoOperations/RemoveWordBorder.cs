@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Windows.Controls;
 using Text_Grab.Controls;
-using Text_Grab.UndoRedoOperations;
 
 namespace Text_Grab.UndoRedoOperations;
 
@@ -15,11 +14,11 @@ internal class RemoveWordBorder : Operation, IUndoRedoOperation
         WordBorders = wordBorders;
     }
 
-    private List<WordBorder> RemovingWordBorders;
-    
-    private Canvas Canvas;
+    private readonly List<WordBorder> RemovingWordBorders;
 
-    private ICollection<WordBorder> WordBorders;
+    private readonly Canvas Canvas;
+
+    private readonly ICollection<WordBorder> WordBorders;
 
     public UndoRedoOperation GetUndoRedoOperation() => UndoRedoOperation.AddWordBorder;
 

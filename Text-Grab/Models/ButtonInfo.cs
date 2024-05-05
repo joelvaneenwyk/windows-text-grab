@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Text_Grab.Controls;
 using Wpf.Ui.Controls;
 
@@ -12,7 +12,7 @@ public class ButtonInfo
     public string Background { get; set; } = "Transparent";
     public string Command { get; set; } = "";
     public string ClickEvent { get; set; } = "";
-    public bool IsSymbol { get; set; } = false;
+    public bool IsSymbol { get; set; }
 
     public SymbolRegular SymbolIcon { get; set; } = SymbolRegular.Diamond24;
 
@@ -32,11 +32,11 @@ public class ButtonInfo
     public override int GetHashCode()
     {
         int hash = 17;
-        hash = (hash * 23) + ButtonText.GetHashCode();
-        hash = (hash * 23) + SymbolText.GetHashCode();
-        hash = (hash * 23) + Background.GetHashCode();
-        hash = (hash * 23) + Command.GetHashCode();
-        hash = (hash * 23) + ClickEvent.GetHashCode();
+        hash = hash * 23 + ButtonText.GetHashCode();
+        hash = hash * 23 + SymbolText.GetHashCode();
+        hash = hash * 23 + Background.GetHashCode();
+        hash = hash * 23 + Command.GetHashCode();
+        hash = hash * 23 + ClickEvent.GetHashCode();
         return hash;
     }
 
@@ -443,5 +443,3 @@ public class ButtonInfo
         },
     };
 }
-
-

@@ -1,5 +1,6 @@
-﻿using System.Globalization;
+using System.Globalization;
 using Text_Grab.Interfaces;
+using Windows.Globalization;
 
 namespace Text_Grab.Models;
 
@@ -38,7 +39,7 @@ public class TessLang : ILanguage
 
     public string AbbreviatedName => _tessLangTag;
 
-    public bool IsVertical { get; set; } = false;
+    public bool IsVertical { get; set; }
 
     public string CurrentInputMethodLanguageTag => string.Empty;
 
@@ -76,14 +77,14 @@ public class TessLang : ILanguage
 
     public string DisplayName => $"{CultureDisplayName} with Tesseract";
 
-    public Windows.Globalization.LanguageLayoutDirection LayoutDirection
+    public LanguageLayoutDirection LayoutDirection
     {
         get
         {
             if (_tessLangTag.Contains("vert"))
-                return Windows.Globalization.LanguageLayoutDirection.TtbRtl;
+                return LanguageLayoutDirection.TtbRtl;
 
-            return Windows.Globalization.LanguageLayoutDirection.Rtl;
+            return LanguageLayoutDirection.Rtl;
         }
     }
 

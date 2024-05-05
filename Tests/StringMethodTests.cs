@@ -1,12 +1,13 @@
-﻿using System.Text;
+using System.Text;
 using Text_Grab;
-using System.Linq;
 using Text_Grab.Utilities;
 
 namespace Tests;
 
 public class StringMethodTests
 {
+    private const char TAB = '\t';
+
     [Fact]
     public void MakeMultiLineStringSingleLine()
     {
@@ -36,14 +37,14 @@ lines
         Assert.Equal(expectedWord, singleWordAtSix);
     }
 
-    private static string multiLineInput = @"Hello this is lots 
+    private static string multiLineInput = @"Hello this is lots
 of text which has several lines
-and some spaces at the ends of line 
+and some spaces at the ends of line
 to throw off any easy check";
 
     [Theory]
     [InlineData("Hello", "", " this ...")]
-    [InlineData("lots", "Hello this is ", " ...")]
+    [InlineData("lots", "Hello this is ", "...")]
     [InlineData("of", "...", " text ...")]
     [InlineData("several", "...h has ", " lines...")]
     public void ReturnPreviewsFromWord(string firstWord, string expectedLeftPreview, string expectedRightPreview)
@@ -51,13 +52,13 @@ to throw off any easy check";
         int length = firstWord.Length;
         int previewLength = 6;
 
-        int cursorPosition = multiLineInput.IndexOf(firstWord);
+        int cursorPosition = multiLineInput.IndexOf(firstWord, StringComparison.Ordinal);
 
-        string PreviewLeft = StringMethods.GetCharactersToLeftOfNewLine(ref multiLineInput, cursorPosition, previewLength);
-        string PreviewRight = StringMethods.GetCharactersToRightOfNewLine(ref multiLineInput, cursorPosition + length, previewLength);
+        string previewLeft = StringMethods.GetCharactersToLeftOfNewLine(ref multiLineInput, cursorPosition, previewLength);
+        string previewRight = StringMethods.GetCharactersToRightOfNewLine(ref multiLineInput, cursorPosition + length, previewLength);
 
-        Assert.Equal(expectedLeftPreview, PreviewLeft);
-        Assert.Equal(expectedRightPreview, PreviewRight);
+        Assert.Equal(expectedLeftPreview, previewLeft);
+        Assert.Equal(expectedRightPreview, previewRight);
     }
 
     [Theory]
@@ -95,7 +96,7 @@ to throw off any easy check";
     }
 
     [Theory]
-    [InlineData("","")]
+    [InlineData("", "")]
     [InlineData("he11o there", "hello there")]
     [InlineData("my number is l23456789o", "my number is 1234567890")]
     public void TryFixNumOrLetters(string input, string expected)
@@ -141,7 +142,7 @@ Another Line";
         Assert.Equal(expectedString, actualString);
     }
 
-    // { ' ', '"', '*', '/', ':', '<', '>', '?', '\\', '|', '+', ',', '.', ';', '=', '[', ']', '!', '@' }; 
+    // { ' ', '"', '*', '/', ':', '<', '>', '?', '\\', '|', '+', ',', '.', ';', '=', '[', ']', '!', '@' };
     [Theory]
     [InlineData("", "")]
     [InlineData("A<>B<>C", "A-B-C")]
@@ -205,7 +206,7 @@ brown dog";
     [Fact]
     public void TestUnstackGroups()
     {
-        string inputString = @"1
+        const string inputString = @"1
 2
 3
 4
@@ -221,15 +222,17 @@ mar
 apr
 may";
 
-        string acualString = inputString.UnstackGroups(5);
+        string actualString = inputString.UnstackGroups(5);
 
-        string expectedString = @"1	a	jan
-2	b	feb
-3	c	mar
-4	d	apr
-5	e	may";
+        string expectedString = $"""
+1{TAB}a{TAB}jan
+2{TAB}b{TAB}feb
+3{TAB}c{TAB}mar
+4{TAB}d{TAB}apr
+5{TAB}e{TAB}may
+""";
 
-        Assert.Equal(expectedString, acualString);
+        Assert.Equal(expectedString, actualString);
     }
 
     [Fact]
@@ -251,15 +254,16 @@ apr
 e
 may";
 
-        string acualString = inputString.UnstackStrings(3);
+        string actualString = inputString.UnstackStrings(3);
+        string expectedString = $"""
+1{TAB}a{TAB}jan
+2{TAB}b{TAB}feb
+3{TAB}c{TAB}mar
+4{TAB}d{TAB}apr
+5{TAB}e{TAB}may
+""".Trim().ReplaceLineEndings(Environment.NewLine);
 
-        string expectedString = @"1	a	jan
-2	b	feb
-3	c	mar
-4	d	apr
-5	e	may";
-
-        Assert.Equal(expectedString, acualString);
+        Assert.Equal(expectedString, actualString);
     }
 
     [Theory]

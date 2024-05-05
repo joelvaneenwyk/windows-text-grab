@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Navigation;
 using Text_Grab.Properties;
 using Text_Grab.Utilities;
 using Text_Grab.Views;
@@ -94,7 +95,7 @@ public partial class FirstRunWindow : FluentWindow
         NotificationsCheckBox.IsChecked = DefaultSettings.ShowToast;
     }
 
-    private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+    private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
     {
         Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
         e.Handled = true;
@@ -130,8 +131,6 @@ public partial class FirstRunWindow : FluentWindow
                 case TextGrabMode.QuickLookup:
                     WindowUtilities.OpenOrActivateWindow<QuickSimpleLookup>();
                     break;
-                default:
-                    break;
             }
         }
 
@@ -139,14 +138,14 @@ public partial class FirstRunWindow : FluentWindow
     }
     private void RadioButton_Checked(object sender, RoutedEventArgs e)
     {
-        if (this.IsLoaded != true)
+        if (IsLoaded != true)
             return;
 
-        if (GrabFrameRDBTN.IsChecked is bool gfOn && gfOn)
+        if (GrabFrameRDBTN.IsChecked is { } gfOn && gfOn)
             DefaultSettings.DefaultLaunch = "GrabFrame";
-        else if (FullScreenRDBTN.IsChecked is bool fsgOn && fsgOn)
+        else if (FullScreenRDBTN.IsChecked is { } fsgOn && fsgOn)
             DefaultSettings.DefaultLaunch = "Fullscreen";
-        else if (QuickLookupRDBTN.IsChecked is bool qslOn && qslOn)
+        else if (QuickLookupRDBTN.IsChecked is { } qslOn && qslOn)
             DefaultSettings.DefaultLaunch = "QuickLookup";
         else
             DefaultSettings.DefaultLaunch = "EditText";
@@ -157,7 +156,7 @@ public partial class FirstRunWindow : FluentWindow
     {
         WindowUtilities.OpenOrActivateWindow<SettingsWindow>();
 
-        this.Close();
+        Close();
     }
 
     private async void StartupCheckbox_Checked(object sender, RoutedEventArgs e)

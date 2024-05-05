@@ -1,4 +1,4 @@
-﻿
+
 namespace Text_Grab.Models;
 
 public class FindResult

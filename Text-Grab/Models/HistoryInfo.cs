@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text.Json.Serialization;
@@ -11,11 +11,6 @@ namespace Text_Grab.Models;
 public class HistoryInfo : IEquatable<HistoryInfo>
 {
     #region Constructors
-
-    public HistoryInfo()
-    {
-
-    }
 
     #endregion Constructors
 
@@ -92,7 +87,7 @@ public class HistoryInfo : IEquatable<HistoryInfo>
         if (other is null)
             return false;
 
-        if (other.ID == this.ID)
+        if (other.ID == ID)
             return true;
 
         return false;

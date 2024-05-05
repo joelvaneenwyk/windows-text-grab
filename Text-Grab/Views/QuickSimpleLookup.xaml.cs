@@ -1,4 +1,4 @@
-﻿using Microsoft.Win32;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,21 +14,24 @@ using System.Windows.Media;
 using Text_Grab.Models;
 using Text_Grab.Properties;
 using Text_Grab.Utilities;
+using Wpf.Ui.Controls;
+using MessageBox = System.Windows.Forms.MessageBox;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace Text_Grab.Views;
 
 /// <summary>
 /// Interaction logic for QuickSimpleLookup.xaml
 /// </summary>
-public partial class QuickSimpleLookup : Wpf.Ui.Controls.FluentWindow
+public partial class QuickSimpleLookup : FluentWindow
 {
     #region Fields
 
     public TextBox? DestinationTextBox;
-    private string cacheFilename = "QuickSimpleLookupCache.csv";
-    private bool isPuttingValueIn = false;
+    private readonly string cacheFilename = "QuickSimpleLookupCache.csv";
+    private bool isPuttingValueIn;
     private LookupItem? lastSelection;
-    private int rowCount = 0;
+    private int rowCount;
     private string valueUnderEdit = string.Empty;
     private readonly static Settings DefaultSettings = AppUtilities.TextGrabSettings;
 
@@ -46,7 +49,7 @@ public partial class QuickSimpleLookup : Wpf.Ui.Controls.FluentWindow
 
     #region Properties
 
-    public bool IsEditingDataGrid { get; set; } = false;
+    public bool IsEditingDataGrid { get; set; }
     public bool IsFromETW { get; set; } = false;
     public List<LookupItem> ItemsDictionary { get; set; } = new();
 
@@ -58,11 +61,11 @@ public partial class QuickSimpleLookup : Wpf.Ui.Controls.FluentWindow
     {
         List<string> cells = row.Split(splitChar).ToList();
         LookupItem newRow = new LookupItem();
-        if (cells.FirstOrDefault() is String firstCell)
+        if (cells.FirstOrDefault() is { } firstCell)
             newRow.shortValue = firstCell;
 
         newRow.longValue = "";
-        if (cells.Count > 1 && cells[1] is String)
+        if (cells.Count > 1 && cells[1] is not null)
             newRow.longValue = String.Join(" ", cells.Skip(1).ToArray());
         return newRow;
     }
@@ -84,7 +87,7 @@ public partial class QuickSimpleLookup : Wpf.Ui.Controls.FluentWindow
 
     private void AddItemBtn_Click(object sender, RoutedEventArgs e)
     {
-        if (SearchBox is not TextBox searchTextBox)
+        if (SearchBox is not { } searchTextBox)
             return;
 
         AddToLookUpResults('\t', searchTextBox.Text);
@@ -110,7 +113,7 @@ public partial class QuickSimpleLookup : Wpf.Ui.Controls.FluentWindow
     {
         if (string.IsNullOrEmpty(SearchBox.Text))
         {
-            this.Close();
+            Close();
             return;
         }
 
@@ -148,7 +151,7 @@ public partial class QuickSimpleLookup : Wpf.Ui.Controls.FluentWindow
         if (IsEditingDataGrid)
             return;
         e.Handled = true;
-        if (SearchBox is TextBox searchTextBox && searchTextBox.Text.Contains('\t'))
+        if (SearchBox is { } searchTextBox && searchTextBox.Text.Contains('\t'))
         {
             AddToLookUpResults('\t', searchTextBox.Text);
             searchTextBox.Clear();
@@ -282,10 +285,10 @@ public partial class QuickSimpleLookup : Wpf.Ui.Controls.FluentWindow
 
     private async void ParseCSVFileMenuItem_Click(object sender, RoutedEventArgs e)
     {
-        // Create OpenFileDialog 
-        Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+        // Create OpenFileDialog
+        OpenFileDialog dlg = new OpenFileDialog();
 
-        // Set filter for file extension and default file extension 
+        // Set filter for file extension and default file extension
         dlg.DefaultExt = ".csv";
         dlg.Filter = "Comma Separated Values File (.csv)|*.csv";
         dlg.CheckFileExists = true;
@@ -363,7 +366,7 @@ public partial class QuickSimpleLookup : Wpf.Ui.Controls.FluentWindow
     private async void PutValueIntoClipboard(KeyboardModifiersDown? keysDown = null)
     {
         if (MainDataGrid.ItemsSource is not List<LookupItem> lookUpList
-            || lookUpList.FirstOrDefault() is not LookupItem firstLookupItem)
+            || lookUpList.FirstOrDefault() is not { } firstLookupItem)
             return;
 
         isPuttingValueIn = true;
@@ -396,13 +399,13 @@ public partial class QuickSimpleLookup : Wpf.Ui.Controls.FluentWindow
                 }
                 break;
             case KeyboardModifiersDown.CtrlAlt:
-                if (selectedLookupItems.FirstOrDefault() is not LookupItem lookupItem)
+                if (selectedLookupItems.FirstOrDefault() is not { } lookupItem)
                     return;
 
                 if (Uri.TryCreate(lookupItem.longValue, UriKind.Absolute, out var uri))
                 {
                     Process.Start(new ProcessStartInfo(lookupItem.longValue) { UseShellExecute = true });
-                    this.Close();
+                    Close();
                     return;
                 }
                 break;
@@ -434,14 +437,14 @@ public partial class QuickSimpleLookup : Wpf.Ui.Controls.FluentWindow
             DestinationTextBox.SelectedText = stringBuilder.ToString();
             DestinationTextBox.Select(DestinationTextBox.SelectionStart + stringBuilder.ToString().Length, 0);
             DestinationTextBox.Focus();
-            this.Close();
+            Close();
             return;
         }
 
         try
         {
             Clipboard.SetText(stringBuilder.ToString());
-            this.Close();
+            Close();
         }
         catch (Exception ex)
         {
@@ -470,7 +473,7 @@ public partial class QuickSimpleLookup : Wpf.Ui.Controls.FluentWindow
                 if (IsEditingDataGrid)
                     return;
                 e.Handled = true;
-                if (SearchBox is TextBox searchTextBox && searchTextBox.Text.Contains('\t'))
+                if (SearchBox is { } searchTextBox && searchTextBox.Text.Contains('\t'))
                 {
                     AddToLookUpResults('\t', searchTextBox.Text);
                     searchTextBox.Clear();
@@ -521,14 +524,14 @@ public partial class QuickSimpleLookup : Wpf.Ui.Controls.FluentWindow
                 }
                 break;
             case Key.I:
-                if (KeyboardExtensions.IsCtrlDown() && PasteToggleButton.IsChecked is bool pasteToggle)
+                if (KeyboardExtensions.IsCtrlDown() && PasteToggleButton.IsChecked is { } pasteToggle)
                 {
                     PasteToggleButton.IsChecked = !pasteToggle;
                     e.Handled = true;
                 }
                 break;
             case Key.E:
-                if (KeyboardExtensions.IsCtrlDown() && EditWindowToggleButton.IsChecked is bool etwToggle)
+                if (KeyboardExtensions.IsCtrlDown() && EditWindowToggleButton.IsChecked is { } etwToggle)
                 {
                     EditWindowToggleButton.IsChecked = !etwToggle;
                     e.Handled = true;
@@ -539,8 +542,6 @@ public partial class QuickSimpleLookup : Wpf.Ui.Controls.FluentWindow
                 break;
             case Key.Home:
                 GoToBeginningOfMainDataGrid();
-                break;
-            default:
                 break;
         }
     }
@@ -729,7 +730,7 @@ public partial class QuickSimpleLookup : Wpf.Ui.Controls.FluentWindow
         }
         catch (Exception ex)
         {
-            System.Windows.Forms.MessageBox.Show($"Failed to save csv file. {ex.Message}");
+            MessageBox.Show($"Failed to save csv file. {ex.Message}");
         }
     }
     #endregion Methods

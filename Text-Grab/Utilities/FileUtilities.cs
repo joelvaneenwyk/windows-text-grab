@@ -1,11 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.Media.Streaming.Adaptive;
 using Windows.Storage;
 using Windows.Storage.Streams;
 
@@ -40,7 +39,7 @@ public class FileUtilities
         Dictionary<string, string> imageFilters = new Dictionary<string, string>();
         foreach (ImageCodecInfo codec in codecs)
         {
-            if (codec.FilenameExtension is not string extension)
+            if (codec.FilenameExtension is not { } extension)
                 continue;
 
             imageExtensions = $"{imageExtensions}{separator}{extension.ToLower()}";
@@ -63,7 +62,7 @@ public class FileUtilities
 
     public static string GetPathToLocalFile(string imageRelativePath)
     {
-        Uri codeBaseUrl = new(System.AppDomain.CurrentDomain.BaseDirectory);
+        Uri codeBaseUrl = new(AppDomain.CurrentDomain.BaseDirectory);
         string codeBasePath = Uri.UnescapeDataString(codeBaseUrl.AbsolutePath);
         string? dirPath = Path.GetDirectoryName(codeBasePath);
 
@@ -122,7 +121,7 @@ public class FileUtilities
             return null;
         }
     }
-    
+
 #pragma warning disable CS1998
     private static async Task<Bitmap?> GetImageFileUnpackaged(string fileName, FileStorageKind storageKind)
     {
@@ -176,7 +175,7 @@ public class FileUtilities
 
     private static string GetFolderPathUnpackaged(string filename, FileStorageKind storageKind)
     {
-        string? exePath = Path.GetDirectoryName(System.AppContext.BaseDirectory);
+        string? exePath = Path.GetDirectoryName(AppContext.BaseDirectory);
         string historyDirectory = $"{exePath}\\history";
 
         switch (storageKind)
@@ -187,11 +186,9 @@ public class FileUtilities
                 return $"{exePath!}";
             case FileStorageKind.WithHistory:
                 return $"{historyDirectory}";
-            default:
-                break;
         }
 
-        return $"c:\\";
+        return "c:\\";
     }
 
     private static async Task<StorageFolder> GetStorageFolderPackaged(string fileName, FileStorageKind storageKind)
@@ -208,8 +205,6 @@ public class FileUtilities
                 ApplicationData currentAppData = ApplicationData.Current;
                 StorageFolder storageFolder = await currentAppData.LocalFolder.CreateFolderAsync("history", CreationCollisionOption.OpenIfExists);
                 return storageFolder;
-            default:
-                break;
         }
 
         return ApplicationData.Current.LocalCacheFolder;
@@ -290,7 +285,7 @@ public class FileUtilities
         return true;
     }
 #pragma warning restore CS1998
-    
+
     public async static void TryDeleteHistoryDirectory()
     {
         FileStorageKind historyFolderKind = FileStorageKind.WithHistory;

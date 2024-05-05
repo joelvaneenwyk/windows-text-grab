@@ -1,15 +1,16 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Windows.Graphics.Printing.Workflow;
+using Wpf.Ui.Controls;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace Text_Grab.Controls;
 
 /// <summary>
 /// Interaction logic for AddOrRemoveWindow.xaml
 /// </summary>
-public partial class AddOrRemoveWindow : Wpf.Ui.Controls.FluentWindow
+public partial class AddOrRemoveWindow : FluentWindow
 {
     #region Fields
 
@@ -115,10 +116,10 @@ public partial class AddOrRemoveWindow : Wpf.Ui.Controls.FluentWindow
         if (sender is not TextBox addTextTextBox)
             return;
 
-        if (AddRadioButton.IsChecked is true && addTextTextBox.Text is String textFromBox)
+        if (AddRadioButton.IsChecked is true && addTextTextBox.Text is { } textFromBox)
             TextToAdd = textFromBox;
 
-        if (LengthTextBox.Text is String textFromLengthBox)
+        if (LengthTextBox.Text is { } textFromLengthBox)
         {
             bool success = Int32.TryParse(textFromLengthBox, out int lengthString);
 
@@ -157,7 +158,7 @@ public partial class AddOrRemoveWindow : Wpf.Ui.Controls.FluentWindow
                 TextToAddTextBox.Clear();
             }
             else
-                this.Close();
+                Close();
         }
     }
 

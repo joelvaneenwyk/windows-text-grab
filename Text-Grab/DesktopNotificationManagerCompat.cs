@@ -1,4 +1,4 @@
-﻿// ******************************************************************
+// ******************************************************************
 // Copyright (c) Microsoft. All rights reserved.
 // This code is licensed under the MIT License (MIT).
 // THE CODE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
@@ -50,7 +50,7 @@ using static Text_Grab.NotificationActivator;
 
 namespace Text_Grab;
 
-public class DesktopNotificationManagerCompat
+public static class DesktopNotificationManagerCompat
 {
     public const string TOAST_ACTIVATED_LAUNCH_ARG = "-ToastActivated";
 
@@ -85,9 +85,9 @@ public class DesktopNotificationManagerCompat
 
         _aumid = aumid;
 
-        if (Process.GetCurrentProcess().MainModule is ProcessModule processModule)
+        if (Process.GetCurrentProcess().MainModule is { } processModule)
         {
-            if (processModule.FileName is String exePath)
+            if (processModule.FileName is { } exePath)
                 RegisterComServer<T>(exePath);
 
             _registeredAumidAndComServer = true;
@@ -209,11 +209,9 @@ public class DesktopNotificationManagerCompat
             // Non-Desktop Bridge
             return ToastNotificationManager.CreateToastNotifier(_aumid);
         }
-        else
-        {
-            // Desktop Bridge
-            return ToastNotificationManager.CreateToastNotifier();
-        }
+
+        // Desktop Bridge
+        return ToastNotificationManager.CreateToastNotifier();
     }
 
     /// <summary>
@@ -227,8 +225,7 @@ public class DesktopNotificationManagerCompat
 
             if (_aumid != null)
                 return new DesktopNotificationHistoryCompat(_aumid);
-            else
-                return new DesktopNotificationHistoryCompat("");
+            return new DesktopNotificationHistoryCompat("");
         }
     }
 
@@ -277,10 +274,10 @@ public class DesktopNotificationManagerCompat
     /// </summary>
     private class DesktopBridgeHelpers
     {
-        const long APPMODEL_ERROR_NO_PACKAGE = 15700L;
+        private const long APPMODEL_ERROR_NO_PACKAGE = 15700L;
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        static extern int GetCurrentPackageFullName(ref int packageFullNameLength, StringBuilder packageFullName);
+        private static extern int GetCurrentPackageFullName(ref int packageFullNameLength, StringBuilder packageFullName);
 
         private static bool? _isRunningAsUwp;
         public static bool IsRunningAsUwp()
@@ -325,8 +322,8 @@ public class DesktopNotificationManagerCompat
 /// </summary>
 public sealed class DesktopNotificationHistoryCompat
 {
-    private string _aumid;
-    private ToastNotificationHistory _history;
+    private readonly string _aumid;
+    private readonly ToastNotificationHistory _history;
 
     /// <summary>
     /// Do not call this. Instead, call <see cref="DesktopNotificationManagerCompat.History"/> to obtain an instance.
@@ -415,7 +412,7 @@ public sealed class DesktopNotificationHistoryCompat
 /// <summary>
 /// Apps must implement this activator to handle notification activation.
 /// </summary>
-public abstract class NotificationActivator : NotificationActivator.INotificationActivationCallback
+public abstract class NotificationActivator : INotificationActivationCallback
 {
     public void Activate(string appUserModelId, string invokedArgs, NOTIFICATION_USER_INPUT_DATA[] data, uint dataCount)
     {
@@ -465,9 +462,9 @@ public abstract class NotificationActivator : NotificationActivator.INotificatio
 /// </summary>
 public class NotificationUserInput : IReadOnlyDictionary<string, string>
 {
-    private NotificationActivator.NOTIFICATION_USER_INPUT_DATA[] _data;
+    private readonly NOTIFICATION_USER_INPUT_DATA[] _data;
 
-    internal NotificationUserInput(NotificationActivator.NOTIFICATION_USER_INPUT_DATA[] data)
+    internal NotificationUserInput(NOTIFICATION_USER_INPUT_DATA[] data)
     {
         _data = data;
     }

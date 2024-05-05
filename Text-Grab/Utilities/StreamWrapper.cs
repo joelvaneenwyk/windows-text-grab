@@ -17,20 +17,14 @@ public class WrappingStream : Stream
     public WrappingStream(Stream streamBase)
     {
         // check parameters
-
-        if (streamBase == null)
-            throw new ArgumentNullException("streamBase");
-        m_streamBase = streamBase;
+        m_streamBase = streamBase ?? throw new ArgumentNullException(nameof(streamBase));
     }
 
     /// <summary>
     /// Gets a value indicating whether the current stream supports reading.
     /// </summary>
     /// <returns><c>true</c> if the stream supports reading; otherwise, <c>false</c>.</returns>
-    public override bool CanRead
-    {
-        get { return m_streamBase == null ? false : m_streamBase.CanRead; }
-    }
+    public override bool CanRead => m_streamBase?.CanRead ?? false;
 
     /// <summary>
     /// Gets a value indicating whether the current stream supports seeking.
@@ -156,8 +150,7 @@ public class WrappingStream : Stream
 
         if (m_streamBase is not null)
             return m_streamBase.Read(buffer, offset, count);
-        else
-            return 0;
+        return 0;
     }
 
     /// <summary>
@@ -169,8 +162,7 @@ public class WrappingStream : Stream
 
         if (m_streamBase is not null)
             return m_streamBase.ReadByte();
-        else
-            return 0;
+        return 0;
     }
 
     /// <summary>
@@ -185,8 +177,7 @@ public class WrappingStream : Stream
 
         if (m_streamBase is not null)
             return m_streamBase.Seek(offset, origin);
-        else
-            return 0;
+        return 0;
     }
 
     /// <summary>
@@ -253,5 +244,6 @@ public class WrappingStream : Stream
         if (m_streamBase == null)
             throw new ObjectDisposedException(GetType().Name);
     }
-    Stream? m_streamBase;
+
+    private Stream? m_streamBase;
 }

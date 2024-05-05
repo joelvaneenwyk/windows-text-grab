@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 using Text_Grab.Models;
-using Text_Grab.Properties;
 using Text_Grab.Services;
 using Text_Grab.Views;
+using Application = System.Windows.Application;
 
 namespace Text_Grab.Utilities;
 
@@ -14,7 +13,7 @@ public static class NotifyIconUtilities
 {
     public static void SetupNotifyIcon()
     {
-        App app = (App)App.Current;
+        App app = (App)Application.Current;
         if (app.TextGrabIcon is not null
             || app.NumberOfRunningInstances > 1)
         {
@@ -23,7 +22,7 @@ public static class NotifyIconUtilities
 
         NotifyIcon icon = new();
         icon.Text = "Text Grab";
-        icon.Icon = new Icon(System.Windows.Application.GetResourceStream(new Uri("/TealSelect.ico", UriKind.Relative)).Stream);
+        icon.Icon = new Icon(Application.GetResourceStream(new Uri("/TealSelect.ico", UriKind.Relative)).Stream);
         icon.Visible = true;
 
         ContextMenuStrip? contextMenu = new();
@@ -44,10 +43,10 @@ public static class NotifyIconUtilities
         editTextWindowItem.Click += (s, e) => { EditTextWindow etw = new(); etw.Show(); };
 
         ToolStripMenuItem? exitItem = new("&Close");
-        exitItem.Click += (s, e) => { System.Windows.Application.Current.Shutdown(); };
+        exitItem.Click += (s, e) => { Application.Current.Shutdown(); };
 
         contextMenu.Items.AddRange(
-            new ToolStripMenuItem[] {
+            new[] {
                 fullScreenGrabItem,
                 previousGrabRegion,
                 grabFrameItem,
@@ -78,16 +77,16 @@ public static class NotifyIconUtilities
         IEnumerable<ShortcutKeySet> shortcuts = ShortcutKeysUtilities.GetShortcutKeySetsFromSettings();
 
         foreach (ShortcutKeySet keySet in shortcuts)
-            if (keySet.IsEnabled && HotKeyManager.RegisterHotKey(keySet) is int id)
+            if (keySet.IsEnabled && HotKeyManager.RegisterHotKey(keySet) is { } id)
                 app.HotKeyIds.Add(id);
 
-        HotKeyManager.HotKeyPressed -= new EventHandler<HotKeyEventArgs>(HotKeyManager_HotKeyPressed);
-        HotKeyManager.HotKeyPressed += new EventHandler<HotKeyEventArgs>(HotKeyManager_HotKeyPressed);
+        HotKeyManager.HotKeyPressed -= HotKeyManager_HotKeyPressed;
+        HotKeyManager.HotKeyPressed += HotKeyManager_HotKeyPressed;
     }
 
     public static void UnregisterHotkeys(App app)
     {
-        HotKeyManager.HotKeyPressed -= new EventHandler<HotKeyEventArgs>(HotKeyManager_HotKeyPressed);
+        HotKeyManager.HotKeyPressed -= HotKeyManager_HotKeyPressed;
 
         foreach (int hotKeyId in app.HotKeyIds)
             HotKeyManager.UnregisterHotKey(hotKeyId);
@@ -95,12 +94,12 @@ public static class NotifyIconUtilities
 
     private static void trayIcon_Disposed(object? sender, EventArgs e)
     {
-        App app = (App)App.Current;
+        App app = (App)Application.Current;
 
         UnregisterHotkeys(app);
     }
 
-    static void HotKeyManager_HotKeyPressed(object? sender, HotKeyEventArgs e)
+    private static void HotKeyManager_HotKeyPressed(object? sender, HotKeyEventArgs e)
     {
         if (!AppUtilities.TextGrabSettings.GlobalHotkeysEnabled)
             return;
@@ -119,55 +118,53 @@ public static class NotifyIconUtilities
             case ShortcutKeyActions.Settings:
                 break;
             case ShortcutKeyActions.Fullscreen:
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     WindowUtilities.LaunchFullScreenGrab();
-                }));
+                });
                 break;
             case ShortcutKeyActions.GrabFrame:
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     GrabFrame gf = new();
                     gf.Show();
-                }));
+                });
                 break;
             case ShortcutKeyActions.Lookup:
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     QuickSimpleLookup qsl = new();
                     qsl.Show();
-                }));
+                });
                 break;
             case ShortcutKeyActions.EditWindow:
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     EditTextWindow etw = new();
                     etw.Show();
                     etw.Activate();
-                }));
+                });
                 break;
             case ShortcutKeyActions.PreviousRegionGrab:
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     OcrUtilities.GetCopyTextFromPreviousRegion();
-                }));
+                });
                 break;
             case ShortcutKeyActions.PreviousEditWindow:
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     EditTextWindow etw = new();
                     etw.OpenMostRecentTextHistoryItem();
                     etw.Show();
                     etw.Activate();
-                }));
+                });
                 break;
             case ShortcutKeyActions.PreviousGrabFrame:
-                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     Singleton<HistoryService>.Instance.GetLastHistoryAsGrabFrame();
-                }));
-                break;
-            default:
+                });
                 break;
         }
     }

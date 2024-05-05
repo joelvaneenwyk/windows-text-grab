@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Text_Grab;
 using Text_Grab.Utilities;
 
@@ -26,8 +21,8 @@ public class FilesIoTests
     [WpfFact]
     public async Task CanSaveTextFilesWithExe()
     {
-        string textContent = "abcdef";
-        string fileName = "testAbc.txt";
+        const string textContent = "abcdef";
+        const string fileName = "testAbc.txt";
 
         bool couldSave = await FileUtilities.SaveTextFile(textContent, fileName, FileStorageKind.WithExe);
         Assert.True(couldSave);
@@ -39,7 +34,7 @@ public class FilesIoTests
     public async Task CanStoreThenReadTextFilesWithExe(FileStorageKind storageKind)
     {
         string textContent = $"Hello Hello this is a test of the system {DateTime.Now}";
-        string fileName = "testAbc.txt";
+        const string fileName = "testAbc.txt";
 
         _ = await FileUtilities.SaveTextFile(textContent, fileName, storageKind);
         string readString = await FileUtilities.GetTextFileAsync(fileName, storageKind);
@@ -53,7 +48,7 @@ public class FilesIoTests
     [InlineData(FileStorageKind.Absolute)]
     public async Task ReadNotExistingTextFileEmpty(FileStorageKind storageKind)
     {
-        string fileName = "FileNotFound.json";
+        const string fileName = "FileNotFound.json";
         string emptyReturn = await FileUtilities.GetTextFileAsync(fileName, storageKind);
         Assert.Empty(emptyReturn);
     }

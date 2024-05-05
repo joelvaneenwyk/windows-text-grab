@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -26,7 +25,7 @@ public partial class FindAndReplaceWindow : FluentWindow
     public static RoutedCommand ReplaceAllCmd = new();
     public static RoutedCommand ReplaceOneCmd = new();
     public static RoutedCommand TextSearchCmd = new();
-    DispatcherTimer ChangeFindTextTimer = new();
+    private readonly DispatcherTimer ChangeFindTextTimer = new();
     private MatchCollection? Matches;
     private string stringFromWindow = "";
     private EditTextWindow? textEditWindow;
@@ -82,7 +81,7 @@ public partial class FindAndReplaceWindow : FluentWindow
 
         Pattern = FindTextBox.Text;
 
-        if (UsePaternCheckBox.IsChecked is false && ExactMatchCheckBox.IsChecked is bool matchExactly)
+        if (UsePaternCheckBox.IsChecked is false && ExactMatchCheckBox.IsChecked is { } matchExactly)
             Pattern = Pattern.EscapeSpecialRegexChars(matchExactly);
 
         try
@@ -94,7 +93,7 @@ public partial class FindAndReplaceWindow : FluentWindow
         }
         catch (Exception ex)
         {
-            MatchesText.Text = "Error searching: " + ex.GetType().ToString();
+            MatchesText.Text = "Error searching: " + ex.GetType();
             return;
         }
 
@@ -132,11 +131,11 @@ public partial class FindAndReplaceWindow : FluentWindow
 
         if (textEditWindow is not null
             && firstMatch is not null
-            && this.IsFocused)
+            && IsFocused)
         {
             textEditWindow.PassedTextControl.Select(firstMatch.Index, firstMatch.Value.Length);
             textEditWindow.PassedTextControl.Focus();
-            this.Focus();
+            Focus();
         }
     }
 
@@ -346,7 +345,7 @@ public partial class FindAndReplaceWindow : FluentWindow
         {
             textEditWindow.PassedTextControl.Focus();
             textEditWindow.PassedTextControl.Select(selectedResult.Index, selectedResult.Length);
-            this.Focus();
+            Focus();
         }
     }
 
@@ -385,7 +384,7 @@ public partial class FindAndReplaceWindow : FluentWindow
             if (!string.IsNullOrWhiteSpace(FindTextBox.Text))
                 FindTextBox.Clear();
             else
-                this.Close();
+                Close();
         }
     }
 

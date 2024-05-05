@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+using System;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
@@ -36,17 +35,17 @@ public class WindowResizer
     /// <summary>
     /// The window to handle the resizing for
     /// </summary>
-    private Window? mWindow;
+    private readonly Window? mWindow;
 
     /// <summary>
     /// The last calculated available screen size
     /// </summary>
-    private Rect mScreenSize = new Rect();
+    private Rect mScreenSize;
 
     /// <summary>
     /// How close to the edge the window has to be to be detected as at the edge of the screen
     /// </summary>
-    private int mEdgeTolerance = 2;
+    private readonly int mEdgeTolerance = 2;
 
     /// <summary>
     /// The transform matrix used to convert WPF sizes to screen pixels
@@ -69,13 +68,13 @@ public class WindowResizer
 
     [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
-    static extern bool GetCursorPos(out POINT lpPoint);
+    private static extern bool GetCursorPos(out POINT lpPoint);
 
     [DllImport("user32.dll")]
-    static extern bool GetMonitorInfo(IntPtr hMonitor, MONITORINFO lpmi);
+    private static extern bool GetMonitorInfo(IntPtr hMonitor, MONITORINFO lpmi);
 
     [DllImport("user32.dll", SetLastError = true)]
-    static extern IntPtr MonitorFromPoint(POINT pt, MonitorOptions dwFlags);
+    private static extern IntPtr MonitorFromPoint(POINT pt, MonitorOptions dwFlags);
 
     #endregion
 
@@ -84,7 +83,7 @@ public class WindowResizer
     /// <summary>
     /// Called when the window dock position changes
     /// </summary>
-    public event Action<WindowDockPosition> WindowDockChanged = (dock) => { };
+    public event Action<WindowDockPosition> WindowDockChanged = dock => { };
 
     #endregion
 
@@ -94,8 +93,7 @@ public class WindowResizer
     /// Default constructor
     /// </summary>
     /// <param name="window">The window to monitor and correctly maximize</param>
-    /// <param name="adjustSize">The callback for the host to adjust the maximum available size if needed</param>
-    public WindowResizer(Window window)
+    public WindowResizer(Window? window)
     {
         if (window is null)
             return;
@@ -140,10 +138,10 @@ public class WindowResizer
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void Window_SourceInitialized(object? sender, System.EventArgs e)
+    private void Window_SourceInitialized(object? sender, EventArgs e)
     {
         // Get the handle of this window
-        var handle = (new WindowInteropHelper(mWindow)).Handle;
+        var handle = new WindowInteropHelper(mWindow).Handle;
         var handleSource = HwndSource.FromHwnd(handle);
 
         // If not found, end
@@ -184,10 +182,10 @@ public class WindowResizer
         var windowBottomRight = mTransformToDevice.Transform(new Point(right, bottom));
 
         // Check for edges docked
-        var edgedTop = windowTopLeft.Y <= (mScreenSize.Top + mEdgeTolerance);
-        var edgedLeft = windowTopLeft.X <= (mScreenSize.Left + mEdgeTolerance);
-        var edgedBottom = windowBottomRight.Y >= (mScreenSize.Bottom - mEdgeTolerance);
-        var edgedRight = windowBottomRight.X >= (mScreenSize.Right - mEdgeTolerance);
+        var edgedTop = windowTopLeft.Y <= mScreenSize.Top + mEdgeTolerance;
+        var edgedLeft = windowTopLeft.X <= mScreenSize.Left + mEdgeTolerance;
+        var edgedBottom = windowBottomRight.Y >= mScreenSize.Bottom - mEdgeTolerance;
+        var edgedRight = windowBottomRight.X >= mScreenSize.Right - mEdgeTolerance;
 
         // Get docked position
         var dock = WindowDockPosition.Undocked;
@@ -234,7 +232,7 @@ public class WindowResizer
                 break;
         }
 
-        return (IntPtr)0;
+        return 0;
     }
 
     #endregion
@@ -245,7 +243,7 @@ public class WindowResizer
     /// </summary>
     /// <param name="hwnd"></param>
     /// <param name="lParam"></param>
-    private void WmGetMinMaxInfo(System.IntPtr hwnd, System.IntPtr lParam)
+    private void WmGetMinMaxInfo(IntPtr hwnd, IntPtr lParam)
     {
         if (mWindow is null)
             return;
@@ -300,7 +298,7 @@ public class WindowResizer
 
 #region Dll Helper Structures
 
-enum MonitorOptions : uint
+internal enum MonitorOptions : uint
 {
     MONITOR_DEFAULTTONULL = 0x00000000,
     MONITOR_DEFAULTTOPRIMARY = 0x00000001,
@@ -325,10 +323,10 @@ public struct Rectangle
 
     public Rectangle(int left, int top, int right, int bottom)
     {
-        this.Left = left;
-        this.Top = top;
-        this.Right = right;
-        this.Bottom = bottom;
+        Left = left;
+        Top = top;
+        Right = right;
+        Bottom = bottom;
     }
 }
 
@@ -340,7 +338,7 @@ public struct MINMAXINFO
     public POINT ptMaxPosition;
     public POINT ptMinTrackSize;
     public POINT ptMaxTrackSize;
-};
+}
 
 [StructLayout(LayoutKind.Sequential)]
 public struct POINT
@@ -359,8 +357,8 @@ public struct POINT
     /// </summary>
     public POINT(int x, int y)
     {
-        this.X = x;
-        this.Y = y;
+        X = x;
+        Y = y;
     }
 }
 

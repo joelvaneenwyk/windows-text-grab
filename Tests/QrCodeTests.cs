@@ -1,4 +1,4 @@
-﻿using Text_Grab.Utilities;
+using Text_Grab.Utilities;
 using ZXing.QrCode.Internal;
 
 namespace Tests;

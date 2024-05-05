@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Text_Grab.Extensions;
@@ -12,6 +13,7 @@ using Text_Grab.Views;
 using Windows.Storage.Streams;
 using BitmapEncoder = System.Windows.Media.Imaging.BitmapEncoder;
 using BitmapFrame = System.Windows.Media.Imaging.BitmapFrame;
+using PixelFormat = System.Drawing.Imaging.PixelFormat;
 using Point = System.Windows.Point;
 
 namespace Text_Grab;
@@ -73,7 +75,7 @@ public static class ImageMethods
 
     public static Bitmap GetRegionOfScreenAsBitmap(Rectangle region)
     {
-        Bitmap bmp = new(region.Width, region.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+        Bitmap bmp = new(region.Width, region.Height, PixelFormat.Format32bppArgb);
         using Graphics g = Graphics.FromImage(bmp);
 
         g.CopyFromScreen(region.Left, region.Top, 0, 0, bmp.Size, CopyPixelOperation.SourceCopy);
@@ -91,8 +93,8 @@ public static class ImageMethods
 
         Point absPosPoint = passedWindow.GetAbsolutePosition();
 
-        int thisCorrectedLeft = (int)(absPosPoint.X);
-        int thisCorrectedTop = (int)(absPosPoint.Y);
+        int thisCorrectedLeft = (int)absPosPoint.X;
+        int thisCorrectedTop = (int)absPosPoint.Y;
 
         if (passedWindow is GrabFrame grabFrame)
         {
@@ -103,11 +105,11 @@ public static class ImageMethods
             int bottomBarHeight = 42;
             thisCorrectedLeft = (int)((absPosPoint.X + borderThickness) * dpi.DpiScaleX);
             thisCorrectedTop = (int)((absPosPoint.Y + (titleBarHeight + borderThickness)) * dpi.DpiScaleY);
-            windowWidth -= (int)((2 * borderThickness) * dpi.DpiScaleX);
-            windowHeight -= (int)((titleBarHeight + bottomBarHeight + (2 * borderThickness)) * dpi.DpiScaleY);
+            windowWidth -= (int)(2 * borderThickness * dpi.DpiScaleX);
+            windowHeight -= (int)((titleBarHeight + bottomBarHeight + 2 * borderThickness) * dpi.DpiScaleY);
         }
 
-        Bitmap bmp = new(windowWidth, windowHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+        Bitmap bmp = new(windowWidth, windowHeight, PixelFormat.Format32bppArgb);
         using Graphics g = Graphics.FromImage(bmp);
 
         g.CopyFromScreen(thisCorrectedLeft, thisCorrectedTop, 0, 0, bmp.Size, CopyPixelOperation.SourceCopy);
@@ -146,16 +148,16 @@ public static class ImageMethods
 
     }
 
-    public static Bitmap InteropBitmapToBitmap(System.Windows.Interop.InteropBitmap source)
+    public static Bitmap InteropBitmapToBitmap(InteropBitmap source)
     {
         Bitmap bmp = new(
           source.PixelWidth,
           source.PixelHeight,
-          System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+          PixelFormat.Format32bppPArgb);
         BitmapData data = bmp.LockBits(
           new Rectangle(System.Drawing.Point.Empty, bmp.Size),
           ImageLockMode.WriteOnly,
-          System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+          PixelFormat.Format32bppPArgb);
         source.CopyPixels(
           Int32Rect.Empty,
           data.Scan0,
@@ -170,11 +172,11 @@ public static class ImageMethods
         Bitmap bmp = new(
           source.PixelWidth,
           source.PixelHeight,
-          System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+          PixelFormat.Format32bppPArgb);
         BitmapData data = bmp.LockBits(
           new Rectangle(System.Drawing.Point.Empty, bmp.Size),
           ImageLockMode.WriteOnly,
-          System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+          PixelFormat.Format32bppPArgb);
         source.CopyPixels(
           Int32Rect.Empty,
           data.Scan0,
@@ -194,7 +196,7 @@ public static class ImageMethods
     {
         BitmapImage bmp = new();
         Stream ioStream = stream.AsStream();
-        // Create a new BitmapImage and use the SetSourceAsync method to 
+        // Create a new BitmapImage and use the SetSourceAsync method to
         // initialize it from the given IRandomAccessStream.
         bmp.BeginInit();
         bmp.CacheOption = BitmapCacheOption.None;
@@ -224,8 +226,6 @@ public static class ImageMethods
                 break;
             case 3:
                 droppedImage.Rotation = Rotation.Rotate270;
-                break;
-            default:
                 break;
         }
     }

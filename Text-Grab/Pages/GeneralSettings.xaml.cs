@@ -1,13 +1,16 @@
-﻿using System;
+using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Navigation;
 using Text_Grab.Properties;
 using Text_Grab.Utilities;
 using Windows.ApplicationModel;
 using Wpf.Ui.Controls;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace Text_Grab.Pages;
 
@@ -22,7 +25,7 @@ public partial class GeneralSettings : Page
     private readonly Brush BadBrush = new SolidColorBrush(Colors.Red);
     private readonly Brush GoodBrush = new SolidColorBrush(Colors.Transparent);
     private double InsertDelaySeconds = 1.5;
-    private bool settingsSet = false;
+    private bool settingsSet;
 
     #endregion Fields
 
@@ -36,11 +39,11 @@ public partial class GeneralSettings : Page
 
     private void OpenExeFolderButton_Click(object sender, RoutedEventArgs args)
     {
-        if (Path.GetDirectoryName(AppContext.BaseDirectory) is not string exePath)
+        if (Path.GetDirectoryName(AppContext.BaseDirectory) is not { } exePath)
             return;
 
         Uri source = new(exePath, UriKind.Absolute);
-        System.Windows.Navigation.RequestNavigateEventArgs e = new(source, exePath);
+        RequestNavigateEventArgs e = new(source, exePath);
         Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
         e.Handled = true;
     }
@@ -126,7 +129,7 @@ public partial class GeneralSettings : Page
         NeverUseClipboardChkBx.IsChecked = DefaultSettings.NeverAutoUseClipboard;
         TryInsertCheckbox.IsChecked = DefaultSettings.TryInsert;
         InsertDelaySeconds = DefaultSettings.InsertDelay;
-        SecondsTextBox.Text = InsertDelaySeconds.ToString("##.#", System.Globalization.CultureInfo.InvariantCulture);
+        SecondsTextBox.Text = InsertDelaySeconds.ToString("##.#", CultureInfo.InvariantCulture);
 
         settingsSet = true;
     }
@@ -136,7 +139,7 @@ public partial class GeneralSettings : Page
         if (!settingsSet)
             return;
 
-        if (sender is System.Windows.Controls.TextBox numberInputBox)
+        if (sender is TextBox numberInputBox)
         {
             bool wasAbleToConvert = double.TryParse(numberInputBox.Text, out double parsedText);
             if (wasAbleToConvert && parsedText > 0 && parsedText < 10)
@@ -246,7 +249,7 @@ public partial class GeneralSettings : Page
     {
         if (!settingsSet)
             return;
-        
+
         DefaultSettings.UseHistory = true;
     }
 
@@ -310,7 +313,7 @@ public partial class GeneralSettings : Page
     {
         if (!settingsSet)
             return;
-        
+
         DefaultSettings.StartupOnLogin = true;
         await ImplementAppOptions.ImplementStartupOption(true);
     }

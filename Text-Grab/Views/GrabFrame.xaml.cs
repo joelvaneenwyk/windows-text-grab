@@ -1,11 +1,11 @@
-﻿using Fasetto.Word;
-using Humanizer;
+using Fasetto.Word;
+using Microsoft.Win32;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing.Imaging;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -17,12 +17,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 using Text_Grab.Controls;
-using Text_Grab.Extensions;
 using Text_Grab.Models;
 using Text_Grab.Properties;
 using Text_Grab.Services;
@@ -32,7 +32,11 @@ using Windows.Globalization;
 using Windows.Media.Ocr;
 using Windows.System;
 using ZXing;
+using ZXing.Common;
 using ZXing.Windows.Compatibility;
+using Color = System.Drawing.Color;
+using Point = System.Windows.Point;
+using Rectangle = System.Drawing.Rectangle;
 
 namespace Text_Grab.Views;
 
@@ -54,25 +58,25 @@ public partial class GrabFrame : Window
     private TextBox? destinationTextBox;
     private ImageSource? frameContentImageSource;
     private HistoryInfo? historyItem;
-    private bool IsDragOver = false;
-    private bool isDrawing = false;
-    private bool isLanguageBoxLoaded = false;
-    private bool isMiddleDown = false;
-    private bool IsOcrValid = false;
-    private bool isSearchSelectionOverridden = false;
+    private bool IsDragOver;
+    private bool isDrawing;
+    private bool isLanguageBoxLoaded;
+    private bool isMiddleDown;
+    private bool IsOcrValid;
+    private bool isSearchSelectionOverridden;
     private bool isSelecting;
     private bool isSpaceJoining = true;
-    private Dictionary<WordBorder, Rect> movingWordBordersDictionary = new();
+    private readonly Dictionary<WordBorder, Rect> movingWordBordersDictionary = new();
     private OcrResult? ocrResultOfWindow;
-    private DispatcherTimer reDrawTimer = new();
-    private DispatcherTimer reSearchTimer = new();
+    private readonly DispatcherTimer reDrawTimer = new();
+    private readonly DispatcherTimer reSearchTimer = new();
     private Side resizingSide = Side.None;
-    private Border selectBorder = new();
+    private readonly Border selectBorder = new();
     private Point startingMovingPoint;
-    private UndoRedo UndoRedo = new();
-    private bool wasAltHeld = false;
+    private readonly UndoRedo UndoRedo = new();
+    private bool wasAltHeld;
     private double windowFrameImageScale = 1;
-    private ObservableCollection<WordBorder> wordBorders = new();
+    private readonly ObservableCollection<WordBorder> wordBorders = new();
     private readonly static Settings DefaultSettings = AppUtilities.TextGrabSettings;
 
     #endregion Fields
@@ -101,7 +105,7 @@ public partial class GrabFrame : Window
 
         string imageName = Path.GetFileName(history.ImagePath);
 
-        System.Drawing.Bitmap? bgBitmap = await FileUtilities
+        Bitmap? bgBitmap = await FileUtilities
             .GetImageFileAsync(
                 imageName,
                 FileStorageKind.WithHistory);
@@ -143,18 +147,18 @@ public partial class GrabFrame : Window
 
         if (history.PositionRect != Rect.Empty)
         {
-            this.Left = history.PositionRect.Left;
-            this.Top = history.PositionRect.Top;
-            this.Height = history.PositionRect.Height;
-            this.Width = history.PositionRect.Width;
+            Left = history.PositionRect.Left;
+            Top = history.PositionRect.Top;
+            Height = history.PositionRect.Height;
+            Width = history.PositionRect.Width;
 
             if (history.SourceMode == TextGrabMode.Fullscreen)
             {
                 int borderThickness = 2;
                 int titleBarHeight = 32;
                 int bottomBarHeight = 42;
-                this.Height += (titleBarHeight + bottomBarHeight);
-                this.Width += (2 * borderThickness);
+                Height += titleBarHeight + bottomBarHeight;
+                Width += 2 * borderThickness;
             }
         }
 
@@ -167,7 +171,7 @@ public partial class GrabFrame : Window
     {
         // This is a WIP to try to remove the gray letterboxes on either
         // side of the image when zooming it.
-        
+
         Rect imageRect = Rect.Empty;
 
         if (frameContentImageSource is null)
@@ -207,7 +211,7 @@ public partial class GrabFrame : Window
         GetGrabFrameUserSettings();
         SetRefreshOrOcrFrameBtnVis();
 
-        this.DataContext = this;
+        DataContext = this;
     }
 
     #endregion Constructors
@@ -245,7 +249,7 @@ public partial class GrabFrame : Window
     public string FrameText { get; private set; } = string.Empty;
     public bool isCtrlDown => KeyboardExtensions.IsCtrlDown() || AddEditOcrMenuItem.IsChecked is true;
     public bool IsEditingAnyWordBorders => wordBorders.Any(x => x.IsEditing);
-    public bool IsFreezeMode { get; set; } = false;
+    public bool IsFreezeMode { get; set; }
     public bool IsFromEditWindow => destinationTextBox is not null;
     public bool IsWordEditMode { get; set; } = true;
 
@@ -259,7 +263,7 @@ public partial class GrabFrame : Window
 
     public HistoryInfo AsHistoryItem()
     {
-        System.Drawing.Bitmap? bitmap = null;
+        Bitmap? bitmap = null;
 
         if (frameContentImageSource is BitmapImage image)
             bitmap = ImageMethods.BitmapImageToBitmap(image);
@@ -269,14 +273,14 @@ public partial class GrabFrame : Window
         foreach (WordBorder wb in wordBorders)
             wbInfoList.Add(new WordBorderInfo(wb));
 
-        string wbInfoJson = JsonSerializer.Serialize<List<WordBorderInfo>>(wbInfoList);
+        string wbInfoJson = JsonSerializer.Serialize(wbInfoList);
 
         Rect sizePosRect = new()
         {
-            Width = this.Width,
-            Height = this.Height,
-            X = this.Left,
-            Y = this.Top
+            Width = Width,
+            Height = Height,
+            X = Left,
+            Y = Top
         };
 
         string id = string.Empty;
@@ -325,14 +329,14 @@ public partial class GrabFrame : Window
 
             foreach (string word in lineWords)
             {
-                double wordWidth = (double)GetWidthOfString(word, (int)wordFractionWidth, (int)wordHeight) / widthScaleAdjustFactor;
+                double wordWidth = GetWidthOfString(word, (int)wordFractionWidth, (int)wordHeight) / widthScaleAdjustFactor;
                 WordBorder wordBorderBox = new()
                 {
                     Width = wordWidth,
                     Height = wordHeight,
                     Word = word,
                     OwnerGrabFrame = this,
-                    Top = top + (lineIterator * wordHeight),
+                    Top = top + lineIterator * wordHeight,
                     Left = left,
                     MatchingBackground = wordBorder.MatchingBackground,
                 };
@@ -341,7 +345,7 @@ public partial class GrabFrame : Window
                 _ = RectanglesCanvas.Children.Add(wordBorderBox);
 
                 UndoRedo.InsertUndoRedoOperation(UndoRedoOperation.AddWordBorder,
-                    new GrabFrameOperationArgs()
+                    new GrabFrameOperationArgs
                     {
                         WordBorder = wordBorderBox,
                         WordBorders = wordBorders,
@@ -367,7 +371,7 @@ public partial class GrabFrame : Window
 
         List<WordBorder> deletedWordBorder = new() { wordBorder };
         UndoRedo.InsertUndoRedoOperation(UndoRedoOperation.RemoveWordBorder,
-            new GrabFrameOperationArgs()
+            new GrabFrameOperationArgs
             {
                 RemovingWordBorders = deletedWordBorder,
                 WordBorders = wordBorders,
@@ -382,9 +386,9 @@ public partial class GrabFrame : Window
 
     public async void GrabFrame_Loaded(object sender, RoutedEventArgs e)
     {
-        this.PreviewMouseWheel += HandlePreviewMouseWheel;
-        this.PreviewKeyDown += Window_PreviewKeyDown;
-        this.PreviewKeyUp += Window_PreviewKeyUp;
+        PreviewMouseWheel += HandlePreviewMouseWheel;
+        PreviewKeyDown += Window_PreviewKeyDown;
+        PreviewKeyUp += Window_PreviewKeyUp;
 
         RoutedCommand pasteCommand = new();
         _ = pasteCommand.InputGestures.Add(new KeyGesture(Key.V, ModifierKeys.Control | ModifierKeys.Shift));
@@ -398,18 +402,18 @@ public partial class GrabFrame : Window
 
     public void GrabFrame_Unloaded(object sender, RoutedEventArgs e)
     {
-        this.Activated -= GrabFrameWindow_Activated;
-        this.Closed -= Window_Closed;
-        this.Deactivated -= GrabFrameWindow_Deactivated;
-        this.DragLeave -= GrabFrameWindow_DragLeave;
-        this.DragOver -= GrabFrameWindow_DragOver;
-        this.Loaded -= GrabFrame_Loaded;
-        this.LocationChanged -= Window_LocationChanged;
-        this.SizeChanged -= Window_SizeChanged;
-        this.Unloaded -= GrabFrame_Unloaded;
-        this.PreviewMouseWheel -= HandlePreviewMouseWheel;
-        this.PreviewKeyDown -= Window_PreviewKeyDown;
-        this.PreviewKeyUp -= Window_PreviewKeyUp;
+        Activated -= GrabFrameWindow_Activated;
+        Closed -= Window_Closed;
+        Deactivated -= GrabFrameWindow_Deactivated;
+        DragLeave -= GrabFrameWindow_DragLeave;
+        DragOver -= GrabFrameWindow_DragOver;
+        Loaded -= GrabFrame_Loaded;
+        LocationChanged -= Window_LocationChanged;
+        SizeChanged -= Window_SizeChanged;
+        Unloaded -= GrabFrame_Unloaded;
+        PreviewMouseWheel -= HandlePreviewMouseWheel;
+        PreviewKeyDown -= Window_PreviewKeyDown;
+        PreviewKeyUp -= Window_PreviewKeyUp;
 
         reDrawTimer.Stop();
         reDrawTimer.Tick -= ReDrawTimer_Tick;
@@ -463,7 +467,7 @@ public partial class GrabFrame : Window
 
         var deletedWordBorders = DeleteSelectedWordBorders();
         UndoRedo.InsertUndoRedoOperation(UndoRedoOperation.RemoveWordBorder,
-            new GrabFrameOperationArgs()
+            new GrabFrameOperationArgs
             {
                 RemovingWordBorders = deletedWordBorders,
                 WordBorders = wordBorders,
@@ -479,7 +483,7 @@ public partial class GrabFrame : Window
         mergedContent = mergedContent.Replace('\t', ' ');
 
         SolidColorBrush backgroundBrush = new(Colors.Black);
-        System.Drawing.Bitmap? bmp = null;
+        Bitmap? bmp = null;
 
         if (frameContentImageSource is BitmapImage bmpImg)
             bmp = ImageMethods.BitmapSourceToBitmap(bmpImg);
@@ -510,7 +514,7 @@ public partial class GrabFrame : Window
         _ = RectanglesCanvas.Children.Add(wordBorderBox);
 
         UndoRedo.InsertUndoRedoOperation(UndoRedoOperation.AddWordBorder,
-            new GrabFrameOperationArgs()
+            new GrabFrameOperationArgs
             {
                 WordBorder = wordBorderBox,
                 WordBorders = wordBorders,
@@ -546,7 +550,7 @@ public partial class GrabFrame : Window
         startingMovingPoint = new(wordBorder.Left, wordBorder.Top);
         resizingSide = sideEnum;
 
-        ICollection<WordBorder> bordersMoving = new List<WordBorder>() { wordBorder };
+        ICollection<WordBorder> bordersMoving = new List<WordBorder> { wordBorder };
 
         if (sideEnum == Side.None)
             bordersMoving = SelectedWordBorders();
@@ -564,7 +568,7 @@ public partial class GrabFrame : Window
         if (isSingleTransaction)
             UndoRedo.StartTransaction();
 
-        UndoRedo.InsertUndoRedoOperation(UndoRedoOperation.ChangeWord, new GrabFrameOperationArgs()
+        UndoRedo.InsertUndoRedoOperation(UndoRedoOperation.ChangeWord, new GrabFrameOperationArgs
         {
             WordBorder = wordBorder,
             OldWord = oldWord,
@@ -596,10 +600,10 @@ public partial class GrabFrame : Window
 
     private static float GetWidthOfString(string str, int width, int height)
     {
-        using System.Drawing.Bitmap objBitmap = new System.Drawing.Bitmap(width, height);
-        using System.Drawing.Graphics objGraphics = System.Drawing.Graphics.FromImage(objBitmap);
+        using Bitmap objBitmap = new Bitmap(width, height);
+        using Graphics objGraphics = Graphics.FromImage(objBitmap);
 
-        System.Drawing.SizeF stringSize = objGraphics.MeasureString(str, new System.Drawing.Font("Segoe UI", (int)(height * 0.8)));
+        SizeF stringSize = objGraphics.MeasureString(str, new Font("Segoe UI", (int)(height * 0.8)));
         return stringSize.Width;
     }
 
@@ -637,11 +641,11 @@ public partial class GrabFrame : Window
         ShouldSaveOnClose = true;
         DpiScale dpi = VisualTreeHelper.GetDpi(this);
         SolidColorBrush backgroundBrush = new(Colors.Black);
-        System.Drawing.Bitmap? bmp = null;
+        Bitmap? bmp = null;
 
         double viewBoxZoomFactor = CanvasViewBox.GetHorizontalScaleFactor();
         Rect rect = selectBorder.GetAbsolutePlacement(true);
-        rect = new(rect.X + 4, rect.Y, (rect.Width * dpi.DpiScaleX) + 10, rect.Height * dpi.DpiScaleY);
+        rect = new(rect.X + 4, rect.Y, rect.Width * dpi.DpiScaleX + 10, rect.Height * dpi.DpiScaleY);
         string ocrText = await OcrUtilities.GetTextFromAbsoluteRectAsync(rect.GetScaleSizeByFraction(viewBoxZoomFactor), CurrentLanguage);
 
         if (DefaultSettings.CorrectErrors)
@@ -655,10 +659,10 @@ public partial class GrabFrame : Window
 
         Rect lineRect = new()
         {
-            X = ((Canvas.GetLeft(selectBorder) * windowFrameImageScale) - 10) * dpi.DpiScaleX,
-            Y = (Canvas.GetTop(selectBorder) * windowFrameImageScale) * dpi.DpiScaleY,
-            Width = (selectBorder.Width * windowFrameImageScale) * dpi.DpiScaleX,
-            Height = (selectBorder.Height * windowFrameImageScale) * dpi.DpiScaleY,
+            X = (Canvas.GetLeft(selectBorder) * windowFrameImageScale - 10) * dpi.DpiScaleX,
+            Y = Canvas.GetTop(selectBorder) * windowFrameImageScale * dpi.DpiScaleY,
+            Width = selectBorder.Width * windowFrameImageScale * dpi.DpiScaleX,
+            Height = selectBorder.Height * windowFrameImageScale * dpi.DpiScaleY,
         };
 
         if (bmp is not null)
@@ -685,7 +689,7 @@ public partial class GrabFrame : Window
         wordBorderBox.FocusTextbox();
 
         UndoRedo.InsertUndoRedoOperation(UndoRedoOperation.AddWordBorder,
-            new GrabFrameOperationArgs()
+            new GrabFrameOperationArgs
             {
                 WordBorder = wordBorderBox,
                 WordBorders = wordBorders,
@@ -729,7 +733,7 @@ public partial class GrabFrame : Window
 
     private void CanPasteExecute(object sender, CanExecuteRoutedEventArgs e)
     {
-        if (System.Windows.Clipboard.ContainsImage())
+        if (Clipboard.ContainsImage())
         {
             e.CanExecute = true;
             return;
@@ -756,12 +760,12 @@ public partial class GrabFrame : Window
 
     private void CheckBottomRowButtonsVis()
     {
-        if (this.Width < 270)
+        if (Width < 270)
             ButtonsStackPanel.Visibility = Visibility.Collapsed;
         else
             ButtonsStackPanel.Visibility = Visibility.Visible;
 
-        if (this.Width < 390)
+        if (Width < 390)
         {
             SearchBox.Visibility = Visibility.Collapsed;
             ClearBTN.Visibility = Visibility.Collapsed;
@@ -776,7 +780,7 @@ public partial class GrabFrame : Window
                 ClearBTN.Visibility = Visibility.Collapsed;
         }
 
-        if (this.Width < 480)
+        if (Width < 480)
             LanguagesComboBox.Visibility = Visibility.Collapsed;
         else
             LanguagesComboBox.Visibility = Visibility.Visible;
@@ -845,7 +849,7 @@ public partial class GrabFrame : Window
 
     private async void ContactMenuItem_Click(object sender, RoutedEventArgs e)
     {
-        _ = await Launcher.LaunchUriAsync(new Uri(string.Format("mailto:support@textgrab.net")));
+        _ = await Launcher.LaunchUriAsync(new Uri("mailto:support@textgrab.net"));
     }
 
     private void CopyText_Click(object sender, RoutedEventArgs e)
@@ -878,7 +882,7 @@ public partial class GrabFrame : Window
         UndoRedo.StartTransaction();
         var deletedWordBorders = DeleteSelectedWordBorders();
         UndoRedo.InsertUndoRedoOperation(UndoRedoOperation.RemoveWordBorder,
-            new GrabFrameOperationArgs()
+            new GrabFrameOperationArgs
             {
                 RemovingWordBorders = deletedWordBorders,
                 WordBorders = wordBorders,
@@ -905,7 +909,7 @@ public partial class GrabFrame : Window
 
         Point windowPosition = this.GetAbsolutePosition();
         DpiScale dpi = VisualTreeHelper.GetDpi(this);
-        System.Drawing.Rectangle rectCanvasSize = new System.Drawing.Rectangle
+        Rectangle rectCanvasSize = new Rectangle
         {
             Width = (int)((ActualWidth + 2) * dpi.DpiScaleX),
             Height = (int)((ActualHeight - 64) * dpi.DpiScaleY),
@@ -921,7 +925,7 @@ public partial class GrabFrame : Window
 
         isSpaceJoining = CurrentLanguage.IsSpaceJoining();
 
-        System.Drawing.Bitmap? bmp = null;
+        Bitmap? bmp = null;
 
         if (frameContentImageSource is BitmapImage bmpImg)
             bmp = ImageMethods.BitmapSourceToBitmap(bmpImg);
@@ -952,8 +956,8 @@ public partial class GrabFrame : Window
 
             WordBorder wordBorderBox = new()
             {
-                Width = ((lineRect.Width / (dpi.DpiScaleX * windowFrameImageScale)) + 2) / viewBoxZoomFactor,
-                Height = ((lineRect.Height / (dpi.DpiScaleY * windowFrameImageScale)) + 2) / viewBoxZoomFactor,
+                Width = (lineRect.Width / (dpi.DpiScaleX * windowFrameImageScale) + 2) / viewBoxZoomFactor,
+                Height = (lineRect.Height / (dpi.DpiScaleY * windowFrameImageScale) + 2) / viewBoxZoomFactor,
                 Top = (lineRect.Y / (dpi.DpiScaleY * windowFrameImageScale) - 1) / viewBoxZoomFactor,
                 Left = (lineRect.X / (dpi.DpiScaleX * windowFrameImageScale) - 1) / viewBoxZoomFactor,
                 Word = ocrText,
@@ -977,12 +981,12 @@ public partial class GrabFrame : Window
                 _ = RectanglesCanvas.Children.Add(wordBorderBox);
 
                 UndoRedo.InsertUndoRedoOperation(UndoRedoOperation.AddWordBorder,
-        new GrabFrameOperationArgs()
-                    {
-                        WordBorder = wordBorderBox,
-                        WordBorders = wordBorders,
-                        GrabFrameCanvas = RectanglesCanvas
-                });
+        new GrabFrameOperationArgs
+        {
+            WordBorder = wordBorderBox,
+            WordBorders = wordBorders,
+            GrabFrameCanvas = RectanglesCanvas
+        });
             }
 
             lineNumber++;
@@ -1041,7 +1045,7 @@ public partial class GrabFrame : Window
 
     private void EditToggleButton_Click(object? sender = null, RoutedEventArgs? e = null)
     {
-        if (EditToggleButton.IsChecked is bool isEditMode && isEditMode)
+        if (EditToggleButton.IsChecked is { } isEditMode && isEditMode)
         {
             if (!IsFreezeMode)
             {
@@ -1120,7 +1124,7 @@ public partial class GrabFrame : Window
 
         FreezeToggleButton.IsChecked = true;
         Topmost = false;
-        this.Background = new SolidColorBrush(Colors.DimGray);
+        Background = new SolidColorBrush(Colors.DimGray);
         RectanglesBorder.Background.Opacity = 0;
         IsFreezeMode = true;
     }
@@ -1148,16 +1152,16 @@ public partial class GrabFrame : Window
 
     private void FreezeToggleButton_Click(object? sender = null, RoutedEventArgs? e = null)
     {
-        if (FreezeToggleButton.IsChecked is bool freezeMode && freezeMode)
+        if (FreezeToggleButton.IsChecked is { } freezeMode && freezeMode)
             FreezeGrabFrame();
         else
             UnfreezeGrabFrame();
     }
 
-    private SolidColorBrush GetBackgroundBrushFromBitmap(ref DpiScale dpi, double scale, System.Drawing.Bitmap bmp, ref Rect lineRect)
+    private SolidColorBrush GetBackgroundBrushFromBitmap(ref DpiScale dpi, double scale, Bitmap bmp, ref Rect lineRect)
     {
         SolidColorBrush backgroundBrush = new(Colors.Black);
-        double pxToRectanglesFactor = (RectanglesCanvas.ActualWidth / bmp.Width) * dpi.DpiScaleX;
+        double pxToRectanglesFactor = RectanglesCanvas.ActualWidth / bmp.Width * dpi.DpiScaleX;
         double boxLeft = lineRect.Left / (dpi.DpiScaleX * scale);
         double boxTop = lineRect.Top / (dpi.DpiScaleY * scale);
         double boxRight = lineRect.Right / (dpi.DpiScaleX * scale);
@@ -1172,10 +1176,10 @@ public partial class GrabFrame : Window
         int pxTop = Math.Clamp((int)(topFraction * bmp.Height) - 2, 0, bmp.Height - 1);
         int pxRight = Math.Clamp((int)(rightFraction * bmp.Width) + 1, 0, bmp.Width - 1);
         int pxBottom = Math.Clamp((int)(bottomFraction * bmp.Height) + 1, 0, bmp.Height - 1);
-        System.Drawing.Color pxColorLeftTop = bmp.GetPixel(pxLeft, pxTop);
-        System.Drawing.Color pxColorRightTop = bmp.GetPixel(pxRight, pxTop);
-        System.Drawing.Color pxColorRightBottom = bmp.GetPixel(pxRight, pxBottom);
-        System.Drawing.Color pxColorLeftBottom = bmp.GetPixel(pxLeft, pxBottom);
+        Color pxColorLeftTop = bmp.GetPixel(pxLeft, pxTop);
+        Color pxColorRightTop = bmp.GetPixel(pxRight, pxTop);
+        Color pxColorRightBottom = bmp.GetPixel(pxRight, pxBottom);
+        Color pxColorLeftBottom = bmp.GetPixel(pxLeft, pxBottom);
 
         List<System.Windows.Media.Color> MediaColorList = new()
         {
@@ -1236,7 +1240,7 @@ public partial class GrabFrame : Window
             reSearchTimer.Start();
     }
 
-    private void GrabFrameWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+    private void GrabFrameWindow_Closing(object sender, CancelEventArgs e)
     {
         if (ShouldSaveOnClose)
             Singleton<HistoryService>.Instance.SaveToHistory(this);
@@ -1338,7 +1342,7 @@ public partial class GrabFrame : Window
         UndoRedo.StartTransaction();
         var deletedWordBorders = DeleteSelectedWordBorders();
         UndoRedo.InsertUndoRedoOperation(UndoRedoOperation.RemoveWordBorder,
-            new GrabFrameOperationArgs()
+            new GrabFrameOperationArgs
             {
                 RemovingWordBorders = deletedWordBorders,
                 WordBorders = wordBorders,
@@ -1378,37 +1382,37 @@ public partial class GrabFrame : Window
         // Source: StackOverflow, read on Sep. 10, 2021
         // https://stackoverflow.com/a/53698638/7438031
 
-        if (this.WindowState == WindowState.Maximized)
+        if (WindowState == WindowState.Maximized)
             return;
 
         e.Handled = true;
-        double aspectRatio = (this.Height - 66) / (this.Width - 4);
+        double aspectRatio = (Height - 66) / (Width - 4);
 
         bool isShiftDown = Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift);
         bool isCtrlDown = Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
 
         if (e.Delta > 0)
         {
-            this.Width += 100;
-            this.Left -= 50;
+            Width += 100;
+            Left -= 50;
 
             if (!isShiftDown)
             {
-                this.Height += 100 * aspectRatio;
-                this.Top -= 50 * aspectRatio;
+                Height += 100 * aspectRatio;
+                Top -= 50 * aspectRatio;
             }
         }
         else if (e.Delta < 0)
         {
-            if (this.Width > 120 && this.Height > 120)
+            if (Width > 120 && Height > 120)
             {
-                this.Width -= 100;
-                this.Left += 50;
+                Width -= 100;
+                Left += 50;
 
                 if (!isShiftDown)
                 {
-                    this.Height -= 100 * aspectRatio;
-                    this.Top += 50 * aspectRatio;
+                    Height -= 100 * aspectRatio;
+                    Top += 50 * aspectRatio;
                 }
             }
         }
@@ -1501,9 +1505,9 @@ public partial class GrabFrame : Window
 
     private void MoveResizeWordBorder(Point movingPoint, WordBorder movingWordBorder, Rect prevSize)
     {
-        double xShiftDelta = (movingPoint.X - clickedPoint.X);
-        double yShiftDelta = (movingPoint.Y - clickedPoint.Y);
-        Canvas.SetZIndex(movingWordBorder, wordBorders.Count + 1);
+        double xShiftDelta = movingPoint.X - clickedPoint.X;
+        double yShiftDelta = movingPoint.Y - clickedPoint.Y;
+        Panel.SetZIndex(movingWordBorder, wordBorders.Count + 1);
 
         switch (resizingSide)
         {
@@ -1544,8 +1548,8 @@ public partial class GrabFrame : Window
 
     private void MoveWindowWithMiddleMouse(Point movingPoint)
     {
-        double xShiftDelta = (movingPoint.X - clickedPoint.X);
-        double yShiftDelta = (movingPoint.Y - clickedPoint.Y);
+        double xShiftDelta = movingPoint.X - clickedPoint.X;
+        double yShiftDelta = movingPoint.Y - clickedPoint.Y;
 
         Top += yShiftDelta;
         Left += xShiftDelta;
@@ -1558,23 +1562,23 @@ public partial class GrabFrame : Window
 
     private void OnMinimizeButtonClick(object sender, RoutedEventArgs e)
     {
-        this.WindowState = WindowState.Minimized;
+        WindowState = WindowState.Minimized;
     }
 
     private void OnRestoreButtonClick(object sender, RoutedEventArgs e)
     {
-        if (this.WindowState == WindowState.Maximized)
-            this.WindowState = WindowState.Normal;
+        if (WindowState == WindowState.Maximized)
+            WindowState = WindowState.Normal;
         else
-            this.WindowState = WindowState.Maximized;
+            WindowState = WindowState.Maximized;
 
         SetRestoreState();
     }
 
     private async void OpenImageMenuItem_Click(object? sender = null, RoutedEventArgs? e = null)
     {
-        // Create OpenFileDialog 
-        Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+        // Create OpenFileDialog
+        OpenFileDialog dlg = new OpenFileDialog();
 
         // Set filter for file extension and default file extension
         dlg.Filter = FileUtilities.GetImageFilter();
@@ -1601,9 +1605,9 @@ public partial class GrabFrame : Window
         ResetGrabFrame();
         await Task.Delay(300);
 
-        if (clipboardImage is System.Windows.Interop.InteropBitmap interopBitmap)
+        if (clipboardImage is InteropBitmap interopBitmap)
         {
-            System.Drawing.Bitmap bmp = ImageMethods.InteropBitmapToBitmap(interopBitmap);
+            Bitmap bmp = ImageMethods.InteropBitmapToBitmap(interopBitmap);
             frameContentImageSource = ImageMethods.BitmapToImageSource(bmp);
         }
         else
@@ -1657,9 +1661,9 @@ public partial class GrabFrame : Window
         try { RectanglesCanvas.Children.Remove(selectBorder); } catch (Exception) { }
 
         selectBorder.BorderThickness = new Thickness(2);
-        Color borderColor = Color.FromArgb(255, 40, 118, 126);
+        System.Windows.Media.Color borderColor = System.Windows.Media.Color.FromArgb(255, 40, 118, 126);
         selectBorder.BorderBrush = new SolidColorBrush(borderColor);
-        Color backgroundColor = Color.FromArgb(15, 40, 118, 126);
+        System.Windows.Media.Color backgroundColor = System.Windows.Media.Color.FromArgb(15, 40, 118, 126);
         selectBorder.Background = new SolidColorBrush(backgroundColor);
         _ = RectanglesCanvas.Children.Add(selectBorder);
         Canvas.SetLeft(selectBorder, clickedPoint.X);
@@ -1703,7 +1707,7 @@ public partial class GrabFrame : Window
         if (isCtrlDown)
         {
             double smallestHeight = 6;
-            double largestHeight = this.Height;
+            double largestHeight = Height;
             double gridSnapSize = 3.0;
 
             selectBorder.Height = Math.Clamp(selectBorder.Height, smallestHeight, largestHeight);
@@ -1736,7 +1740,7 @@ public partial class GrabFrame : Window
             {
                 Rect previousSize = movingWordBordersDictionary[movedWb];
                 UndoRedo.InsertUndoRedoOperation(UndoRedoOperation.ResizeWordBorder,
-                    new GrabFrameOperationArgs()
+                    new GrabFrameOperationArgs
                     {
                         WordBorder = movedWb,
                         OldSize = previousSize,
@@ -1785,7 +1789,7 @@ public partial class GrabFrame : Window
         if (AutoOcrCheckBox.IsChecked is false)
             return;
 
-        if (SearchBox.Text is string searchText)
+        if (SearchBox.Text is { } searchText)
             await DrawRectanglesAroundWords(searchText);
     }
 
@@ -1795,13 +1799,14 @@ public partial class GrabFrame : Window
 
         UndoRedo.StartTransaction();
 
-        UndoRedo.InsertUndoRedoOperation(UndoRedoOperation.RemoveWordBorder,
-new GrabFrameOperationArgs()
-        {
-            RemovingWordBorders = new(wordBorders),
-            WordBorders = wordBorders,
-            GrabFrameCanvas = RectanglesCanvas
-        });
+        UndoRedo.InsertUndoRedoOperation(
+            UndoRedoOperation.RemoveWordBorder,
+            new GrabFrameOperationArgs
+            {
+                RemovingWordBorders = [.. wordBorders],
+                WordBorders = wordBorders,
+                GrabFrameCanvas = RectanglesCanvas
+            });
 
         ResetGrabFrame();
 
@@ -1813,7 +1818,7 @@ new GrabFrameOperationArgs()
         if (AutoOcrCheckBox.IsChecked is false)
             FreezeGrabFrame();
 
-        if (SearchBox.Text is string searchText)
+        if (SearchBox.Text is { } searchText)
             await DrawRectanglesAroundWords(searchText);
 
         UndoRedo.EndTransaction();
@@ -1833,14 +1838,14 @@ new GrabFrameOperationArgs()
     private void ReSearchTimer_Tick(object? sender, EventArgs e)
     {
         reSearchTimer.Stop();
-        if (SearchBox.Text is not string searchText)
+        if (SearchBox.Text is not { } searchText)
             return;
 
         if (string.IsNullOrWhiteSpace(searchText) && !isSearchSelectionOverridden)
         {
             foreach (WordBorder wb in wordBorders)
                 wb.Deselect();
-            MatchesTXTBLK.Text = $"0 Matches";
+            MatchesTXTBLK.Text = "0 Matches";
             UpdateFrameText();
             return;
         }
@@ -1862,7 +1867,7 @@ new GrabFrameOperationArgs()
             foreach (WordBorder wb in wordBorders)
                 wb.Deselect();
             UpdateFrameText();
-            MatchesTXTBLK.Text = $"Search Error";
+            MatchesTXTBLK.Text = "Search Error";
             return;
         }
 
@@ -1924,7 +1929,7 @@ new GrabFrameOperationArgs()
         if (!IsLoaded)
             return;
 
-        if (sender is not TextBox searchBox) return;
+        if (sender is not TextBox) return;
 
         if (string.IsNullOrEmpty(SearchBox.Text))
         {
@@ -1951,7 +1956,7 @@ new GrabFrameOperationArgs()
 
     private void SetGrabFrameUserSettings()
     {
-        string windowSizeAndPosition = $"{this.Left},{this.Top},{this.Width},{this.Height}";
+        string windowSizeAndPosition = $"{Left},{Top},{Width},{Height}";
         DefaultSettings.GrabFrameWindowSizeAndPosition = windowSizeAndPosition;
         DefaultSettings.GrabFrameAutoOcr = AutoOcrCheckBox.IsChecked;
         DefaultSettings.GrabFrameUpdateEtw = AlwaysUpdateEtwCheckBox.IsChecked;
@@ -2023,7 +2028,7 @@ new GrabFrameOperationArgs()
             BitmapImage droppedImage = new();
             droppedImage.BeginInit();
             droppedImage.UriSource = fileURI;
-            System.Drawing.RotateFlipType rotateFlipType = ImageMethods.GetRotateFlipType(path);
+            RotateFlipType rotateFlipType = ImageMethods.GetRotateFlipType(path);
             ImageMethods.RotateImage(droppedImage, rotateFlipType);
             droppedImage.EndInit();
             frameContentImageSource = droppedImage;
@@ -2078,7 +2083,7 @@ new GrabFrameOperationArgs()
 
         Point windowPosition = this.GetAbsolutePosition();
         DpiScale dpi = VisualTreeHelper.GetDpi(this);
-        System.Drawing.Rectangle rectCanvasSize = new System.Drawing.Rectangle
+        Rectangle rectCanvasSize = new Rectangle
         {
             Width = (int)((ActualWidth + 2) * dpi.DpiScaleX),
             Height = (int)((ActualHeight - 64) * dpi.DpiScaleY),
@@ -2100,15 +2105,15 @@ new GrabFrameOperationArgs()
 
     private void TryToReadBarcodes(DpiScale dpi)
     {
-        System.Drawing.Bitmap bitmapOfGrabFrame = ImageMethods.GetWindowsBoundsBitmap(this);
+        Bitmap bitmapOfGrabFrame = ImageMethods.GetWindowsBoundsBitmap(this);
 
         BarcodeReader barcodeReader = new()
         {
             AutoRotate = true,
-            Options = new ZXing.Common.DecodingOptions { TryHarder = true }
+            Options = new DecodingOptions { TryHarder = true }
         };
 
-        ZXing.Result result = barcodeReader.Decode(bitmapOfGrabFrame);
+        Result result = barcodeReader.Decode(bitmapOfGrabFrame);
 
         if (result is null)
             return;
@@ -2129,15 +2134,15 @@ new GrabFrameOperationArgs()
         wb.Word = result.Text;
         wb.Width = diffs.X / dpi.DpiScaleX + 12;
         wb.Height = diffs.Y / dpi.DpiScaleY + 12;
-        wb.Left = minPoint.X / (dpi.DpiScaleX) - 6;
-        wb.Top = minPoint.Y / (dpi.DpiScaleY) - 6;
+        wb.Left = minPoint.X / dpi.DpiScaleX - 6;
+        wb.Top = minPoint.Y / dpi.DpiScaleY - 6;
         wb.OwnerGrabFrame = this;
         wb.SetAsBarcode();
         wordBorders.Add(wb);
         _ = RectanglesCanvas.Children.Add(wb);
 
         UndoRedo.InsertUndoRedoOperation(UndoRedoOperation.AddWordBorder,
-        new GrabFrameOperationArgs()
+        new GrabFrameOperationArgs
         {
             WordBorder = wb,
             WordBorders = wordBorders,
@@ -2161,7 +2166,7 @@ new GrabFrameOperationArgs()
         RectanglesBorder.Background.Opacity = 0.05;
         FreezeToggleButton.IsChecked = false;
         FreezeToggleButton.Visibility = Visibility.Visible;
-        this.Background = new SolidColorBrush(Colors.Transparent);
+        Background = new SolidColorBrush(Colors.Transparent);
         IsFreezeMode = false;
         reDrawTimer.Start();
     }

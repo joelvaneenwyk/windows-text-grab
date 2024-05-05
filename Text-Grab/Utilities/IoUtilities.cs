@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Text_Grab.Utilities;
 
@@ -30,7 +30,7 @@ public class IoUtilities
             }
             catch (Exception)
             {
-                System.Windows.MessageBox.Show($"Failed to read {pathOfFileToOpen}");
+                MessageBox.Show($"Failed to read {pathOfFileToOpen}");
             }
         }
         else
@@ -59,7 +59,7 @@ public class IoUtilities
 
             stringBuilder.Append(s);
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
             System.Windows.Forms.MessageBox.Show($"Failed to open file. {ex.Message}");
         }

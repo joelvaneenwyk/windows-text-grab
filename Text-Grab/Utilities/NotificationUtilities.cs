@@ -1,4 +1,4 @@
-﻿using Microsoft.Toolkit.Uwp.Notifications;
+using Microsoft.Toolkit.Uwp.Notifications;
 using System;
 using System.Text;
 
@@ -12,7 +12,7 @@ internal static class NotificationUtilities
 
         // changed to using base64
         // the padding '=' will be encoded as '%3D' in the toast XML, so remove them
-        string encodedString = Convert.ToBase64String(plainTextBytes).TrimEnd('='); 
+        string encodedString = Convert.ToBase64String(plainTextBytes).TrimEnd('=');
 
         // truncate toast body text first, if it is too long
         string toastBody;

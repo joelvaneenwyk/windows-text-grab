@@ -1,14 +1,15 @@
-﻿using System;
+using System;
 using System.Windows;
 using Text_Grab.Pages;
 using Text_Grab.Utilities;
+using Wpf.Ui.Controls;
 
 namespace Text_Grab;
 
 /// <summary>
 /// Interaction logic for Settings.xaml
 /// </summary>
-public partial class SettingsWindow : Wpf.Ui.Controls.FluentWindow
+public partial class SettingsWindow : FluentWindow
 {
     #region Constructors
 
@@ -26,7 +27,7 @@ public partial class SettingsWindow : Wpf.Ui.Controls.FluentWindow
     {
         AppUtilities.TextGrabSettings.Save();
 
-        if (App.Current is App app)
+        if (Application.Current is App app)
             NotifyIconUtilities.RegisterHotKeys(app);
 
         WindowUtilities.ShouldShutDown();
@@ -36,7 +37,7 @@ public partial class SettingsWindow : Wpf.Ui.Controls.FluentWindow
     {
         SettingsNavView.Navigate(typeof(GeneralSettings));
 
-        if (App.Current is App app)
+        if (Application.Current is App app)
             NotifyIconUtilities.UnregisterHotkeys(app);
     }
 

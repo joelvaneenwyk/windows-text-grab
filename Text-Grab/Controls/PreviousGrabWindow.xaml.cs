@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -15,8 +15,8 @@ public partial class PreviousGrabWindow : Window
 
         int borderThickness = 3;
 
-        Width = rect.Width + (2 * borderThickness);
-        Height = rect.Height + (2 * borderThickness);
+        Width = rect.Width + 2 * borderThickness;
+        Height = rect.Height + 2 * borderThickness;
         Left = rect.Left - borderThickness;
         Top = rect.Top - borderThickness;
 

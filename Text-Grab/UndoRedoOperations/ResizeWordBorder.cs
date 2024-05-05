@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using Text_Grab.Controls;
 
 namespace Text_Grab.UndoRedoOperations;
@@ -13,7 +13,7 @@ internal class ResizeWordBorder : Operation, IUndoRedoOperation
         NewSize = newSize;
     }
 
-    private WordBorder WordBorder;
+    private readonly WordBorder WordBorder;
 
     private Rect OldSize;
     private Rect NewSize;

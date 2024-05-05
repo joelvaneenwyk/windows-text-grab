@@ -1,5 +1,5 @@
-﻿using System;
 using System.Runtime.InteropServices;
+using System.Windows;
 
 namespace Text_Grab
 {
@@ -11,7 +11,7 @@ namespace Text_Grab
     {
         public override void OnActivated(string invokedArgs, NotificationUserInput userInput, string appUserModelId)
         {
-            System.Windows.Application.Current.Dispatcher.Invoke(delegate
+            Application.Current.Dispatcher.Invoke(delegate
             {
                 // Tapping on the top-level header launches with empty args
                 if (invokedArgs.Length != 0)
@@ -19,7 +19,6 @@ namespace Text_Grab
                     // Perform a normal launch
                     EditTextWindow mtw = new EditTextWindow(invokedArgs);
                     mtw.Show();
-                    return;
                 }
             });
         }

@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Media;
 using Text_Grab.Models;
 using ZXing;
 using ZXing.Common;
@@ -9,6 +6,7 @@ using ZXing.QrCode.Internal;
 using ZXing.Rendering;
 using ZXing.Windows.Compatibility;
 using static ZXing.Rendering.SvgRenderer;
+using Color = System.Drawing.Color;
 
 namespace Text_Grab.Utilities;
 
@@ -20,16 +18,16 @@ public static class BarcodeUtilities
         BarcodeReader barcodeReader = new()
         {
             AutoRotate = true,
-            Options = new ZXing.Common.DecodingOptions { TryHarder = true }
+            Options = new DecodingOptions { TryHarder = true }
         };
 
-        ZXing.Result result = barcodeReader.Decode(bitmap);
+        Result result = barcodeReader.Decode(bitmap);
 
         string resultString = string.Empty;
         if (result is not null)
             resultString = result.Text;
 
-        return new OcrOutput ()
+        return new OcrOutput
         {
             Kind = OcrOutputKind.Barcode,
             RawOutput = resultString,
@@ -40,12 +38,12 @@ public static class BarcodeUtilities
     public static Bitmap GetQrCodeForText(string text, ErrorCorrectionLevel correctionLevel)
     {
         BitmapRenderer bitmapRenderer = new();
-        bitmapRenderer.Foreground = System.Drawing.Color.Black;
-        bitmapRenderer.Background = System.Drawing.Color.White;
+        bitmapRenderer.Foreground = Color.Black;
+        bitmapRenderer.Background = Color.White;
 
         BarcodeWriter barcodeWriter = new()
         {
-            Format = ZXing.BarcodeFormat.QR_CODE,
+            Format = BarcodeFormat.QR_CODE,
             Renderer = bitmapRenderer,
         };
 
@@ -55,7 +53,7 @@ public static class BarcodeUtilities
             Height = 500,
             Margin = 5,
         };
-        encodingOptions.Hints.Add(ZXing.EncodeHintType.ERROR_CORRECTION, correctionLevel);
+        encodingOptions.Hints.Add(EncodeHintType.ERROR_CORRECTION, correctionLevel);
         barcodeWriter.Options = encodingOptions;
 
         Bitmap bitmap = barcodeWriter.Write(text);
@@ -67,7 +65,7 @@ public static class BarcodeUtilities
     {
         BarcodeWriterSvg barcodeWriter = new()
         {
-            Format = ZXing.BarcodeFormat.QR_CODE,
+            Format = BarcodeFormat.QR_CODE,
             Renderer = new SvgRenderer()
         };
 
@@ -77,9 +75,9 @@ public static class BarcodeUtilities
             Height = 500,
             Margin = 5,
         };
-        encodingOptions.Hints.Add(ZXing.EncodeHintType.ERROR_CORRECTION, correctionLevel);
+        encodingOptions.Hints.Add(EncodeHintType.ERROR_CORRECTION, correctionLevel);
         barcodeWriter.Options = encodingOptions;
-        
+
         SvgImage svg = barcodeWriter.Write(text);
 
         return svg;

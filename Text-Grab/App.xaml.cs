@@ -1,4 +1,4 @@
-﻿using Microsoft.Toolkit.Uwp.Notifications;
+using Microsoft.Toolkit.Uwp.Notifications;
 using Microsoft.Win32;
 using RegistryUtils;
 using System;
@@ -17,24 +17,25 @@ using Text_Grab.Utilities;
 using Text_Grab.Views;
 using Wpf.Ui;
 using Wpf.Ui.Appearance;
+using Application = System.Windows.Forms.Application;
 
 namespace Text_Grab;
 
 /// <summary>
 /// Interaction logic for App.xaml
 /// </summary>
-public partial class App : System.Windows.Application
+public partial class App
 {
     #region Fields
 
-    readonly static Settings _defaultSettings = AppUtilities.TextGrabSettings;
+    private readonly static Settings _defaultSettings = AppUtilities.TextGrabSettings;
 
     #endregion Fields
 
     #region Properties
 
-    public List<int> HotKeyIds { get; set; } = new();
-    public int NumberOfRunningInstances { get; set; } = 0;
+    public List<int> HotKeyIds { get; set; } = [];
+    public int NumberOfRunningInstances { get; private set; }
     public NotifyIcon? TextGrabIcon { get; set; }
     #endregion Properties
 
@@ -69,7 +70,7 @@ public partial class App : System.Windows.Application
     }
     public static void SetTheme(object? sender = null, EventArgs? e = null)
     {
-        bool gotTheme = Enum.TryParse(_defaultSettings.AppTheme.ToString(), true, out AppTheme currentAppTheme);
+        bool gotTheme = Enum.TryParse(_defaultSettings.AppTheme, true, out AppTheme currentAppTheme);
 
         if (!gotTheme)
             return;
@@ -80,10 +81,9 @@ public partial class App : System.Windows.Application
             switch (currentAppTheme)
             {
                 case AppTheme.System:
-                    if (SystemThemeUtility.IsLightTheme())
-                        themeService.SetTheme(ApplicationTheme.Light);
-                    else
-                        themeService.SetTheme(ApplicationTheme.Dark);
+                    themeService.SetTheme(SystemThemeUtility.IsLightTheme()
+                        ? ApplicationTheme.Light
+                        : ApplicationTheme.Dark);
                     break;
                 case AppTheme.Dark:
                     themeService.SetTheme(ApplicationTheme.Dark);
@@ -109,11 +109,11 @@ public partial class App : System.Windows.Application
 
     public static void WatchTheme()
     {
-        if (Registry.CurrentUser.OpenSubKey(SystemThemeUtility.themeKeyPath) is not RegistryKey key)
+        if (Registry.CurrentUser.OpenSubKey(SystemThemeUtility.themeKeyPath) is not { } key)
             return;
 
         RegistryMonitor monitor = new(key);
-        monitor.RegChanged += new EventHandler(SetTheme);
+        monitor.RegChanged += SetTheme;
         monitor.Start();
     }
 
@@ -148,7 +148,8 @@ public partial class App : System.Windows.Application
             Debug.WriteLine("Launched from toast");
             return true;
         }
-        else if (currentArgument == "Settings")
+
+        if (currentArgument == "Settings")
         {
             SettingsWindow sw = new();
             sw.Show();
@@ -188,8 +189,6 @@ public partial class App : System.Windows.Application
             case TextGrabMode.QuickLookup:
                 QuickSimpleLookup qsl = new();
                 qsl.Show();
-                break;
-            default:
                 break;
         }
     }
@@ -232,8 +231,11 @@ public partial class App : System.Windows.Application
         Singleton<HistoryService>.Instance.WriteHistory();
     }
 
-    async void appStartup(object sender, StartupEventArgs e)
+    private async void appStartup(object sender, StartupEventArgs e)
     {
+        Application.SetHighDpiMode(HighDpiMode.SystemAware);
+        Application.EnableVisualStyles();
+
         NumberOfRunningInstances = Process.GetProcessesByName("Text-Grab").Length;
         Current.DispatcherUnhandledException += CurrentDispatcherUnhandledException;
 
@@ -242,10 +244,7 @@ public partial class App : System.Windows.Application
 
         await Singleton<HistoryService>.Instance.LoadHistories();
 
-        ToastNotificationManagerCompat.OnActivated += toastArgs =>
-        {
-            LaunchFromToast(toastArgs);
-        };
+        ToastNotificationManagerCompat.OnActivated += LaunchFromToast;
 
         handledArgument = HandleNotifyIcon();
 

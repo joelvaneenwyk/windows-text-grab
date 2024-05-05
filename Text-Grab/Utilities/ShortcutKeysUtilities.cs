@@ -1,10 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Windows.Input;
 using Text_Grab.Models;
-using Text_Grab.Properties;
 
 namespace Text_Grab.Utilities;
 
@@ -97,7 +96,7 @@ internal class ShortcutKeysUtilities
             ShortcutKeySet newKeySet = new()
             {
                 NonModifierKey = parsedKey,
-                Modifiers = new HashSet<KeyModifiers>() { KeyModifiers.Shift, KeyModifiers.Windows },
+                Modifiers = new HashSet<KeyModifiers> { KeyModifiers.Shift, KeyModifiers.Windows },
                 IsEnabled = true,
                 Name = name,
                 Action = action

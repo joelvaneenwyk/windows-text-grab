@@ -1,34 +1,43 @@
 name: "Build Text Grab"
 on:
   push:
-    branches: [main, dev, develop, feature/**, dependabot/**]
+    branches: [main, dev, develop, feature/**]
+  pull_request:
+    branches: [main, dev, develop, feature/**]
   workflow_call:
 
 env:
   PROJECT_PATH: "Text-Grab/Text-Grab.csproj"
-  TEST_PATH: "Tests/Tests.csproj"
+  TEST_PATH: "Tests/Text-Grab-Tests.csproj"
 
 jobs:
   build:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8.0.x"
+
       - name: Install dependencies
-        run: dotnet restore ${{ env.PROJECT_PATH }}
+        run: dotnet restore "${{ env.PROJECT_PATH }}"
+
       - name: Build
-        run: dotnet build ${{ env.PROJECT_PATH }}
+        run: dotnet build "${{ env.PROJECT_PATH }}"
+
       - name: Test
-        run: dotnet test ${{ env.TEST_PATH }}
+        run: dotnet test "${{ env.TEST_PATH }}"
 
       - name: Build for release and Publish
-        run: dotnet publish ${{ env.PROJECT_PATH }} -c Release --self-contained -r win-x64 -p:PublishSingleFile=true -o publish
+        run: dotnet publish "${{ env.PROJECT_PATH }}" -c Release --self-contained -r win-x64 -p:PublishSingleFile=true -o publish
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: Text-Grab
-          path: .\publish
+          path: ./publish

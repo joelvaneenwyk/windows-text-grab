@@ -1,11 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Runtime.Intrinsics.Arm;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -14,11 +12,9 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Text_Grab.Controls;
-using Text_Grab.Extensions;
 using Text_Grab.Models;
 using Text_Grab.Properties;
 using Text_Grab.Services;
-using Text_Grab.Views;
 using Windows.Globalization;
 using Windows.Graphics.Imaging;
 using Windows.Media.Ocr;
@@ -65,7 +61,7 @@ public static class OcrUtilities
                 if (DefaultSettings.CorrectErrors)
                     wordString = wordString.TryFixNumberLetterErrors();
 
-                if (isFirstWord || (!isThisWordSpaceJoining && !isPrevWordSpaceJoining))
+                if (isFirstWord || !isThisWordSpaceJoining && !isPrevWordSpaceJoining)
                     _ = text.Append(wordString);
                 else
                     _ = text.Append(' ').Append(wordString);
@@ -97,7 +93,7 @@ public static class OcrUtilities
         Rectangle correctedRegion = new(thisCorrectedLeft, thisCorrectedTop, selectedRegion.Width, selectedRegion.Height);
         Bitmap bmp = ImageMethods.GetRegionOfScreenAsBitmap(correctedRegion);
 
-        return GetStringFromOcrOutputs( await GetTextFromImageAsync(bmp, language, languageTag));
+        return GetStringFromOcrOutputs(await GetTextFromImageAsync(bmp, language, languageTag));
     }
 
     public static async Task<string> GetRegionsTextAsTableAsync(Window passedWindow, Rectangle selectedRegion, Language language)
@@ -208,7 +204,7 @@ public static class OcrUtilities
         };
         Singleton<HistoryService>.Instance.SaveToHistory(newPrevRegionHistory);
 
-        OutputUtilities.HandleTextFromOcr(grabbedText, false, lastFsg.IsTable, null);
+        OutputUtilities.HandleTextFromOcr(grabbedText, false, lastFsg.IsTable);
     }
 
     public async static Task GetTextFromPreviousFullscreenRegion(TextBox? destinationTextBox = null)
@@ -291,8 +287,8 @@ public static class OcrUtilities
     {
         List<OcrOutput> outputs = new();
 
-        if (DefaultSettings.UseTesseract 
-            && TesseractHelper.CanLocateTesseractExe() 
+        if (DefaultSettings.UseTesseract
+            && TesseractHelper.CanLocateTesseractExe()
             && !string.IsNullOrEmpty(tessTag))
         {
             OcrOutput tesseractOutput = await TesseractHelper.GetOcrOutputFromBitmap(bitmap, language, tessTag);
@@ -309,7 +305,7 @@ public static class OcrUtilities
 
         double scale = await GetIdealScaleFactorForOcrAsync(bitmap, language);
         Bitmap scaledBitmap = ImageMethods.ScaleBitmapUniform(bitmap, scale);
-        OcrResult ocrResult = await OcrUtilities.GetOcrResultFromImageAsync(scaledBitmap, language);
+        OcrResult ocrResult = await GetOcrResultFromImageAsync(scaledBitmap, language);
         OcrOutput paragraphsOutput = GetTextFromOcrResult(language, scaledBitmap, ocrResult);
         outputs.Add(paragraphsOutput);
 
@@ -388,7 +384,7 @@ public static class OcrUtilities
 
     private static async Task<string> GetTextFromClickedWordAsync(Point singlePoint, Bitmap bitmap, Language language)
     {
-        return GetTextFromClickedWord(singlePoint, await OcrUtilities.GetOcrResultFromImageAsync(bitmap, language));
+        return GetTextFromClickedWord(singlePoint, await GetOcrResultFromImageAsync(bitmap, language));
     }
 
     private static string GetTextFromClickedWord(Point singlePoint, OcrResult ocrResult)
@@ -405,14 +401,14 @@ public static class OcrUtilities
 
     public async static Task<double> GetIdealScaleFactorForOcrAsync(SoftwareBitmap bitmap, Language selectedLanguage)
     {
-        OcrResult ocrResult = await OcrUtilities.GetOcrResultFromImageAsync(bitmap, selectedLanguage);
+        OcrResult ocrResult = await GetOcrResultFromImageAsync(bitmap, selectedLanguage);
 
         return GetIdealScaleFactorForOcrResult(ocrResult, bitmap.PixelHeight, bitmap.PixelWidth);
     }
 
     public async static Task<double> GetIdealScaleFactorForOcrAsync(Bitmap bitmap, Language selectedLanguage)
     {
-        OcrResult ocrResult = await OcrUtilities.GetOcrResultFromImageAsync(bitmap, selectedLanguage);
+        OcrResult ocrResult = await GetOcrResultFromImageAsync(bitmap, selectedLanguage);
 
         return GetIdealScaleFactorForOcrResult(ocrResult, bitmap.Height, bitmap.Width);
     }

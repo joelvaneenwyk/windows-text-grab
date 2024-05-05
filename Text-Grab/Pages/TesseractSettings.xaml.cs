@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -7,6 +7,7 @@ using System.Windows.Navigation;
 using Text_Grab.Properties;
 using Text_Grab.Utilities;
 using Wpf.Ui.Controls;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace Text_Grab.Pages;
 
@@ -16,7 +17,7 @@ namespace Text_Grab.Pages;
 public partial class TesseractSettings : Page
 {
     private readonly Settings DefaultSettings = AppUtilities.TextGrabSettings;
-    private bool settingsSet = false;
+    private bool settingsSet;
 
 
     public TesseractSettings()
@@ -29,7 +30,7 @@ public partial class TesseractSettings : Page
         if (!settingsSet)
             return;
 
-        if (sender is not System.Windows.Controls.TextBox pathTextbox || pathTextbox.Text is not string pathText)
+        if (sender is not TextBox pathTextbox || pathTextbox.Text is not { } pathText)
             return;
 
         if (File.Exists(pathText))
@@ -43,7 +44,7 @@ public partial class TesseractSettings : Page
 
     private void OpenPathButton_Click(object sender, RoutedEventArgs args)
     {
-        if (TesseractPathTextBox.Text is not string pathTextBox || !File.Exists(TesseractPathTextBox.Text))
+        if (TesseractPathTextBox.Text is not { } pathTextBox || !File.Exists(TesseractPathTextBox.Text))
             return;
 
         string? tesseractExePath = Path.GetDirectoryName(pathTextBox);

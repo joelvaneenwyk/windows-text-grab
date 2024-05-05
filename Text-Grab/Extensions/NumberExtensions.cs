@@ -5,7 +5,7 @@ namespace Text_Grab;
 
 public static class NumberExtensions
 {
-    // https://stackoverflow.com/a/2878000/7438031 
+    // https://stackoverflow.com/a/2878000/7438031
     // Read on 1/27/2022
     public static double StdDev(this IEnumerable<double> values)
     {

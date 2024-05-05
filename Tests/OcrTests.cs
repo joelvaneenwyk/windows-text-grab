@@ -1,6 +1,7 @@
 using System.Drawing;
 using System.Text;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using Text_Grab;
 using Text_Grab.Controls;
@@ -39,20 +40,23 @@ Segoe
 Rockwell Condensed
 Couier New";
 
+    private const char TAB = '\t';
     private const string tableTestPath = @".\Images\Table-Test.png";
-    private const string tableTestResult = @"Month	Int	Season
-January	1	Winter
-February	2	Winter
-March	3	Spring
-April	4	Spring
-May	5	Spring
-June	6	Summer
-July	7	Summer
-August	8	Summer
-September	9	Fall
-October	10	Fall
-November	11	Fall
-December	12	Winter";
+    private string tableTestResult = $"""
+Month{TAB}Int{TAB}Season
+January{TAB}1{TAB}Winter
+February{TAB}2{TAB}Winter
+March{TAB}3{TAB}Spring
+April{TAB}4{TAB}Spring
+May{TAB}5{TAB}Spring
+June{TAB}6{TAB}Summer
+July{TAB}7{TAB}Summer
+August{TAB}8{TAB}Summer
+September{TAB}9{TAB}Fall
+October{TAB}10{TAB}Fall
+November{TAB}11{TAB}Fall
+December{TAB}12{TAB}Winter
+""".Trim();
 
     [WpfFact]
     public async Task OcrFontSampleImage()
@@ -135,22 +139,24 @@ December	12	Winter";
     [WpfFact]
     public async Task AnalyzeTable2()
     {
-        string expectedResult = @"Test	Text
-12	The Quick Brown Fox
-13	Jumped over the
-14	Lazy
+        string expectedResult = $"""
+Test{TAB}Text
+12{TAB}The Quick Brown Fox
+13{TAB}Jumped over the
+14{TAB}Lazy
 15
 20
 200
-300	Brown
-400	Dog";
+300{TAB}Brown
+400{TAB}Dog
+""".Trim();
 
-        string testImagePath = @".\Images\Table-Test-2.png";
+        const string testImagePath = @".\Images\Table-Test-2.png";
         Uri uri = new(testImagePath, UriKind.Relative);
-        Language EnglishLanguage = new("en-US");
+        Language englishLanguage = new("en-US");
         Bitmap testBitmap = new(FileUtilities.GetPathToLocalFile(testImagePath));
         // When
-        OcrResult ocrResult = await OcrUtilities.GetOcrResultFromImageAsync(testBitmap, EnglishLanguage);
+        OcrResult ocrResult = await OcrUtilities.GetOcrResultFromImageAsync(testBitmap, englishLanguage);
 
         DpiScale dpi = new(1, 1);
         Rectangle rectCanvasSize = new()
@@ -256,8 +262,8 @@ December	12	Winter";
             Assert.Contains(tag, actualStrings);
         }
     }
-    
-    [WpfFact(Skip ="fails GitHub actions")]
+
+    [WpfFact(Skip = "fails GitHub actions")]
     public async Task GetTesseractStrongLanguages()
     {
         List<ILanguage> expectedList = new()

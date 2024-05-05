@@ -1,4 +1,4 @@
-﻿using CliWrap;
+using CliWrap;
 using CliWrap.Buffered;
 using System;
 using System.Collections.Generic;
@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Text_Grab.Interfaces;
 using Text_Grab.Models;
 using Text_Grab.Properties;
+using Windows.Globalization;
 
 namespace Text_Grab.Utilities;
 
@@ -20,7 +21,7 @@ namespace Text_Grab.Utilities;
 // https://github.com/UB-Mannheim/tesseract/wiki
 
 // Docs about command line usage
-// https://tesseract-ocr.github.io/tessdoc/Command-Line-Usage.html 
+// https://tesseract-ocr.github.io/tessdoc/Command-Line-Usage.html
 
 // This was developed using Tesseract v5 in 2022
 
@@ -106,9 +107,9 @@ public static class TesseractHelper
         return result.StandardOutput;
     }
 
-    public static async Task<OcrOutput> GetOcrOutputFromBitmap(Bitmap bmp, Windows.Globalization.Language language, string tessTag = "")
+    public static async Task<OcrOutput> GetOcrOutputFromBitmap(Bitmap bmp, Language language, string tessTag = "")
     {
-        bmp.Save(TesseractHelper.TempImagePath(), ImageFormat.Png);
+        bmp.Save(TempImagePath(), ImageFormat.Png);
         if (string.IsNullOrWhiteSpace(tessTag))
             tessTag = language.LanguageTag;
 
@@ -117,7 +118,7 @@ public static class TesseractHelper
             Engine = OcrEngineKind.Tesseract,
             Kind = OcrOutputKind.Paragraph,
             SourceBitmap = bmp,
-            RawOutput = await TesseractHelper.GetTextFromImagePathAsync(TempImagePath(), tessTag)
+            RawOutput = await GetTextFromImagePathAsync(TempImagePath(), tessTag)
         };
         ocrOutput.CleanOutput();
 
@@ -168,13 +169,13 @@ public static class TesseractHelper
 
             return returningResult;
         }
-        else
-            return string.Empty;
+
+        return string.Empty;
     }
 
     public static string TempImagePath()
     {
-        string? exePath = Path.GetDirectoryName(System.AppContext.BaseDirectory);
+        string? exePath = Path.GetDirectoryName(AppContext.BaseDirectory);
         if (exePath is null)
         {
             string rawPath = @"%LOCALAPPDATA%\Text_Grab";

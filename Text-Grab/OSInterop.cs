@@ -1,7 +1,9 @@
-﻿using System;
+using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
-static partial class OSInterop
+internal static partial class OSInterop
 {
     [LibraryImport("user32.dll")]
     public static partial int GetSystemMetrics(int smIndex);
@@ -22,7 +24,7 @@ static partial class OSInterop
     public static partial bool ClipCursor(ref RECT lpRect);
 
     [DllImport("user32.dll")]
-    public static extern bool ClipCursor([In()] IntPtr lpRect);
+    public static extern bool ClipCursor([In] IntPtr lpRect);
 
     public struct RECT
     {
@@ -61,7 +63,7 @@ static partial class OSInterop
     internal static partial bool FreeLibrary(IntPtr hModule);
 
     [LibraryImport("user32.dll", SetLastError = true)]
-    [UnmanagedCallConv(CallConvs = new Type[] { typeof(System.Runtime.CompilerServices.CallConvStdcall) })]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvStdcall) })]
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static partial bool UnhookWindowsHookEx(IntPtr idHook);
 
@@ -69,21 +71,21 @@ static partial class OSInterop
     internal static partial IntPtr LoadLibrary(string lpFileName);
 
     [LibraryImport("user32.dll", SetLastError = true)]
-    [UnmanagedCallConv(CallConvs = new Type[] { typeof(System.Runtime.CompilerServices.CallConvStdcall) })]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvStdcall) })]
     internal static partial IntPtr SetWindowsHookEx(int idHook, HookProc lpfn, IntPtr hMod, int dwThreadId);
 
     [LibraryImport("user32.dll", SetLastError = true)]
-    [UnmanagedCallConv(CallConvs = new Type[] { typeof(System.Runtime.CompilerServices.CallConvStdcall) })]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvStdcall) })]
     internal static partial IntPtr CallNextHookEx(IntPtr idHook, int nCode, IntPtr wParam, IntPtr lParam);
 
     [LibraryImport("user32.dll", SetLastError = true)]
-    [UnmanagedCallConv(CallConvs = new Type[] { typeof(System.Runtime.CompilerServices.CallConvStdcall) })]
+    [UnmanagedCallConv(CallConvs = new[] { typeof(CallConvStdcall) })]
     internal static partial short GetAsyncKeyState(int vKey);
 
     public delegate IntPtr HookProc(int nCode, IntPtr wParam, IntPtr lParam);
 
     [LibraryImport("user32.dll")]
-    public static partial short GetAsyncKeyState(System.Windows.Forms.Keys vKey);
+    public static partial short GetAsyncKeyState(Keys vKey);
 
     [LibraryImport("user32.dll")]
     public static partial uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);

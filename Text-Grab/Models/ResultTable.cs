@@ -9,6 +9,7 @@ using System.Windows.Media;
 using Text_Grab.Controls;
 using Text_Grab.Utilities;
 using Windows.Media.Ocr;
+using Color = System.Windows.Media.Color;
 using Rect = System.Windows.Rect;
 
 namespace Text_Grab.Models;
@@ -21,13 +22,13 @@ public class ResultTable
 
     private OcrResult? OcrResult { get; set; }
 
-    public Rect BoundingRect { get; set; } = new();
+    public Rect BoundingRect { get; set; }
 
     public List<int> ColumnLines { get; set; } = new();
 
     public List<int> RowLines { get; set; } = new();
 
-    public Canvas? TableLines { get; set; } = null;
+    public Canvas? TableLines { get; set; }
 
     public ResultTable()
     {
@@ -83,8 +84,8 @@ public class ResultTable
 
         BoundingRect = new()
         {
-            Width = (rightBound - leftBound) + 10,
-            Height = (bottomBound - topBound) + 10,
+            Width = rightBound - leftBound + 10,
+            Height = bottomBound - topBound + 10,
             X = leftBound - 5,
             Y = topBound - 5
         };
@@ -161,8 +162,8 @@ public class ResultTable
 
             WordBorder wordBorderBox = new()
             {
-                Width = lineRect.Width / (dpi.DpiScaleX),
-                Height = lineRect.Height / (dpi.DpiScaleY),
+                Width = lineRect.Width / dpi.DpiScaleX,
+                Height = lineRect.Height / dpi.DpiScaleY,
                 Top = lineRect.Y,
                 Left = lineRect.X,
                 Word = lineText.ToString().Trim(),
@@ -582,48 +583,48 @@ public class ResultTable
     private void DrawTable()
     {
         // Draw the lines and bounds of the table
-        SolidColorBrush tableColor = new(System.Windows.Media.Color.FromArgb(255, 40, 118, 126));
+        SolidColorBrush tableColor = new(Color.FromArgb(255, 40, 118, 126));
 
-        TableLines = new Canvas()
+        TableLines = new Canvas
         {
             Tag = "TableLines"
         };
 
         Border tableOutline = new()
         {
-            Width = this.BoundingRect.Width,
-            Height = this.BoundingRect.Height,
+            Width = BoundingRect.Width,
+            Height = BoundingRect.Height,
             BorderThickness = new Thickness(3),
             BorderBrush = tableColor
         };
         TableLines.Children.Add(tableOutline);
-        Canvas.SetTop(tableOutline, this.BoundingRect.Y);
-        Canvas.SetLeft(tableOutline, this.BoundingRect.X);
+        Canvas.SetTop(tableOutline, BoundingRect.Y);
+        Canvas.SetLeft(tableOutline, BoundingRect.X);
 
-        foreach (int columnLine in this.ColumnLines)
+        foreach (int columnLine in ColumnLines)
         {
             Border vertLine = new()
             {
                 Width = 2,
-                Height = this.BoundingRect.Height,
+                Height = BoundingRect.Height,
                 Background = tableColor
             };
             TableLines.Children.Add(vertLine);
-            Canvas.SetTop(vertLine, this.BoundingRect.Y);
+            Canvas.SetTop(vertLine, BoundingRect.Y);
             Canvas.SetLeft(vertLine, columnLine);
         }
 
-        foreach (int rowLine in this.RowLines)
+        foreach (int rowLine in RowLines)
         {
             Border horzLine = new()
             {
                 Height = 2,
-                Width = this.BoundingRect.Width,
+                Width = BoundingRect.Width,
                 Background = tableColor
             };
             TableLines.Children.Add(horzLine);
             Canvas.SetTop(horzLine, rowLine);
-            Canvas.SetLeft(horzLine, this.BoundingRect.X);
+            Canvas.SetLeft(horzLine, BoundingRect.X);
         }
     }
 
@@ -643,7 +644,7 @@ public class ResultTable
                 ResultColumnID = originalWB.ResultColumnID,
             };
             smallerBorders.Add(newWB);
-        };
+        }
 
         ResultTable resultTable = new(ref smallerBorders, dpiScale);
         StringBuilder stringBuilder = new();
@@ -660,22 +661,22 @@ public class ResultColumn
 {
     public double Width { get; set; } = 0;
 
-    public double Left { get; set; } = 0;
+    public double Left { get; set; }
 
-    public double Right { get; set; } = 0;
+    public double Right { get; set; }
 
-    public int ID { get; set; } = 0;
+    public int ID { get; set; }
 }
 
 public class ResultRow
 {
     public double Height { get; set; } = 0;
 
-    public double Top { get; set; } = 0;
+    public double Top { get; set; }
 
-    public double Bottom { get; set; } = 0;
+    public double Bottom { get; set; }
 
-    public int ID { get; set; } = 0;
+    public int ID { get; set; }
 }
 
 public class ResultTableCell

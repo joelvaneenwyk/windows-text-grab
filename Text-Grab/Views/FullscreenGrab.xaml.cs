@@ -1,10 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using Text_Grab.Interfaces;
@@ -14,6 +16,13 @@ using Text_Grab.Services;
 using Text_Grab.Utilities;
 using Windows.Globalization;
 using Windows.Media.Ocr;
+using Color = System.Windows.Media.Color;
+using ComboBox = System.Windows.Controls.ComboBox;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using MouseEventArgs = System.Windows.Input.MouseEventArgs;
+using Point = System.Windows.Point;
+using Size = System.Windows.Size;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace Text_Grab.Views;
 
@@ -24,20 +33,20 @@ public partial class FullscreenGrab : Window
 {
     #region Fields
 
-    private System.Windows.Point clickedPoint = new System.Windows.Point();
+    private Point clickedPoint;
     private TextBox? destinationTextBox;
     private DpiScale? dpiScale;
-    private bool isComboBoxReady = false;
-    private bool isSelecting = false;
-    private bool isShiftDown = false;
-    private Border selectBorder = new Border();
+    private bool isComboBoxReady;
+    private bool isSelecting;
+    private bool isShiftDown;
+    private readonly Border selectBorder = new Border();
     private double selectLeft;
     private double selectTop;
-    private System.Windows.Point shiftPoint = new System.Windows.Point();
+    private Point shiftPoint;
     private double xShiftDelta;
     private double yShiftDelta;
     private HistoryInfo? historyInfo;
-    bool usingTesseract;
+    private readonly bool usingTesseract;
     private readonly static Settings DefaultSettings = AppUtilities.TextGrabSettings;
 
     #endregion Fields
@@ -70,7 +79,7 @@ public partial class FullscreenGrab : Window
 
     public bool IsFreeze { get; set; } = false;
     public string? textFromOCR { get; set; }
-    private System.Windows.Forms.Screen? currentScreen { get; set; }
+    private Screen? currentScreen { get; set; }
 
     #endregion Properties
 
@@ -188,8 +197,6 @@ public partial class FullscreenGrab : Window
                     && isComboBoxReady)
                     LanguagesComboBox.SelectedIndex = numberPressed - 1;
                 break;
-            default:
-                break;
         }
     }
 
@@ -252,21 +259,19 @@ public partial class FullscreenGrab : Window
             case Key.LeftShift:
             case Key.RightShift:
                 isShiftDown = false;
-                clickedPoint = new System.Windows.Point(clickedPoint.X + xShiftDelta, clickedPoint.Y + yShiftDelta);
-                break;
-            default:
+                clickedPoint = new Point(clickedPoint.X + xShiftDelta, clickedPoint.Y + yShiftDelta);
                 break;
         }
     }
 
     private void GetDpiAdjustedRegionOfSelectBorder(out DpiScale dpi, out double posLeft, out double posTop)
     {
-        System.Windows.Point absPosPoint = this.GetAbsolutePosition();
+        Point absPosPoint = this.GetAbsolutePosition();
         dpi = VisualTreeHelper.GetDpi(this);
-        int firstScreenBPP = System.Windows.Forms.Screen.AllScreens[0].BitsPerPixel;
+        int firstScreenBPP = Screen.AllScreens[0].BitsPerPixel;
 
-        posLeft = Canvas.GetLeft(selectBorder) + (absPosPoint.X / dpi.PixelsPerDip);
-        posTop = Canvas.GetTop(selectBorder) + (absPosPoint.Y / dpi.PixelsPerDip);
+        posLeft = Canvas.GetLeft(selectBorder) + absPosPoint.X / dpi.PixelsPerDip;
+        posTop = Canvas.GetTop(selectBorder) + absPosPoint.Y / dpi.PixelsPerDip;
     }
 
     private void LanguagesComboBox_PreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -331,8 +336,6 @@ public partial class FullscreenGrab : Window
                 break;
             case 8:
                 WindowUtilities.FullscreenKeyDown(Key.D9);
-                break;
-            default:
                 break;
         }
     }
@@ -404,7 +407,7 @@ public partial class FullscreenGrab : Window
         SelectSingleToggleButton(sender);
     }
 
-    private void PanSelection(System.Windows.Point movingPoint)
+    private void PanSelection(Point movingPoint)
     {
         if (!isShiftDown)
         {
@@ -414,8 +417,8 @@ public partial class FullscreenGrab : Window
         }
 
         isShiftDown = true;
-        xShiftDelta = (movingPoint.X - shiftPoint.X);
-        yShiftDelta = (movingPoint.Y - shiftPoint.Y);
+        xShiftDelta = movingPoint.X - shiftPoint.X;
+        yShiftDelta = movingPoint.Y - shiftPoint.Y;
 
         double leftValue = selectLeft + xShiftDelta;
         double topValue = selectTop + yShiftDelta;
@@ -427,13 +430,13 @@ public partial class FullscreenGrab : Window
             double currentScreenTop = currentScreen.Bounds.Top; // Should always be 0
             double currentScreenBottom = currentScreen.Bounds.Bottom / dpiScale.Value.DpiScaleY;
 
-            leftValue = Math.Clamp(leftValue, currentScreenLeft, (currentScreenRight - selectBorder.Width));
-            topValue = Math.Clamp(topValue, currentScreenTop, (currentScreenBottom - selectBorder.Height));
+            leftValue = Math.Clamp(leftValue, currentScreenLeft, currentScreenRight - selectBorder.Width);
+            topValue = Math.Clamp(topValue, currentScreenTop, currentScreenBottom - selectBorder.Height);
         }
 
         clippingGeometry.Rect = new Rect(
-            new System.Windows.Point(leftValue, topValue),
-            new System.Windows.Size(selectBorder.Width - 2, selectBorder.Height - 2));
+            new Point(leftValue, topValue),
+            new Size(selectBorder.Width - 2, selectBorder.Height - 2));
         Canvas.SetLeft(selectBorder, leftValue - 1);
         Canvas.SetTop(selectBorder, topValue - 1);
     }
@@ -454,8 +457,8 @@ public partial class FullscreenGrab : Window
             Top = posTop,
         };
 
-        grabFrame.Left -= (2 / dpi.PixelsPerDip);
-        grabFrame.Top -= (48 / dpi.PixelsPerDip);
+        grabFrame.Left -= 2 / dpi.PixelsPerDip;
+        grabFrame.Top -= 48 / dpi.PixelsPerDip;
 
         if (destinationTextBox is not null)
             grabFrame.DestinationTextBox = destinationTextBox;
@@ -504,13 +507,13 @@ public partial class FullscreenGrab : Window
         try { RegionClickCanvas.Children.Remove(selectBorder); } catch (Exception) { }
 
         selectBorder.BorderThickness = new Thickness(2);
-        System.Windows.Media.Color borderColor = System.Windows.Media.Color.FromArgb(255, 40, 118, 126);
+        Color borderColor = Color.FromArgb(255, 40, 118, 126);
         selectBorder.BorderBrush = new SolidColorBrush(borderColor);
         _ = RegionClickCanvas.Children.Add(selectBorder);
         Canvas.SetLeft(selectBorder, clickedPoint.X);
         Canvas.SetTop(selectBorder, clickedPoint.Y);
 
-        var screens = System.Windows.Forms.Screen.AllScreens;
+        var screens = Screen.AllScreens;
         System.Drawing.Point formsPoint = new((int)clickedPoint.X, (int)clickedPoint.Y);
         foreach (var scr in screens)
             if (scr.Bounds.Contains(formsPoint))
@@ -522,7 +525,7 @@ public partial class FullscreenGrab : Window
         if (!isSelecting)
             return;
 
-        System.Windows.Point movingPoint = e.GetPosition(this);
+        Point movingPoint = e.GetPosition(this);
 
         if (Keyboard.Modifiers == ModifierKeys.Shift)
         {
@@ -541,8 +544,8 @@ public partial class FullscreenGrab : Window
         selectBorder.Width = selectBorder.Width + 2;
 
         clippingGeometry.Rect = new Rect(
-            new System.Windows.Point(left, top),
-            new System.Windows.Size(selectBorder.Width - 2, selectBorder.Height - 2));
+            new Point(left, top),
+            new Size(selectBorder.Width - 2, selectBorder.Height - 2));
         Canvas.SetLeft(selectBorder, left - 1);
         Canvas.SetTop(selectBorder, top - 1);
     }
@@ -557,10 +560,10 @@ public partial class FullscreenGrab : Window
         CursorClipper.UnClipCursor();
         RegionClickCanvas.ReleaseMouseCapture();
         clippingGeometry.Rect = new Rect(
-            new System.Windows.Point(0, 0),
-            new System.Windows.Size(0, 0));
+            new Point(0, 0),
+            new Size(0, 0));
 
-        System.Windows.Point movingPoint = e.GetPosition(this);
+        Point movingPoint = e.GetPosition(this);
         Matrix m = PresentationSource.FromVisual(this).CompositionTarget.TransformToDevice;
         movingPoint.X *= m.M11;
         movingPoint.Y *= m.M22;
@@ -606,7 +609,7 @@ public partial class FullscreenGrab : Window
         if (LanguagesComboBox.SelectedItem is TessLang tessLang)
             tessTag = tessLang.LanguageTag;
 
-        bool isSmallClick = (regionScaled.Width < 3 || regionScaled.Height < 3);
+        bool isSmallClick = regionScaled.Width < 3 || regionScaled.Height < 3;
 
         bool isSingleLine = SingleLineMenuItem is null ? false : SingleLineMenuItem.IsChecked;
         bool isTable = TableMenuItem is null ? false : TableMenuItem.IsChecked;
@@ -614,7 +617,7 @@ public partial class FullscreenGrab : Window
         if (isSmallClick)
         {
             BackgroundBrush.Opacity = 0;
-            textFromOCR = await OcrUtilities.GetClickedWordAsync(this, new System.Windows.Point(xDimScaled, yDimScaled), selectedOcrLang);
+            textFromOCR = await OcrUtilities.GetClickedWordAsync(this, new Point(xDimScaled, yDimScaled), selectedOcrLang);
         }
         else if (isTable)
             textFromOCR = await OcrUtilities.GetRegionsTextAsTableAsync(this, regionScaled, selectedOcrLang);
@@ -697,7 +700,7 @@ public partial class FullscreenGrab : Window
         }
     }
 
-    private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+    private void Window_Closing(object sender, CancelEventArgs e)
     {
         if (historyInfo is not null)
             Singleton<HistoryService>.Instance.SaveToHistory(historyInfo);
@@ -706,9 +709,9 @@ public partial class FullscreenGrab : Window
     private async void Window_Loaded(object sender, RoutedEventArgs e)
     {
         WindowState = WindowState.Maximized;
-        FullWindow.Rect = new System.Windows.Rect(0, 0, Width, Height);
-        this.KeyDown += FullscreenGrab_KeyDown;
-        this.KeyUp += FullscreenGrab_KeyUp;
+        FullWindow.Rect = new Rect(0, 0, Width, Height);
+        KeyDown += FullscreenGrab_KeyDown;
+        KeyUp += FullscreenGrab_KeyUp;
 
         SetImageToBackground();
 
@@ -744,8 +747,8 @@ public partial class FullscreenGrab : Window
         dpiScale = null;
         textFromOCR = null;
 
-        this.Loaded -= Window_Loaded;
-        this.Unloaded -= Window_Unloaded;
+        Loaded -= Window_Loaded;
+        Unloaded -= Window_Unloaded;
 
         RegionClickCanvas.MouseDown -= RegionClickCanvas_MouseDown;
         RegionClickCanvas.MouseMove -= RegionClickCanvas_MouseMove;
@@ -767,14 +770,14 @@ public partial class FullscreenGrab : Window
         SettingsButton.Click -= SettingsMenuItem_Click;
         CancelButton.Click -= CancelMenuItem_Click;
 
-        this.KeyDown -= FullscreenGrab_KeyDown;
-        this.KeyUp -= FullscreenGrab_KeyUp;
+        KeyDown -= FullscreenGrab_KeyDown;
+        KeyUp -= FullscreenGrab_KeyUp;
     }
 
     private void StandardModeToggleButton_Click(object sender, RoutedEventArgs e)
     {
         bool isActive = CheckIfCheckingOrUnchecking(sender);
-        WindowUtilities.FullscreenKeyDown(Key.N, isActive); 
+        WindowUtilities.FullscreenKeyDown(Key.N, isActive);
         SelectSingleToggleButton(sender);
 
         if (isActive)

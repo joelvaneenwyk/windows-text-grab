@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Windows;
+using Point = System.Windows.Point;
 
 namespace Text_Grab;
 
@@ -50,12 +51,12 @@ public static class ShapeExtensions
 
     public static bool IsGood(this Rect rect)
     {
-        if (double.IsNaN(rect.X) 
+        if (double.IsNaN(rect.X)
             || double.IsNegativeInfinity(rect.X)
             || double.IsPositiveInfinity(rect.X))
             return false;
-        
-        if (double.IsNaN(rect.Y) 
+
+        if (double.IsNaN(rect.Y)
             || double.IsNegativeInfinity(rect.Y)
             || double.IsPositiveInfinity(rect.Y))
             return false;
@@ -75,10 +76,10 @@ public static class ShapeExtensions
         return true;
     }
 
-    public static System.Windows.Point CenterPoint(this Rect rect)
+    public static Point CenterPoint(this Rect rect)
     {
-        double x = rect.Left + (rect.Width / 2);
-        double y = rect.Top + (rect.Height / 2);
+        double x = rect.Left + rect.Width / 2;
+        double y = rect.Top + rect.Height / 2;
         return new(x, y);
     }
 }
