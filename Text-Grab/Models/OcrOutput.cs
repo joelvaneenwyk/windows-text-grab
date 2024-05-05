@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using Text_Grab.Properties;
 using Text_Grab.Utilities;
 using Windows.Globalization;
 
