@@ -59,7 +59,7 @@
           </desktop:Extension>
 
 		</Extensions>
-		
+
       <uap:VisualElements
         DisplayName="Text Grab"
         Description="Text Grab is a tool to gather and manipulate text using a range of tools like OCR, Regex, and more"

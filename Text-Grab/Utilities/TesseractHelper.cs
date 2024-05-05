@@ -21,7 +21,7 @@ namespace Text_Grab.Utilities;
 // https://github.com/UB-Mannheim/tesseract/wiki
 
 // Docs about command line usage
-// https://tesseract-ocr.github.io/tessdoc/Command-Line-Usage.html 
+// https://tesseract-ocr.github.io/tessdoc/Command-Line-Usage.html
 
 // This was developed using Tesseract v5 in 2022
 

@@ -777,7 +777,7 @@ public partial class FullscreenGrab : Window
     private void StandardModeToggleButton_Click(object sender, RoutedEventArgs e)
     {
         bool isActive = CheckIfCheckingOrUnchecking(sender);
-        WindowUtilities.FullscreenKeyDown(Key.N, isActive); 
+        WindowUtilities.FullscreenKeyDown(Key.N, isActive);
         SelectSingleToggleButton(sender);
 
         if (isActive)

@@ -287,8 +287,8 @@ public static class OcrUtilities
     {
         List<OcrOutput> outputs = new();
 
-        if (DefaultSettings.UseTesseract 
-            && TesseractHelper.CanLocateTesseractExe() 
+        if (DefaultSettings.UseTesseract
+            && TesseractHelper.CanLocateTesseractExe()
             && !string.IsNullOrEmpty(tessTag))
         {
             OcrOutput tesseractOutput = await TesseractHelper.GetOcrOutputFromBitmap(bitmap, language, tessTag);

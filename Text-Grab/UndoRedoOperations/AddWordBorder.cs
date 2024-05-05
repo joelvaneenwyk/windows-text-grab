@@ -6,7 +6,7 @@ namespace Text_Grab.UndoRedoOperations;
 
 internal class AddWordBorder : Operation, IUndoRedoOperation
 {
-    public AddWordBorder(uint transactionId, WordBorder wordBorder, 
+    public AddWordBorder(uint transactionId, WordBorder wordBorder,
         Canvas canvas, ICollection<WordBorder> wordBorders) : base(transactionId)
     {
         WordBorder = wordBorder;

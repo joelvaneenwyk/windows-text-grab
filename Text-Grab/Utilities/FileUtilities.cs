@@ -121,7 +121,7 @@ public class FileUtilities
             return null;
         }
     }
-    
+
 #pragma warning disable CS1998
     private static async Task<Bitmap?> GetImageFileUnpackaged(string fileName, FileStorageKind storageKind)
     {
@@ -285,7 +285,7 @@ public class FileUtilities
         return true;
     }
 #pragma warning restore CS1998
-    
+
     public async static void TryDeleteHistoryDirectory()
     {
         FileStorageKind historyFolderKind = FileStorageKind.WithHistory;

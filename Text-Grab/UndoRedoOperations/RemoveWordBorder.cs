@@ -15,7 +15,7 @@ internal class RemoveWordBorder : Operation, IUndoRedoOperation
     }
 
     private readonly List<WordBorder> RemovingWordBorders;
-    
+
     private readonly Canvas Canvas;
 
     private readonly ICollection<WordBorder> WordBorders;

@@ -126,7 +126,7 @@ public partial class LanguageSettings : Page
 
             // if (!string.IsNullOrEmpty(errors))
             //     ErrorsAndOutputText.Text += Environment.NewLine + errors;
-            // 
+            //
             // if (!string.IsNullOrEmpty(output))
             //     ErrorsAndOutputText.Text += Environment.NewLine + output;
         }

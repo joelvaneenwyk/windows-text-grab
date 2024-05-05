@@ -153,7 +153,7 @@ public static class WindowUtilities
 
                 if (fsg.DestinationTextBox is not null)
                 {
-                    // TODO 3.0 Find out how to re normalize an ETW when FSG had it minimized 
+                    // TODO 3.0 Find out how to re normalize an ETW when FSG had it minimized
                     isFromEditWindow = true;
                     // if (fsg.EditWindow.WindowState == WindowState.Minimized)
                     //     fsg.EditWindow.WindowState = WindowState.Normal;

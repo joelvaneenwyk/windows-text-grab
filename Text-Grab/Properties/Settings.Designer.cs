@@ -14,20 +14,20 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace Text_Grab.Properties {
-    
-    
+
+
     [CompilerGenerated()]
     [GeneratedCode("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.10.0.0")]
     internal sealed partial class Settings : ApplicationSettingsBase {
-        
+
         private static Settings defaultInstance = ((Settings)(Synchronized(new Settings())));
-        
+
         public static Settings Default {
             get {
                 return defaultInstance;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("True")]
@@ -39,7 +39,7 @@ namespace Text_Grab.Properties {
                 this["FirstRun"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("True")]
@@ -51,7 +51,7 @@ namespace Text_Grab.Properties {
                 this["ShowToast"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("Fullscreen")]
@@ -63,7 +63,7 @@ namespace Text_Grab.Properties {
                 this["DefaultLaunch"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("True")]
@@ -75,7 +75,7 @@ namespace Text_Grab.Properties {
                 this["CorrectErrors"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("False")]
@@ -87,7 +87,7 @@ namespace Text_Grab.Properties {
                 this["EditWindowStartFullscreen"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("Segoe UI")]
@@ -99,7 +99,7 @@ namespace Text_Grab.Properties {
                 this["FontFamilySetting"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("19")]
@@ -111,7 +111,7 @@ namespace Text_Grab.Properties {
                 this["FontSizeSetting"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("False")]
@@ -123,7 +123,7 @@ namespace Text_Grab.Properties {
                 this["IsFontBold"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("False")]
@@ -135,7 +135,7 @@ namespace Text_Grab.Properties {
                 this["IsFontItalic"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("False")]
@@ -147,7 +147,7 @@ namespace Text_Grab.Properties {
                 this["IsFontUnderline"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("False")]
@@ -159,7 +159,7 @@ namespace Text_Grab.Properties {
                 this["IsFontStrikeout"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("False")]
@@ -171,7 +171,7 @@ namespace Text_Grab.Properties {
                 this["NeverAutoUseClipboard"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("")]
@@ -183,7 +183,7 @@ namespace Text_Grab.Properties {
                 this["EditTextWindowSizeAndPosition"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("")]
@@ -195,7 +195,7 @@ namespace Text_Grab.Properties {
                 this["GrabFrameWindowSizeAndPosition"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("False")]
@@ -207,7 +207,7 @@ namespace Text_Grab.Properties {
                 this["RunInTheBackground"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("False")]
@@ -219,7 +219,7 @@ namespace Text_Grab.Properties {
                 this["TryInsert"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("2")]
@@ -231,7 +231,7 @@ namespace Text_Grab.Properties {
                 this["InsertDelay"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("False")]
@@ -243,7 +243,7 @@ namespace Text_Grab.Properties {
                 this["StartupOnLogin"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("False")]
@@ -255,7 +255,7 @@ namespace Text_Grab.Properties {
                 this["FSGMakeSingleLineToggle"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("True")]
@@ -267,7 +267,7 @@ namespace Text_Grab.Properties {
                 this["GlobalHotkeysEnabled"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("")]
@@ -279,7 +279,7 @@ namespace Text_Grab.Properties {
                 this["FullscreenGrabHotKey"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("")]
@@ -291,7 +291,7 @@ namespace Text_Grab.Properties {
                 this["GrabFrameHotkey"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("")]
@@ -303,7 +303,7 @@ namespace Text_Grab.Properties {
                 this["EditWindowHotKey"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("True")]
@@ -315,7 +315,7 @@ namespace Text_Grab.Properties {
                 this["EditWindowIsWordWrapOn"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("False")]
@@ -327,7 +327,7 @@ namespace Text_Grab.Properties {
                 this["EditWindowIsOnTop"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("")]
@@ -339,7 +339,7 @@ namespace Text_Grab.Properties {
                 this["LastUsedLang"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("False")]
@@ -351,7 +351,7 @@ namespace Text_Grab.Properties {
                 this["EditWindowBottomBarIsHidden"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("")]
@@ -363,7 +363,7 @@ namespace Text_Grab.Properties {
                 this["LookupFileLocation"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("")]
@@ -375,7 +375,7 @@ namespace Text_Grab.Properties {
                 this["LookupHotKey"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("True")]
@@ -387,7 +387,7 @@ namespace Text_Grab.Properties {
                 this["TryToReadBarcodes"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("False")]
@@ -399,7 +399,7 @@ namespace Text_Grab.Properties {
                 this["UseTesseract"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("True")]
@@ -411,7 +411,7 @@ namespace Text_Grab.Properties {
                 this["CorrectToLatin"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("")]
@@ -423,7 +423,7 @@ namespace Text_Grab.Properties {
                 this["BottomButtonsJson"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("True")]
@@ -435,7 +435,7 @@ namespace Text_Grab.Properties {
                 this["ShowCursorText"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("True")]
@@ -447,7 +447,7 @@ namespace Text_Grab.Properties {
                 this["ScrollBottomBar"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("True")]
@@ -459,7 +459,7 @@ namespace Text_Grab.Properties {
                 this["GrabFrameAutoOcr"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("True")]
@@ -471,7 +471,7 @@ namespace Text_Grab.Properties {
                 this["GrabFrameUpdateEtw"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("System")]
@@ -483,7 +483,7 @@ namespace Text_Grab.Properties {
                 this["AppTheme"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("False")]
@@ -495,7 +495,7 @@ namespace Text_Grab.Properties {
                 this["FsgSendEtwToggle"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("True")]
@@ -507,7 +507,7 @@ namespace Text_Grab.Properties {
                 this["UseHistory"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("")]
@@ -519,7 +519,7 @@ namespace Text_Grab.Properties {
                 this["TesseractPath"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("")]
@@ -531,7 +531,7 @@ namespace Text_Grab.Properties {
                 this["ShortcutKeySets"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("True")]
@@ -543,7 +543,7 @@ namespace Text_Grab.Properties {
                 this["RestoreEtwPositions"] = value;
             }
         }
-        
+
         [UserScopedSetting()]
         [DebuggerNonUserCode()]
         [DefaultSettingValue("False")]

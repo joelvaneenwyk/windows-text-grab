@@ -171,7 +171,7 @@ public partial class GrabFrame : Window
     {
         // This is a WIP to try to remove the gray letterboxes on either
         // side of the image when zooming it.
-        
+
         Rect imageRect = Rect.Empty;
 
         if (frameContentImageSource is null)
@@ -1577,7 +1577,7 @@ public partial class GrabFrame : Window
 
     private async void OpenImageMenuItem_Click(object? sender = null, RoutedEventArgs? e = null)
     {
-        // Create OpenFileDialog 
+        // Create OpenFileDialog
         OpenFileDialog dlg = new OpenFileDialog();
 
         // Set filter for file extension and default file extension

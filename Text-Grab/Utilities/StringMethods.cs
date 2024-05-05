@@ -420,7 +420,7 @@ public static class StringMethods
 
         foreach (CharRun ct in charRunList)
         {
-            // append previous stuff to the string       
+            // append previous stuff to the string
             switch (ct.TypeOfChar)
             {
                 case CharType.Letter:

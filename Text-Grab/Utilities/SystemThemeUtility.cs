@@ -21,7 +21,7 @@ public class SystemThemeUtility
 
             if (o.ToString() == "1")
                 return true;
-            
+
             return false;
         }
         catch (Exception)

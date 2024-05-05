@@ -87,7 +87,7 @@ namespace Text_Grab.Controls
 
         private void ErrorCorrectionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (sender is not ComboBox comboBox 
+            if (sender is not ComboBox comboBox
                 || comboBox.SelectedItem is not ComboBoxItem selectedItem
                 || selectedItem.Tag is not string tagLevel)
                 return;

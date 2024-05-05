@@ -1346,10 +1346,10 @@ public partial class EditTextWindow : FluentWindow
 
     private void OpenFileMenuItem_Click(object sender, RoutedEventArgs e)
     {
-        // Create OpenFileDialog 
+        // Create OpenFileDialog
         OpenFileDialog dlg = new()
         {
-            // Set filter for file extension and default file extension 
+            // Set filter for file extension and default file extension
             DefaultExt = ".txt",
             Filter = "Text documents (.txt)|*.txt"
         };

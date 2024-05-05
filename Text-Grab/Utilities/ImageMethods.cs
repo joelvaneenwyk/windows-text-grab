@@ -196,7 +196,7 @@ public static class ImageMethods
     {
         BitmapImage bmp = new();
         Stream ioStream = stream.AsStream();
-        // Create a new BitmapImage and use the SetSourceAsync method to 
+        // Create a new BitmapImage and use the SetSourceAsync method to
         // initialize it from the given IRandomAccessStream.
         bmp.BeginInit();
         bmp.CacheOption = BitmapCacheOption.None;

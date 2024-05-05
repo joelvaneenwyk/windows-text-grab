@@ -11,7 +11,7 @@ _install() {
         echo "Failed to change directory: '$out'"
         exit 55
     )
-    
+
     # Get the version of Ubuntu
     # shellcheck disable=SC1091
     if command -v pwsh >/dev/null; then

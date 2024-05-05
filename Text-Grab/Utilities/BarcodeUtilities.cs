@@ -77,7 +77,7 @@ public static class BarcodeUtilities
         };
         encodingOptions.Hints.Add(EncodeHintType.ERROR_CORRECTION, correctionLevel);
         barcodeWriter.Options = encodingOptions;
-        
+
         SvgImage svg = barcodeWriter.Write(text);
 
         return svg;

@@ -25,14 +25,14 @@ namespace RegistryUtils;
 /// <code>
 /// public class MonitorSample
 /// {
-///     static void Main() 
+///     static void Main()
 ///     {
 ///         RegistryMonitor monitor = new RegistryMonitor(RegistryHive.CurrentUser, "Environment");
 ///         monitor.RegChanged += new EventHandler(OnRegChanged);
 ///         monitor.Start();
 ///
 ///         while(true);
-/// 
+///
 ///			monitor.Stop();
 ///     }
 ///

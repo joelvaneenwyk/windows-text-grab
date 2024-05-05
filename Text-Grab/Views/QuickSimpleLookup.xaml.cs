@@ -285,10 +285,10 @@ public partial class QuickSimpleLookup : FluentWindow
 
     private async void ParseCSVFileMenuItem_Click(object sender, RoutedEventArgs e)
     {
-        // Create OpenFileDialog 
+        // Create OpenFileDialog
         OpenFileDialog dlg = new OpenFileDialog();
 
-        // Set filter for file extension and default file extension 
+        // Set filter for file extension and default file extension
         dlg.DefaultExt = ".csv";
         dlg.Filter = "Comma Separated Values File (.csv)|*.csv";
         dlg.CheckFileExists = true;

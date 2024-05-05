@@ -249,7 +249,7 @@ public partial class GeneralSettings : Page
     {
         if (!settingsSet)
             return;
-        
+
         DefaultSettings.UseHistory = true;
     }
 
@@ -313,7 +313,7 @@ public partial class GeneralSettings : Page
     {
         if (!settingsSet)
             return;
-        
+
         DefaultSettings.StartupOnLogin = true;
         await ImplementAppOptions.ImplementStartupOption(true);
     }

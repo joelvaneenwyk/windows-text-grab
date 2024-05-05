@@ -35,9 +35,9 @@ lines
         Assert.Equal(expectedWord, singleWordAtSix);
     }
 
-    private static string multiLineInput = @"Hello this is lots 
+    private static string multiLineInput = @"Hello this is lots
 of text which has several lines
-and some spaces at the ends of line 
+and some spaces at the ends of line
 to throw off any easy check";
 
     [Theory]
@@ -140,7 +140,7 @@ Another Line";
         Assert.Equal(expectedString, actualString);
     }
 
-    // { ' ', '"', '*', '/', ':', '<', '>', '?', '\\', '|', '+', ',', '.', ';', '=', '[', ']', '!', '@' }; 
+    // { ' ', '"', '*', '/', ':', '<', '>', '?', '\\', '|', '+', ',', '.', ';', '=', '[', ']', '!', '@' };
     [Theory]
     [InlineData("", "")]
     [InlineData("A<>B<>C", "A-B-C")]
