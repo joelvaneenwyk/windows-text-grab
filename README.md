@@ -3,7 +3,7 @@
 <!-- markdownlint-disable MD033 -->
 
 <p align="center">
-  <img width="128" align="center" src="images/TealSelect.png" alt="Text Grab logo">
+  <img width="128" align="center" src="images/text-grab-teal-select.png" alt="Text Grab logo">
 </p>
 <h1 align="center">
   Text Grab
@@ -13,13 +13,13 @@
 </p>
 <p align="center">
   <a href="https://www.microsoft.com/en-us/p/text-grab/9mznkqj7sl0b?cid=TextGrabGitHub" target="_blank">
-    <img src="images/storeBadge.png" width="200" alt="Store link" />
+    <img src="images/text-grab-store-badge.png" width="200" alt="Store link" />
   </a>
 </p>
 
 ## Overview
 
-![All Modes In Light Mode](images/All-Modes-Light.png)
+![All Modes In Light Mode](images/text-grab-all-modes-light.png)
 
 This is a minimal optical character recognition (OCR) utility for Windows 10/11 which makes all visible text available to be copied.
 
@@ -69,7 +69,7 @@ Get the code:
 
 ### 1. Full-Screen Mode (basis of [Text Extractor](https://learn.microsoft.com/en-us/windows/powertoys/text-extractor))
 
-![Select text from a region](images/FSG-V4.gif)
+![Select text from a region](images/text-grab-fsg-v4.gif)
 
 The first full screen use case is the most obvious, selecting a region of the screen and the text within the selected region will be added to the clipboard.
 
@@ -79,7 +79,7 @@ If the click point or selected region has no text in it the Text Grab window sta
 
 ### 2. Grab Frame Mode
 
-![Grab Frame](images/3-2-GF-Editing-Table-2.gif)
+![Grab Frame](images/text-grab-3-2-gf-editing-table-2.gif)
 
 Grab frame is mostly a transparent frame with a search bar and Grab button. The Grab Frame can be positioned wherever you want to copy the text. This can be done by searching for text, clicking on a word border, and/or clicking on the Grab button.
 
@@ -108,7 +108,7 @@ There are several tools with in the Edit Text Window which make it quick and eas
 
 ### 4. Quick Simple Lookup
 
-![Quick Simple Lookup](images/Quick-Simple-Lookup.gif)
+![Quick Simple Lookup](images/text-grab-quick-simple-lookup.gif)
 
 This mode of Text Grab is not about OCR, but instead it is about retreiving frequently used text. Think of Quick Simple Lookup as your long term memory. Use it to store frequently used URLs, emails, part numbers, etc. Basically a custom dictionary you can edit and recall instantly at any time. The workflow for Quick Simple Lookup is designed to be fast and functional, here is how it works.
 
