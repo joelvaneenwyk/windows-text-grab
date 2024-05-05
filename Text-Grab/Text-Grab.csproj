@@ -15,7 +15,7 @@
     <Copyright>Joseph Finney 2023</Copyright>
     <PackageProjectUrl>TextGrab.net</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/TheJoeFin/Text-Grab</RepositoryUrl>
+    <RepositoryUrl>https://github.com/joelvaneenwyk/windows-text-grab</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>SmallTile.scale-125.png</PackageIcon>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
@@ -28,6 +28,7 @@
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <AnalysisLevel>latest-minimum</AnalysisLevel>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
