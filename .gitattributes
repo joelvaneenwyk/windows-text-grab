@@ -105,3 +105,4 @@
 *.csx      text diff=csharp
 *.sln      text eol=crlf
 *.csproj   text eol=crlf
+*.wapproj  text eol=crlf
