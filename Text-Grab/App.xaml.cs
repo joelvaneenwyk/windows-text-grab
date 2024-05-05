@@ -81,10 +81,9 @@ public partial class App
             switch (currentAppTheme)
             {
                 case AppTheme.System:
-                    if (SystemThemeUtility.IsLightTheme())
-                        themeService.SetTheme(ApplicationTheme.Light);
-                    else
-                        themeService.SetTheme(ApplicationTheme.Dark);
+                    themeService.SetTheme(SystemThemeUtility.IsLightTheme()
+                        ? ApplicationTheme.Light
+                        : ApplicationTheme.Dark);
                     break;
                 case AppTheme.Dark:
                     themeService.SetTheme(ApplicationTheme.Dark);

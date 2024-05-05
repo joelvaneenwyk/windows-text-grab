@@ -93,8 +93,7 @@ public class WindowResizer
     /// Default constructor
     /// </summary>
     /// <param name="window">The window to monitor and correctly maximize</param>
-    /// <param name="adjustSize">The callback for the host to adjust the maximum available size if needed</param>
-    public WindowResizer(Window window)
+    public WindowResizer(Window? window)
     {
         if (window is null)
             return;
