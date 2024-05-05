@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Text_Grab.Controls;
 using Wpf.Ui.Controls;
 

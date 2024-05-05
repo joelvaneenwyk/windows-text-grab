@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Text_Grab.Models;
 

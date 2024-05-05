@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using Text_Grab.Models;
 
 namespace Tests;

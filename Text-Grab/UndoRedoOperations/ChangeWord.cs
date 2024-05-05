@@ -1,4 +1,4 @@
-﻿using Text_Grab.Controls;
+using Text_Grab.Controls;
 
 namespace Text_Grab.UndoRedoOperations;
 

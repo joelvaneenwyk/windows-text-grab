@@ -1,4 +1,4 @@
-﻿using Text_Grab.Properties;
+using Text_Grab.Properties;
 using Text_Grab.Services;
 using Windows.ApplicationModel;
 

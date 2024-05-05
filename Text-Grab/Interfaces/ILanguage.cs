@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Windows.Globalization;
 
 namespace Text_Grab.Interfaces;

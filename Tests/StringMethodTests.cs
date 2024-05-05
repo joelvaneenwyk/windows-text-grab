@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using Text_Grab;
 using Text_Grab.Utilities;
 

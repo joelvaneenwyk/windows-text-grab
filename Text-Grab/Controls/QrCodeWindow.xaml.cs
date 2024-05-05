@@ -1,4 +1,4 @@
-﻿using Humanizer;
+using Humanizer;
 using Microsoft.Win32;
 using System;
 using System.ComponentModel;

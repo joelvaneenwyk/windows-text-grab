@@ -1,4 +1,4 @@
-﻿// using Screen = System.Windows.Forms.Screen;
+// using Screen = System.Windows.Forms.Screen;
 using System;
 using System.Collections.Generic;
 using System.Linq;

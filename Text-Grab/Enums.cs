@@ -1,4 +1,4 @@
-﻿namespace Text_Grab;
+namespace Text_Grab;
 
 public enum AddRemove
 {

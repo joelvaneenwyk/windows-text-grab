@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using Text_Grab.Pages;
 using Text_Grab.Utilities;
